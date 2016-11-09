@@ -101,16 +101,16 @@ class toba_ef_popup extends toba_ef_editable
 	function get_descripcion_estado($tipo_salida)
 	{
 		$valor = $this->get_descripcion_valor();
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$valor</div>";
-				break;
+				$valor = $escapador->escapeHtml($valor);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$valor</div>";
 			case 'pdf':
 				return $valor;
 			case 'excel':
 				return array($valor, null);
-				break;
 		}
 	}
 
@@ -155,7 +155,8 @@ class toba_ef_popup extends toba_ef_editable
 	{
 		$js = '';
 		$html = '';
-		$tab = $this->padre->get_tab_index();
+		$escapador = toba::escaper();
+		$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 		$extra = " tabindex='$tab'";
 		if(!isset($this->estado)) $this->estado="";
 		if (!isset($this->descripcion_estado) || $this->descripcion_estado == '') {
@@ -163,15 +164,15 @@ class toba_ef_popup extends toba_ef_editable
 		}
 
 		$estado = (is_array($this->estado)) ? implode(apex_qs_separador, $this->estado) : $this->estado;
-		$html .= "<span class='{$this->clase_css}'>";
+		$html .= "<span class='".$escapador->escapeHtmlAttr($this->clase_css)."'>";
 		if ($this->cuando_cambia_valor != '') {
-			$js = "onchange=\"{$this->get_cuando_cambia_valor()}\"";
+			$js = 'onchange="'. $escapador->escapeHtmlAttr($this->get_cuando_cambia_valor()).'"';
 		}
 		
 		$extra .= $this->get_estilo_visualizacion_pixeles();	
 		$extra .= $this->get_info_placeholder();
 		if ($this->editable) {
-			$disabled = ($this->es_solo_lectura()) ? "disabled" : "";			
+			$disabled = ($this->es_solo_lectura()) ? 'disabled' : '';			
 			$html .= toba_form::hidden($this->id_form."_desc", $estado);
 			$html .= toba_form::text($this->id_form, $this->descripcion_estado, false, "", $this->tamano, "ef-input", $extra.' '.$disabled.' '.$js);
 			$extra = '';
@@ -181,14 +182,14 @@ class toba_ef_popup extends toba_ef_editable
 		}
 		if (isset($this->id_vinculo)) {
 			$display = ($this->es_solo_lectura()) ? "visibility:hidden" : "";
-			$html .= "<a id='{$this->id_form}_vinculo' style='$display' $extra";
-			$html .= " onclick=\"{$this->objeto_js()}.abrir_vinculo();\"";
+			$html .= "<a id='". $escapador->escapeHtmlAttr($this->id_form. '_vinculo')."' style='$display' $extra";
+			$html .= ' onclick="'. $this->objeto_js().'.abrir_vinculo();"';
 			$html .= " href='#'>".$this->get_imagen_abrir()."</a>";
 		}
 		if ($this->no_oblig_puede_borrar) {
 			$display = ($this->es_solo_lectura()) ? "visibility:hidden" : "";
-			$html .= "<a id='{$this->id_form}_borrar' style='$display' $extra";
-			$html .= " onclick=\"{$this->objeto_js()}.set_estado(null, null);\"";
+			$html .= "<a id='". $escapador->escapeHtmlAttr($this->id_form. '_borrar')."' style='$display' $extra";
+			$html .= ' onclick="'. $this->objeto_js().'.set_estado(null, null);"';
 			$html .= " href='#'>".$this->get_imagen_limpiar()."</a>";
 		}
 		$html .= $this->get_html_iconos_utilerias();
@@ -233,7 +234,7 @@ class toba_ef_popup extends toba_ef_editable
 
 	function parametros_js()
 	{
-		$vinculo = (is_numeric($this->id_vinculo)) ? $this->id_vinculo : "null";
+		$vinculo = (is_numeric($this->id_vinculo)) ? toba::escaper()->escapeJs($this->id_vinculo) : 'null';
 		return toba_ef::parametros_js().", $vinculo";
 	}
 

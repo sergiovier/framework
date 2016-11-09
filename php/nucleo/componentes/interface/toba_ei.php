@@ -466,13 +466,14 @@ abstract class toba_ei extends toba_componente
 	function generar_botones($clase = '', $extra='')
 	{
 		//----------- Generacion
+		$escapador = toba::escaper();
 		if ($this->hay_botones()) {
-			echo "<div class='ei-botonera $clase'>";
-			echo $extra;
+			echo "<div class='ei-botonera ". $escapador->escapeHtmlAttr($clase)."'>";
+			echo $escapador->escapeHtml($extra);
 			$this->generar_botones_eventos();
 			echo "</div>";
 		} elseif ($extra != '') {
-			echo $extra;
+			echo $escapador->escapeHtml($extra);
 		}
 	}	
 	
@@ -649,7 +650,7 @@ abstract class toba_ei extends toba_componente
 	function generar_html_barra_sup($titulo=null, $control_titulo_vacio=false, $estilo="")
 	{
 		if ($this->_mostrar_barra_superior) {
-			
+			$escapador = toba::escaper();			
 			$botonera_en_item = false;
 			if (isset($this->_info_ci['botonera_barra_item']) && $this->_info_ci['botonera_barra_item']) {
 				$botonera_en_item = true;	 			
@@ -679,9 +680,9 @@ abstract class toba_ei extends toba_componente
 				// Se colapsa cuando no hay botones o cuando hay pero no esta la botonera arriba
 				$colapsado_coherente = (! $this->hay_botones() || ($this->hay_botones() && !$this->botonera_arriba()));	
 				if ($this->_info['colapsable'] && isset($this->objeto_js) && $colapsado_coherente) {
-					$colapsado = "style='cursor: pointer; cursor: hand;' onclick=\"{$this->objeto_js}.cambiar_colapsado();\" title='Mostrar / Ocultar'";
+					$colapsado = "style='cursor: pointer; cursor: hand;' onclick=\"". $escapador->escapeHtmlAttr($this->objeto_js).".cambiar_colapsado();\" title='Mostrar / Ocultar'";
 				}			
-				echo "<div class='$estilo' $colapsado>\n";
+				echo "<div class='". $escapador->escapeHtmlAttr($estilo)."' $colapsado>\n";
 				//--> Botonera
 				if ($botonera_sup) {
 					$this->generar_botones();
@@ -697,11 +698,11 @@ abstract class toba_ei extends toba_componente
 				//---Barra de colapsado
 				if ($this->_info['colapsable'] && isset($this->objeto_js) && $colapsado_coherente) {
 					$img_min = toba_recurso::imagen_toba('nucleo/sentido_asc_sel.gif', false);
-					echo "<img class='ei-barra-colapsar' id='colapsar_boton_{$this->objeto_js}' src='$img_min'>";
+					echo "<img class='ei-barra-colapsar' id='". $escapador->escapeHtmlAttr('colapsar_boton_'.$this->objeto_js)."' src='$img_min'>";
 				}
 	
 				//---Titulo			
-				echo "<span class='ei-barra-sup-tit'>$titulo</span>\n";
+				echo "<span class='ei-barra-sup-tit'>". $escapador->escapeHtml($titulo)."</span>\n";
 				echo "</div>";
 				//echo ei_barra_fin();
 			}
@@ -711,7 +712,7 @@ abstract class toba_ei extends toba_componente
 				$tipo = isset($this->_info['descripcion_tipo']) ? $this->_info['descripcion_tipo'] : null;
 				$this->generar_html_descripcion($this->_info['descripcion'], $tipo);
 			}		
-			echo "<div id='{$this->_submit}_notificacion'>";
+			echo "<div id='". $escapador->escapeHtmlAttr($this->_submit .'_notificacion')."'>";
 			foreach ($this->_notificaciones as $notificacion){
 				$this->generar_html_descripcion($notificacion['mensaje'], $notificacion['tipo']);
 			}
@@ -748,7 +749,7 @@ abstract class toba_ei extends toba_componente
 			$clase = 'ei-barra-sup-desc-error';			
 		}		
 		$descripcion = toba_parser_ayuda::parsear($mensaje);
-		echo "<table class='tabla-0 $clase'><tr><td class='ei-barra-sup-desc-img'>$imagen</td><td>$descripcion</td></table>\n";
+		echo "<table class='tabla-0 ". toba::escaper()->escapeHtmlAttr($clase)."'><tr><td class='ei-barra-sup-desc-img'>$imagen</td><td>$descripcion</td></table>\n";
 	}
 	
 	/**
@@ -767,11 +768,11 @@ abstract class toba_ei extends toba_componente
 		$salida = '';
 		$servicio = toba::memoria()->get_servicio_solicitado();
 		if( toba_editor::modo_prueba() && ($servicio == 'generar_html' || $servicio == 'html_parcial') ){ 
+			$escapador = toba::escaper();
 			$salida .= "<div class='div-editor'>";
-			$salida .= toba_editor::generar_zona_vinculos_componente($this->_id, $this->_info['clase_editor_item'], $this->_info['clase'],
-										$this->_info['subclase'] != '');
-			$id_dep = ($this->_id_en_controlador)? '&nbsp;<strong>'.$this->_id_en_controlador.'</strong>&nbsp;-' : '';
-			$salida .= $id_dep . '&nbsp;[' .$this->_info['objeto'] . ']&nbsp;' . $this->_info["nombre"];
+			$salida .= toba_editor::generar_zona_vinculos_componente($this->_id, $this->_info['clase_editor_item'], $this->_info['clase'], $this->_info['subclase'] != '');
+			$id_dep = ($this->_id_en_controlador)? '&nbsp;<strong>'. $escapador->escapeHtml($this->_id_en_controlador).'</strong>&nbsp;-' : '';
+			$salida .= $id_dep . '&nbsp;[' . $escapador->escapeHtml($this->_info['objeto']) . ']&nbsp;' . $escapador->escapeHtml($this->_info["nombre"]);
 			$salida .= "</div>";
 		}		
 		return $salida;
@@ -806,7 +807,7 @@ abstract class toba_ei extends toba_componente
 	function generar_js()
 	{
 		$identado = toba_js::instancia()->identado();
-		echo "\n$identado//---------------- CREANDO OBJETO {$this->objeto_js} --------------  \n";
+		echo "\n$identado//---------------- CREANDO OBJETO ". toba::escaper()->escapeHtml($this->objeto_js)." --------------  \n";
 		$this->crear_objeto_js();
 		$this->extender_objeto_js();
 		echo "\n";
@@ -831,7 +832,9 @@ abstract class toba_ei extends toba_componente
 	protected function crear_objeto_js()
 	{
 		$identado = toba_js::instancia()->identado();
-		echo $identado."window.{$this->objeto_js} = new ei('{$this->objeto_js}','{$this->_submit}');\n";
+		$escapador = toba::escaper();
+		$id_js = $escapador->escapeJs($this->objeto_js);
+		echo $identado."window.{$id_js} = new ei('{$id_js}','". $escapador->escapeJs($this->_submit)."');\n";
 	}
 	
 	/**
@@ -853,16 +856,17 @@ abstract class toba_ei extends toba_componente
 	protected function iniciar_objeto_js()
 	{
 		$identado = toba_js::instancia()->identado();
+		$escapador = toba::escaper();
 		//-- EVENTO implicito --
-		if (isset($this->_evento_implicito) && is_object($this->_evento_implicito)){
+		if (isset($this->_evento_implicito) && is_object($this->_evento_implicito)) {
 			$evento_js = $this->_evento_implicito->get_evt_javascript();
-			echo toba_js::instancia()->identado()."{$this->objeto_js}.set_evento_implicito($evento_js);\n";
+			echo toba_js::instancia()->identado().$escapador->escapeJs($this->objeto_js).".set_evento_implicito($evento_js);\n";
 		}
 		if ($this->_colapsado) {
-			echo $identado."window.{$this->objeto_js}.colapsar();\n";
+			echo $identado.'window.'. $escapador->escapeJs($this->objeto_js).".colapsar();\n";
 		}
 		//Se agrega al objeto al singleton toba
-		echo $identado."toba.agregar_objeto(window.{$this->objeto_js});\n";		
+		echo $identado."toba.agregar_objeto(window.". $escapador->escapeJs($this->objeto_js).");\n";		
 	}
 	
 	

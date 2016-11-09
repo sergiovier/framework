@@ -370,11 +370,12 @@ class toba_ei_arbol extends toba_ei
 	protected function generar_barra_navegacion()
 	{
 		$camino = '';
+		$escapador = toba::escaper();
 		if (count($this->_nodos_inicial) > 0) {
 			$nodo = $this->_nodos_inicial[0];
 			while ($nodo->get_padre() != null) {
 				$nodo = $nodo->get_padre();
-				$nodo_barra = "<a href='#' onclick='{$this->objeto_js}.ver_propiedades(\"{$nodo->get_id()}\");'";
+				$nodo_barra = "<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".ver_propiedades(\"". $escapador->escapeHtmlAttr($nodo->get_id())."\");'";
 				$nodo_barra .= "class='ei-arbol-ver-prop'>". $this->acortar_nombre($nodo->get_nombre_corto(), 20).'</a>';
 				$camino = $nodo_barra . ' > '. $camino;
 				$this->_ids_enviados[] = $nodo->get_id();															//Agrego los nodos de la barra del path
@@ -391,7 +392,7 @@ class toba_ei_arbol extends toba_ei
 	protected function generar_cuerpo()
 	{
 		$id_div = '';
-		$id = "id='{$this->objeto_js}_nodo_raiz'";								
+		$id = "id='". toba::escaper()->escapeHtmlAttr($this->objeto_js.'_nodo_raiz')."' ";								
 		if (count($this->_nodos_inicial) > 1) {
 			$id_div = $id;
 			$id = '';		
@@ -417,7 +418,7 @@ class toba_ei_arbol extends toba_ei
 		
 		echo "<div class='ei-base ei-arbol-base'>";
 		$this->generar_barras_grales();		
-		echo "<div id='cuerpo_{$this->objeto_js}'>";
+		echo "<div id='". toba::escaper()->escapeHtmlAttr('cuerpo_'. $this->objeto_js)."'>";
 		
 		if (isset($this->_nodos_inicial)) {					//Si hay nodos			
 			$this->generar_barra_navegacion();			// Se incluye la barrita que contiene el path actual
@@ -474,8 +475,8 @@ class toba_ei_arbol extends toba_ei
 			if (method_exists($nodo, 'get_clase_css_li')) {
 				$clase_li .= $nodo->get_clase_css_li();
 			}
-			
-			$salida = "\n\t<li class='$clase_li' id_nodo='{$nodo->get_id()}' style='$estilo_li' >";					
+			$escapador = toba::escaper();
+			$salida = "\n\t<li class='". $escapador->escapeHtmlAttr($clase_li)."' id_nodo='". $escapador->escapeHtmlAttr($nodo->get_id())."' style='". $escapador->escapeHtmlAttr($estilo_li)."' >";					
 			$salida .= $salida_generada;
 			$salida .= "</li>\n";
 		} else {
@@ -499,6 +500,7 @@ class toba_ei_arbol extends toba_ei
 
 		//Recursividad
 		if (! $nodo->es_hoja()) {	
+			$escapador = toba::escaper();
 			//Configuracion del estilo del nodo
 			$clase_ul = 'ei-arbol-rama ';			
 			if (method_exists($nodo, 'get_clase_css_ul')) {
@@ -509,9 +511,9 @@ class toba_ei_arbol extends toba_ei
 			if (method_exists($nodo, 'get_estilo_css_ul')) {
 				$estilo_ul .= $nodo->get_estilo_css_ul();
 			}
-			$estilo = ($estilo_ul != '') ? "style='$estilo_ul'" : '';
+			$estilo = ($estilo_ul != '') ? "style='". $escapador->escapeHtmlAttr($estilo_ul)."'" : '';
 			
-			$salida .= "\n<ul id_nodo='{$nodo->get_id()}' class='$clase_ul' $estilo>";			
+			$salida .= "\n<ul id_nodo='". $escapador->escapeHtmlAttr($nodo->get_id())."' class='". $escapador->escapeHtmlAttr($clase_ul)."' $estilo>";			
 			if ($nodo->tiene_hijos_cargados()) {
 				$nivel ++;
 				$salida .= $this->recorrer_hijos($nodo, $nivel);
@@ -536,24 +538,25 @@ class toba_ei_arbol extends toba_ei
 		$largo = $nodo->get_nombre_largo();
 		$extra = $nodo->get_info_extra();
 
+		$escapador = toba::escaper();
 		if($this->_mostrar_ayuda && ($largo || $id || $extra)) {
-			$title= "<b>Nombre</b>: $largo<br /><b>Id</b>:  $id";
+			$title= "<b>Nombre</b>: ". $escapador->escapeHtml($largo)."<br /><b>Id</b>:  ". $escapador->escapeHtml($id);
 			if ($extra != '') {
-				$title .= "<hr />$extra";
+				$title .= "<hr />". $escapador->escapeHtml($extra);
 			}
 			$ayuda = toba_recurso::ayuda(null,  $title, 'ei-arbol-nombre');
 			if (get_class($nodo) == 'toba_ci_pantalla_info') {
-				$nombre= "<span $ayuda>$id</span>";
+				$nombre= "<span $ayuda>". $escapador->escapeHtml($id).'</span>';
 			} else {
-				$nombre= "<span $ayuda>$corto</span>";
+				$nombre= "<span $ayuda>". $corto.'</span>';
 			}
 		} else {
 			$nombre = $corto;
 		}
 		
 		if ($this->_mostrar_propiedades_nodos && $nodo->tiene_propiedades()) {
-			$salida .= "<a href='#' onclick='{$this->objeto_js}.ver_propiedades(\"".$nodo->get_id()."\");' ".
-						"class='ei-arbol-ver-prop'>$nombre</a>";			
+			$salida .= "<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".ver_propiedades(\"".$escapador->escapeHtmlAttr($nodo->get_id())."\");' ".
+						"class='ei-arbol-ver-prop'>". $nombre."</a>";
 		} else {
 			$salida .= $nombre;
 		}
@@ -565,9 +568,11 @@ class toba_ei_arbol extends toba_ei
 	 */
 	function generar_html_filtro_rapido()
 	{
+		$escapador = toba::escaper();
+		$id_js = $escapador->escapeHtmlAttr($this->objeto_js);
 		echo "<div class='ei-arbol-filtro'>";
-		$eventos = "onkeyup='{$this->objeto_js}.filtro_cambio()' onblur='{$this->objeto_js}.filtro_salir()' onfocus='{$this->objeto_js}.filtro_foco()'";
-		echo "<input id='{$this->_submit}_filtro_rapido' type='text' value='Buscar...' $eventos />";
+		$eventos = "onkeyup='{$id_js}.filtro_cambio()' onblur='{$id_js}.filtro_salir()' onfocus='{$id_js}.filtro_foco()'";
+		echo "<input id='". $escapador->escapeHtmlAttr($this->_submit.'_filtro_rapido')."' type='text' value='Buscar...' $eventos />";
 		echo '</div>';
 	}
 
@@ -587,7 +592,7 @@ class toba_ei_arbol extends toba_ei
 			} else {
 				$img_exp_contr = toba_recurso::imagen_toba('nucleo/expandir.gif', false);
 			}
-			$salida = "<img src='$img_exp_contr' onclick='{$this->objeto_js}.cambiar_expansion(this);'
+			$salida = "<img src='$img_exp_contr' onclick='". toba::escaper()->escapeHtmlAttr($this->objeto_js).".cambiar_expansion(this);'
 			class='ei-arbol-exp-contr' alt='' /> ";
 		} else {
 			$salida = gif_nulo(14,1);
@@ -601,12 +606,13 @@ class toba_ei_arbol extends toba_ei
 	protected function mostrar_iconos($nodo)
 	{
 		$salida = '';
+		$escapador = toba::escaper();
 		foreach ($nodo->get_iconos() as $icono) {
 			$ayuda = toba_parser_ayuda::parsear($icono['ayuda']);
 			$js = isset($icono['javascript']) ? $icono['javascript'] : '';
 			$img = toba_recurso::imagen($icono['imagen'], null, null, $ayuda, null, $js);
 			if (isset($icono['vinculo'])) {
-				$salida .= "<a target='{$this->_frame_destino}' href='".$icono['vinculo']."'>$img</a>\n";
+				$salida .= "<a target='". $escapador->escapeHtmlAttr($this->_frame_destino)."' href='". $escapador->escapeHtmlAttr($icono['vinculo'])."'>$img</a>\n";
 			} else {
 				$salida .= $img."\n";
 			}
@@ -620,6 +626,7 @@ class toba_ei_arbol extends toba_ei
 	protected function mostrar_utilerias($nodo)
 	{
 		$salida = '';
+		$escapador = toba::escaper();
 		if($nodo instanceof toba_nodo_arbol_form) {
 			$id = $this->_submit. '_'. $nodo->get_id();
 			$salida .= '<span style=\'float:right;\'>'. $nodo->get_input($id). '</span>';
@@ -636,7 +643,7 @@ class toba_ei_arbol extends toba_ei
 				$img = toba_recurso::imagen($utileria['imagen'], null, null, $ayuda, null, $js);
 				if (isset($utileria['vinculo'])) {
 					$target = (isset($utileria['target'])) ? $utileria['target'] : $this->_frame_destino;
-					$html = "<a href=\"{$utileria['vinculo']}\" target='$target'>$img</a>\n";
+					$html = "<a href=\"". $escapador->escapeHtmlAttr($utileria['vinculo'])."\" target='". $escapador->escapeHtmlAttr($target)."'>$img</a>\n";
 				} else {
 					$html = $img;
 				}
@@ -672,7 +679,7 @@ class toba_ei_arbol extends toba_ei
 		if (strlen($nombre) > $limite) {
 			$nombre = substr($nombre, 0, $limite)."...";
 		}
-		return texto_plano($nombre);
+		return toba::escaper()->escapeHtml($nombre);
 	}
 
 	//-------------------------------------------------------------------------------
@@ -702,12 +709,13 @@ class toba_ei_arbol extends toba_ei
 	 */
 	protected function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$identado = toba_js::instancia()->identado();
 		$opciones['servicio'] = 'ejecutar';
 		$opciones['objetos_destino'] = array($this->_id);
 		$autovinculo = toba::vinculador()->get_url(null, null, '', $opciones );
-		echo $identado."window.{$this->objeto_js} = new ei_arbol('{$this->objeto_js}',
-		'{$this->_submit}', '$autovinculo');\n";
+		$id_js = $escapador->escapeJs($this->objeto_js);
+		echo $identado."window.{$id_js} = new ei_arbol('{$id_js}', '". $escapador->escapeJs($this->_submit)."', '$autovinculo');\n";
 	}
 
 	/**

@@ -48,7 +48,7 @@ class toba_tp_basico extends toba_tipo_pagina
 		echo '<!--[if IE 8]>    <html class="no-js lt-ie9" lang="es"> <![endif]-->';
 		echo '<!--[if gt IE 8]><!--> <html class="no-js" lang="es"> <!--<![endif]-->';
 		echo "<head>\n";
-		echo "<title>".$this->titulo_pagina()."</title>\n";
+		echo "<title>".toba::escaper()->escapeHtml($this->titulo_pagina())."</title>\n";
 		$this->encoding();
 		$this->plantillas_css();
 		$this->estilos_css();
@@ -71,43 +71,44 @@ class toba_tp_basico extends toba_tipo_pagina
 	{
 		echo toba_recurso::link_css('toba', 'screen');
 		echo toba_recurso::link_css('toba_impr', 'print');
-		$ico = toba_recurso::imagen_proyecto('favicon.ico');
+		$ico = toba::escaper()->escapeHtmlAttr(toba_recurso::imagen_proyecto('favicon.ico'));
 		echo '<link rel="icon" href="'.$ico.'" type="image/x-icon" /><link rel="shortcut icon" href="'.$ico.'" type="image/x-icon" />';		
 	}
 	
 	protected function estilos_css()
 	{
+		$escapador = toba::escaper();
 		if (toba::proyecto()->get_parametro('es_css3')) {		
 			echo "<link rel='stylesheet' href='".toba_recurso::url_toba()."/js/formalize/stylesheets/formalize.css' />";
 		} else {
 			echo "
 				<style type='text/css'>
 	            #overlay, #capa_espera {
-	                background-image:url('". toba_recurso::imagen_toba('nucleo/overlay.gif'). "');               
+	                background-image:url('". $escapador->escapeCss(toba_recurso::imagen_toba('nucleo/overlay.gif')). "');               
 	            }
 	            .barra-superior {
-	                background: url('". toba_recurso::imagen_skin('barra-sup.gif') ."') repeat-x top;
+	                background: url('". $escapador->escapeCss(toba_recurso::imagen_skin('barra-sup.gif')) ."') repeat-x top;
 	            }
 	            .ei-cuadro-col-tit, .ei-ml-columna, .ei-filtro-columna {
-	                background: url('". toba_recurso::imagen_skin('cuadro-col-titulo.gif') ."') repeat-x top;
+	                background: url('". $escapador->escapeCss(toba_recurso::imagen_skin('cuadro-col-titulo.gif')) ."') repeat-x top;
 	            }
 	            .ei-barra-sup, .ci-botonera {
-	                background: url('". toba_recurso::imagen_skin('barra-sup.gif') ."') repeat-x top;
+	                background: url('". $escapador->escapeCss(toba_recurso::imagen_skin('barra-sup.gif')) ."') repeat-x top;
 	            }
 	            .ci-tabs-h-lista {
-	            	background: url('".toba_recurso::imagen_skin('tabs/bg.gif')."') repeat-x bottom;
+	            	background: url('".$escapador->escapeCss(toba_recurso::imagen_skin('tabs/bg.gif'))."') repeat-x bottom;
 	            }
 	            .ci-tabs-h-solapa {
-					background:url('".toba_recurso::imagen_skin('tabs/left.gif')."') no-repeat left top;	            
+					background:url('".$escapador->escapeCss(toba_recurso::imagen_skin('tabs/left.gif'))."') no-repeat left top;	            
 	            }
 	            .ci-tabs-h-solapa a {				
-	            	background:url('".toba_recurso::imagen_skin('tabs/right.gif')."') no-repeat right top;
+	            	background:url('".$escapador->escapeCss(toba_recurso::imagen_skin('tabs/right.gif'))."') no-repeat right top;
 	            }	            
 	            .ci-tabs-h-solapa-sel {
-					background:url('".toba_recurso::imagen_skin('tabs/left_on.gif')."') no-repeat left top;	            
+					background:url('".$escapador->escapeCss(toba_recurso::imagen_skin('tabs/left_on.gif'))."') no-repeat left top;	            
 	            }
 	            .ci-tabs-h-solapa-sel a {				
-	            	background:url('".toba_recurso::imagen_skin('tabs/right_on.gif')."') no-repeat right top;
+	            	background:url('".$escapador->escapeCss(toba_recurso::imagen_skin('tabs/right_on.gif'))."') no-repeat right top;
 	            }
 				</style>
 			";
@@ -115,7 +116,7 @@ class toba_tp_basico extends toba_tipo_pagina
 		echo "
 		<style type='text/css'>
 			#overlay, #capa_espera {
-				background-image:url('". toba_recurso::imagen_toba('nucleo/overlay.gif'). "');     			
+				background-image:url('". $escapador->escapeCss(toba_recurso::imagen_toba('nucleo/overlay.gif')). "');     			
 			}
 			#barra_superior {
 				display:none;
@@ -131,11 +132,12 @@ class toba_tp_basico extends toba_tipo_pagina
 	protected function comienzo_cuerpo()
 	{
 		$this->comienzo_cuerpo_basico();
-		echo "<div class='{$this->clase_encabezado}'>";
+		echo "<div class='". toba::escaper()->escapeHtmlAttr($this->clase_encabezado)."'>";
 	}
 	
 	protected function comienzo_cuerpo_basico()
 	{
+		$escapador = toba::escaper();
 		echo "<body>\n";
 		$cerrar = toba_recurso::imagen_toba('nucleo/cerrar_ventana.gif', false);
 		toba_js::cargar_consumos_globales(array('basicos/tipclick'));
@@ -143,14 +145,14 @@ class toba_tp_basico extends toba_tipo_pagina
 		echo "<div id='overlay_contenido'></div></div>";
 		$wait = toba_recurso::imagen_toba('wait.gif');
 		echo "<div id='div_toba_esperar' class='div-esperar' style='display:none'>";
-		echo "<img src='$wait' style='vertical-align: middle;' alt='' /> Procesando...";
+		echo "<img src='". $escapador->escapeHtmlAttr($wait)."' style='vertical-align: middle;' alt='' /> Procesando...";
 		echo "</div>\n";
 		
 		$logo = toba_recurso::imagen_proyecto('logo.gif', false);
 		echo "<div id='capa_espera'>
 				<div>
-					<img class='overlay-cerrar' title='Cerrar ventana' src='$cerrar' onclick='mostrar_esperar()' />
-					<img src='$logo' /><p>Procesando. Por favor aguarde...</p><img src='$wait'>
+					<img class='overlay-cerrar' title='Cerrar ventana' src='". $escapador->escapeHtmlAttr($cerrar)."' onclick='mostrar_esperar()' />
+					<img src='". $escapador->escapeHtmlAttr($logo)."' /><p>Procesando. Por favor aguarde...</p><img src='". $escapador->escapeHtmlAttr($wait)."'>
 				</div>
 			</div>
 		";

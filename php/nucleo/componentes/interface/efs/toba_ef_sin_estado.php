@@ -63,7 +63,8 @@ class toba_ef_barra_divisora extends toba_ef_sin_estado
 	
 	function get_input()
 	{
-		echo "<div class='{$this->clase_css}' id='{$this->id_form}'>{$this->etiqueta}</div>\n";
+		$escapador = toba::escaper();
+		echo "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."' id='". $escapador->escapeHtmlAttr($this->id_form)."'>". $escapador->escapeHtml($this->etiqueta) ."</div>\n";
 	}
 }
 
@@ -95,12 +96,13 @@ class toba_ef_fieldset extends toba_ef_sin_estado
 	function get_input()
 	{
 		if(! $this->fin){
-			echo "<fieldset title='{$this->etiqueta}'>";
+			$escapador = toba::escaper();
+			echo "<fieldset title='". $escapador->escapeHtmlAttr($this->etiqueta) ."'>";
 			if (trim($this->etiqueta) != ''){
-				echo "<legend>{$this->etiqueta}</legend>";
+				echo '<legend>'. $escapador->escapeHtml($this->etiqueta).'</legend>';
 			}//if
 		} else {
-			echo "</fieldset>";
+			echo '</fieldset>';
 		}//if externo
 	}
 	

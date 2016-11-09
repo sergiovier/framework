@@ -320,19 +320,19 @@ class toba_ei_mapa extends toba_ei
 	 */
 	protected function generar_viewport()
 	{
+		$escapador = toba::escaper();
 		$ancho = ''; $alto = '';
 		if (isset($this->_ancho_viewport)) {
-			$ancho = 'width: '.$this->_ancho_viewport.'px;';
+			$ancho = 'width: '.$escapador->escapeHtmlAttr($this->_ancho_viewport).'px;';
 		}
 		if (isset($this->_alto_viewport)) {
-			$alto = 'height: '.$this->_alto_viewport .'px;';
+			$alto = 'height: '. $escapador->escapeHtmlAttr($this->_alto_viewport) .'px;';
 		}
 		//Campos de sincronizacion con JS
 		$this->generar_parametros_post();
 
 		//Div donde se mostrara el mapa
-		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? "style='display:none'" : "";
-		echo "<div style=\"$ancho $alto\"  id='cuerpo__{$this->objeto_js}' > </div>";
+		echo "<div style='$ancho $alto'  id='". $escapador->escapeHtmlAttr('cuerpo__' . $this->objeto_js). "' > </div>";
 	}
 
 	/**
@@ -351,7 +351,8 @@ class toba_ei_mapa extends toba_ei
 	 */
 	protected function generar_control_de_layers()
 	{
-		echo "<div id = 'control_layers_{$this->objeto_js}'  class='layer-ctrl'>";
+		$escapador = toba::escaper();		
+		echo "<div id = '". $escapador->escapeHtmlAttr('control_layers_' . $this->objeto_js)."'  class='layer-ctrl'>";
 		//Recorro los grupos que pueda haber
 		$grupos = $this->get_grupos();
 		if (! empty($grupos)) {
@@ -360,7 +361,7 @@ class toba_ei_mapa extends toba_ei
 					$this->get_separador_grupo($grupo);
 					$layer_idxs = $this->_mapa->getLayerIndexByGroup($grupo);
 					foreach($layer_idxs as $idx) {
-						$layer = $this->_mapa->getLayer($lay_idx);
+						$layer = $this->_mapa->getLayer($idx);
 						$nombre_layer = $layer->getMetadata('NAME');
 						$id_ef = $this->objeto_js. '_chck_'. $layer;
 						$this->get_selector_layer($id_ef, $layer);
@@ -385,6 +386,7 @@ class toba_ei_mapa extends toba_ei
 	 */
 	protected function get_selector_layer($id_ef, $nombre_layer)
 	{
+		$escapador = toba::escaper();
 		$actual = $nombre_layer;
 		$layer_obj = $this->_mapa->getLayerByName($actual);
 		if (is_null($layer_obj)) {
@@ -399,12 +401,12 @@ class toba_ei_mapa extends toba_ei
 
 		$estilo = '';									//Habria que crear un estilo para el checkbox
 		$ancho = '100px';						//Ancho de las etiquetas, se deberia poder configurar
-		$js = "onclick='{$this->objeto_js}.change_layers(this);'";		//Js que realiza la llamada
+		$js = "onclick='" . $escapador->escapeHtmlAttr($this->objeto_js).".change_layers(this);'";		//Js que realiza la llamada
 
 		//Saco el label y el checkbox
 		echo "<div class = 'layer-selector'>";
 		echo toba_form::checkbox($id_ef, $actual, $nombre_layer, null, $js);
-		echo "<label style='width: $ancho;' for='$id_ef' class='$estilo'>$nombre_layer</label>\n";
+		echo "<label style='width: $ancho;' for='". $escapador->escapeHtmlAttr($id_ef)."' class='". $escapador->escapeHtmlAttr($estilo)."'>". $escapador->escapeHtml($nombre_layer)."</label>\n";
 		echo "</div>";
 	}
 
@@ -414,7 +416,7 @@ class toba_ei_mapa extends toba_ei
 	 */
 	protected function get_separador_grupo($id_grupo)
 	{
-		echo "<br><div class='layer-grupo'> $id_grupo </div><br>";
+		echo "<br><div class='layer-grupo'>" .  toba::escaper()->escapeHtml($id_grupo). "</div><br>";
 	}
 
 	/**
@@ -436,8 +438,7 @@ class toba_ei_mapa extends toba_ei
 	{
 		$this->_memoria['parametros'] = array('layers' => $this->get_nombre_layers());
 		$destino = array($this->_id);
-		$url = toba::vinculador()->get_url(null, null, array(),array('servicio' => 'ejecutar',
-																											 'objetos_destino' => $destino));
+		$url = toba::vinculador()->get_url(null, null, array(),array('servicio' => 'ejecutar', 'objetos_destino' => $destino));
 		return $url;
 	}
 
@@ -532,7 +533,7 @@ class toba_ei_mapa extends toba_ei
 		//Primero averiguo el mimetype del mapfile
 		$formato = $this->_mapa->outputformat;
 		$tipo_salida = $formato->getOption('mimetype');
-
+		
 		//Luego abro el archivo y veo que paso
 		$dir_temp = toba::instalacion()->get_path_temp();
 		$path_completo = $dir_temp . "/" . $archivo;
@@ -541,7 +542,7 @@ class toba_ei_mapa extends toba_ei
 			if (isset($tipo_salida)) {
 				header("Content-type: $tipo_salida");
 			}
-			header("Content-Length: " . filesize($path_completo));
+			header("Content-Length: " .  toba::escaper()->escapeHtml(filesize($path_completo)));
 			fpassthru($fp);
 			fclose($fp);
 			unlink($path_completo);
@@ -569,9 +570,11 @@ class toba_ei_mapa extends toba_ei
 	 */
 	function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$identado = toba_js::instancia()->identado();
 		$id = toba_js::arreglo($this->_id, false);
-		echo $identado . "window.{$this->objeto_js} = new ei_mapa($id,'{$this->objeto_js}', '{$this->_submit}'); \n";
+		$id_sf = $escapador->escapeJs($this->objeto_js);
+		echo $identado . "window.{$id_sf} = new ei_mapa($id,'{$id_sf}', '". $escapador->escapeJs($this->_submit)."'); \n";
 
 		$this->generar_funciones_eventos_js();
 	}
@@ -584,7 +587,7 @@ class toba_ei_mapa extends toba_ei
 	{
 		$identado = toba_js::instancia()->identado();
 		//Si existen eventos definidos entonces genero una funcion js x cada evento que se dispara desde la toolbar
-		echo $identado. "//---------------- INICIO EVENTOS MAPA {$this->_id[1]} --------------\n";
+		echo $identado. "//---------------- INICIO EVENTOS MAPA ". toba::escaper()->escapeJs($this->_id[1])." --------------\n";
 		if ($this->hay_botones()) {
 			foreach($this->_eventos_usuario_utilizados as $evento )	{
 				if ( $evento->esta_en_botonera() ) {
@@ -605,10 +608,10 @@ class toba_ei_mapa extends toba_ei
 	{
 		$identado = toba_js::instancia()->identado();
 		//Si existen eventos definidos entonces genero una funcion js x cada evento que se dispara desde la toolbar
-
+		$escapador = toba::escaper();
 		echo $identado. '//---------------- CONFIG. BOTONERA DEL MAPA ----------------'. "\n";
 		//Agrego lo que seria el grupo basico de eventos del mapa
-		echo $identado . "{$this->objeto_js}.configurar_toolbar_eventos = function() \n";
+		echo $identado . $escapador->escapeJs($this->objeto_js) .".configurar_toolbar_eventos = function() \n";
 		echo $identado."{";
 
 		$this->generar_botones_eventos_estandar();
@@ -625,7 +628,7 @@ class toba_ei_mapa extends toba_ei
 		}
 
 		echo $identado. "} \n";
-		echo $identado. "//---------------- FIN ZONA EVENTOS MAPA {$this->_id[1]} ------------- \n \n";
+		echo $identado. "//---------------- FIN ZONA EVENTOS MAPA ". $escapador->escapeJs($this->_id[1])." ------------- \n \n";
 	}
 
 	/**
@@ -651,15 +654,16 @@ class toba_ei_mapa extends toba_ei
 	{
 		$identado = toba_js::instancia()->identado();
 		$evento = $this->evento($evento_id)->get_evt_javascript();
+		$evento_sf = toba::escaper()->escapeJs($evento_id);
 		//Genero la funcion en js que procesara el evento
-		echo $identado. "{$this->objeto_js}.evt__mapa__disparador_$evento_id = function(evento) \n".
+		echo $identado. toba::escaper()->escapeJs($this->objeto_js) . ".evt__mapa__disparador_$evento_sf = function(evento) \n".
 		$identado ."{\n".
 		$identado. "	if (evento != undefined) { \n".
 		$identado. "		this.set_evento($evento); \n" .
 		$identado."	} \n	} \n";
 
 		//Declaro como variable el icono que utilizara dicho boton
-		$icono = '_icon'.$evento_id;
+		$icono = '_icon'.$evento_sf;
 		$imagen = $this->evento($evento_id)->get_imagen_url_rel();
 		echo $identado. "var $icono =  imgDir + '$imagen'; \n";
 	}
@@ -671,11 +675,12 @@ class toba_ei_mapa extends toba_ei
 	 */
 	protected function generar_boton_js($evento_id )
 	{
-			$identado = toba_js::instancia()->identado();
-			$icono = '_icon'.$evento_id;
+		$escapador = toba::escaper();
+		$identado = toba_js::instancia()->identado();
+		$icono = $escapador->escapeJs('_icon'.$evento_id);
 
-			$etiqueta = $this->evento($evento_id)->get_etiqueta();			
-			echo $identado. "this._toolbar.addTool(new msTool('$etiqueta', 'evt__mapa__disparador_$evento_id', $icono, true)); \n";
+		$etiqueta = $escapador->escapeJs($this->evento($evento_id)->get_etiqueta());			
+		echo $identado. "this._toolbar.addTool(new msTool('$etiqueta', '". $escapador->escapeJs('evt__mapa__disparador_'.$evento_id)."', $icono, true)); \n";
 	}
 
 	/**
@@ -686,35 +691,42 @@ class toba_ei_mapa extends toba_ei
 	{
 		$url = $this->get_url_mapa();
 		$identado = toba_js::instancia()->identado();
-
+		$escapador = toba::escaper();
+		
 		//Obtengo el Full Extent del mapa, los zooms intermedios los maneja el cliente
-		$extent_full = "'{$this->_extent->minx}' ,' {$this->_extent->maxx}', '{$this->_extent->miny}', '{$this->_extent->maxy}'";
+		$extent_full = "'".$escapador->escapeJs($this->_extent->minx)."' ,' ". $escapador->escapeJs($this->_extent->maxx)."', '". $escapador->escapeJs($this->_extent->miny)."', '". $escapador->escapeJs($this->_extent->maxy)."'";
 
 		//Porcion actualmente visible, si no hay valores tomo el extent full como referencia
 		if (isset($this->_extent_activo)) {
-			$extent = "'".$this->_extent_activo['xmin']."' ,'". $this->_extent_activo['xmax'] . "', '". $this->_extent_activo['ymin']. "', '". $this->_extent_activo['ymax']. "'";
+			$extent = "'". $escapador->escapeJs($this->_extent_activo['xmin'])."' ,'". $escapador->escapeJs($this->_extent_activo['xmax']) . "', '". $escapador->escapeJs($this->_extent_activo['ymin']). "', '". $escapador->escapeJs($this->_extent_activo['ymax']). "'";
 		} else {
 			$extent = $extent_full;
 		}
 
 		//Obtengo la lista de Layers original del mapa
-		$layers = implode(' ' ,$this->get_nombre_layers());
-
+		$lista = $this->get_nombre_layers();
+		$layers = '';
+		foreach($lista as $lay) {
+			$layers.= $escapador->escapeJs($lay) . ' ';
+		}
+		$layers = substr($layers, 0, -1);		//quito el espacio final
+		
 		//Genero los eventos en JS
 		$this->generar_botones_eventos_js();
 
+		$id_js = $escapador->escapeJs($this->objeto_js);
 		//Se agrega al objeto al singleton toba
-		echo $identado."toba.agregar_objeto(window.{$this->objeto_js});\n";
+		echo $identado."toba.agregar_objeto(window.{$id_js});\n";
 
 		//Envio todas las variables necesarias en el cliente
-		echo $identado. "{$this->objeto_js}.set_url('$url');\n";
-		echo $identado. "{$this->objeto_js}.set_full_extent($extent_full); \n";
-		echo $identado. "{$this->objeto_js}.set_extent($extent);\n";
-		echo $identado. "{$this->objeto_js}.set_layers('$layers');\n";		
-		echo $identado."{$this->objeto_js}.set_layers_activos(".toba_js::arreglo(array_fill_keys($this->_layers_activos,1),true)."); \n";
+		echo $identado. "{$id_js}.set_url('$url');\n";
+		echo $identado. "{$id_js}.set_full_extent($extent_full); \n";
+		echo $identado. "{$id_js}.set_extent($extent);\n";
+		echo $identado. "{$id_js}.set_layers('$layers');\n";		
+		echo $identado."{$id_js}.set_layers_activos(".toba_js::arreglo(array_fill_keys($this->_layers_activos,1),true)."); \n";
 
-		echo $identado. "{$this->objeto_js}.iniciar();\n";
-		echo $identado. "{$this->objeto_js}.render();\n";
+		echo $identado. "{$id_js}.iniciar();\n";
+		echo $identado. "{$id_js}.render();\n";
 
 		//-- EVENTO implicito --
 /*		if (isset($this->_evento_implicito) && is_object($this->_evento_implicito)){
@@ -722,7 +734,7 @@ class toba_ei_mapa extends toba_ei
 			echo toba_js::instancia()->identado()."{$this->objeto_js}.set_evento_implicito($evento_js);\n";
 		}*/
 		if ($this->_colapsado) {
-			echo $identado."window.{$this->objeto_js}.colapsar();\n";
+			echo $identado."window.{$id_js}.colapsar();\n";
 		}
 	}
 }

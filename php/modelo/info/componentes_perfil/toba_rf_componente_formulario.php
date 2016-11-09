@@ -10,7 +10,7 @@ class toba_rf_componente_formulario extends toba_rf_componente
 	{
 		$efs = $this->cargar_datos_efs();
 		if(count($efs) > 0) {
-			$grupo = new toba_rf_grupo_efs('<b>CAMPOS</b>',$this);
+			$grupo = new toba_rf_grupo_efs('CAMPOS',$this);
 			$e = array();
 			foreach($efs as $ef) {
 				$e[] = new toba_rf_subcomponente_ef($ef['etiqueta'], $grupo, $ef['id'] , $ef['proyecto'], $this->item, 

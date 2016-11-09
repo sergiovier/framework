@@ -262,20 +262,22 @@ abstract class toba_componente_info implements toba_nodo_arbol, toba_meta_clase
 	function get_nombre_corto()
 	{
 		$nombre_objeto = $this->datos['_info']['nombre'];
-		if ($this->tiene_consumidor())
+		if ($this->tiene_consumidor()) {
 			$nombre = $this->rol_en_consumidor();
-		else
+		} else {
 			$nombre = $nombre_objeto; 
+		}
 		return $nombre;
 	}
 	
 	function get_nombre_largo()
 	{
 		$nombre_objeto = $this->datos['_info']['nombre'];
-		if ($this->tiene_consumidor())
-			$nombre = "$nombre_objeto<br>Rol: ".$this->rol_en_consumidor();
-		else
+		if ($this->tiene_consumidor()) {
+			$nombre = "$nombre_objeto  Rol: ".$this->rol_en_consumidor();
+		} else {
 			$nombre = $nombre_objeto; 
+		}
 		return $nombre;
 	}
 	

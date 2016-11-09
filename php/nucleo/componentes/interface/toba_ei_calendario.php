@@ -277,7 +277,7 @@ class toba_ei_calendario extends toba_ei
 		echo "<div class='ei-base ei-calendario-base'>\n";
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true,"ei-calendario-barra-sup");
-		echo "<div id='cuerpo_{$this->objeto_js}'>\n";
+		echo "<div id='". toba::escaper()->escapeHtmlAttr('cuerpo_'. $this->objeto_js)."'>\n";
 		echo $this->_calendario->showMonth($this->objeto_js, $this->_eventos, $this->get_html_barra_editor() );
 		echo "</div></div>\n";
 	}
@@ -328,7 +328,9 @@ class toba_ei_calendario extends toba_ei
 	protected function crear_objeto_js()
 	{
 		$identado = toba_js::instancia()->identado();
-		echo $identado."window.{$this->objeto_js} = new ei_calendario('{$this->objeto_js}', '{$this->_submit}');\n";
+		$escapador = toba::escaper();
+		$id_js = $escapador->escapeJs($this->objeto_js);		
+		echo $identado."window.{$id_js} = new ei_calendario('{$id_js}', '". $escapador->escapeJs($this->_submit)."');\n";
 	}
 
 	//-------------------------------------------------------------------------------
@@ -952,9 +954,10 @@ class calendario //extends activecalendar
 		$hasContent = $this->content($day);
 		$out='';
 		if ($hasContent) {
+			$escapador = toba::escaper();
 			foreach($hasContent as $content) {
-				$out.="<table class=\"".$this->cssEventContent."\">";
-				$out.="<tr><td>".$content."</td></tr></table>";
+				$out.="<table class=\"". $escapador->escapeHtmlAttr($this->cssEventContent)."\">";
+				$out.="<tr><td>". $escapador->escapeHtml($content)."</td></tr></table>";
 			}
 		}
 		return $out;
@@ -1005,7 +1008,8 @@ class calendario //extends activecalendar
 		$pickerSpan = 8;
 		$out = '';
 		if($html) {
-			$out.="<tr><td class=\"".$this->cssPicker."\" colspan=\"".$pickerSpan."\">\n";
+			$escapador = toba::escaper();
+			$out.="<tr><td class=\"".$escapador->escapeHtmlAttr($this->cssPicker)."\" colspan=\"".$escapador->escapeHtmlAttr($pickerSpan)."\">\n";
 			$out.=$html;
 			$out.="</td></tr>\n";
 		}
@@ -1083,7 +1087,7 @@ class calendario //extends activecalendar
 	function mkMonthHead()
 	{
 		$out = "<div align='center'>";
-		$out .= "<table class=\"".$this->cssMonthTable."\">\n";
+		$out .= "<table class=\"". toba::escaper()->escapeHtmlAttr($this->cssMonthTable)."\">\n";
 		return $out;
 	}
 	/*
@@ -1093,21 +1097,22 @@ class calendario //extends activecalendar
 	*/
 	function mkMonthTitle()
 	{
+		$escapador = toba::escaper();
 		if (!$this->monthNav) {
-			$out="<tr><td class=\"".$this->cssMonthTitle."\" colspan=\"8\">";
-			$out.=$this->getMonthName().$this->monthYearDivider.$this->actyear;
+			$out="<tr><td class=\"". $escapador->escapeHtmlAttr($this->cssMonthTitle)."\" colspan=\"8\">";
+			$out.= $escapador->escapeHtml($this->getMonthName().$this->monthYearDivider.$this->actyear);
 			$out.="</td></tr>\n";
 		} else {
-			$out="<tr><td class=\"".$this->cssMonthNav."\" colspan=\"2\">";
+			$out="<tr><td class=\"".$escapador->escapeHtmlAttr($this->cssMonthNav)."\" colspan=\"2\">";
 			if ($this->actmonth==1) {
 				$out.=$this->mkUrl($this->actyear-1,'12');
 			} else {
 				$out.=$this->mkUrl($this->actyear,$this->actmonth-1);
 			}
 			$out.=$this->monthNavBack.'</a></td>';
-			$out.="<td class=\"".$this->cssMonthTitle."\" colspan=\"3\">";
-			$out.=$this->getMonthName().$this->monthYearDivider.$this->actyear.'</td>';
-			$out.="<td class=\"".$this->cssMonthNav."\" colspan=\"2\">";
+			$out.="<td class=\"".$escapador->escapeHtmlAttr($this->cssMonthTitle)."\" colspan=\"3\">";
+			$out.= $escapador->escapeHtml($this->getMonthName().$this->monthYearDivider.$this->actyear).'</td>';
+			$out.="<td class=\"". $escapador->escapeHtmlAttr($this->cssMonthNav)."\" colspan=\"2\">";
 			if ($this->actmonth==12) {
 				$out.=$this->mkUrl($this->actyear+1,'1');
 			} else {
@@ -1124,29 +1129,30 @@ class calendario //extends activecalendar
 	function mkDatePicker($objeto_js, $eventos=array())
 	{
 		$pickerSpan = 8;
+		$escapador = toba::escaper();
 		if ($this->datePicker) {
 			$evento_js = toba_js::evento('cambiar_mes', $eventos['cambiar_mes']);
-			$js = "{$objeto_js}.set_evento($evento_js);";
+			$js = $escapador->escapeHtmlAttr($objeto_js).".set_evento($evento_js);";
 						
-			$out="<tr><td class=\"".$this->cssPicker."\" colspan=\"".$pickerSpan."\">\n";
-			$out.="<select name=\"".$this->monthID."\" id=\"".$this->monthID."\" class=\"".$this->cssPickerMonth."\" onchange=\"$js\">\n";
+			$out="<tr><td class=\"".$escapador->escapeHtmlAttr($this->cssPicker)."\" colspan=\"".$escapador->escapeHtmlAttr($pickerSpan)."\">\n";
+			$out.="<select name=\"".$escapador->escapeHtmlAttr($this->monthID)."\" id=\"".$escapador->escapeHtmlAttr($this->monthID)."\" class=\"".$escapador->escapeHtmlAttr($this->cssPickerMonth)."\" onchange=\"$js\">\n";
 			for ($z=1;$z<=12;$z++) {
 				if ($z <= 9) {
 					$z = "0$z";
 				}
 				if ($z==$this->actmonth) {
-					$out.="<option value=\"".$z."\" selected=\"selected\" >".$this->getMonthName($z)."</option>\n";
+					$out.="<option value=\"".$escapador->escapeHtmlAttr($z)."\" selected=\"selected\" >".$escapador->escapeHtml($this->getMonthName($z))."</option>\n";
 				} else {
-					$out.="<option value=\"".$z."\">".$this->getMonthName($z)."</option>\n";
+					$out.="<option value=\"".$escapador->escapeHtmlAttr($z)."\">".$escapador->escapeHtml($this->getMonthName($z))."</option>\n";
 				}
 			}
 			$out.="</select>\n";
-			$out.="<select name=\"".$this->yearID."\" id=\"".$this->yearID."\" class=\"".$this->cssPickerYear."\" onchange=\"$js\">\n";
+			$out.="<select name=\"".$escapador->escapeHtmlAttr($this->yearID)."\" id=\"".$escapador->escapeHtmlAttr($this->yearID)."\" class=\"".$escapador->escapeHtmlAttr($this->cssPickerYear)."\" onchange=\"$js\">\n";
 			for ($z=$this->startYear;$z<=$this->endYear;$z++) {
 				if ($z==$this->actyear) {
-					$out.="<option value=\"".$z."\" selected=\"selected\">".$z."</option>\n";
+					$out.="<option value=\"".$escapador->escapeHtmlAttr($z)."\" selected=\"selected\">".$escapador->escapeHtml($z)."</option>\n";
 				} else {
-					$out.="<option value=\"".$z."\">".$z."</option>\n";
+					$out.="<option value=\"".$escapador->escapeHtmlAttr($z)."\">".$escapador->escapeHtml($z)."</option>\n";
 				}
 			}
 			$out.="</select>\n";
@@ -1162,6 +1168,7 @@ class calendario //extends activecalendar
 	{
 		$out='<tr>';
 		$monthday=0;
+		$escapador = toba::escaper();
 		if ($this->mostrar_semanas) {
 			$out.=$this->mkWeek($this->firstdate, $objeto_js, $eventos);
 		}
@@ -1171,7 +1178,7 @@ class calendario //extends activecalendar
 				$out.=$this->mkDay($monthday, $objeto_js, $eventos);
 			}
 			else {
-				$out .= "<td class=\"".$this->cssNoMonthDay."\"></td>";
+				$out .= "<td class=\"".$escapador->escapeHtmlAttr($this->cssNoMonthDay)."\"></td>";
 			}
 		}
 		$out.="</tr>\n";
@@ -1187,7 +1194,7 @@ class calendario //extends activecalendar
 			}
 			for ($i=$goon; $i<=$goon+6; $i++) {
 				if ($i>$this->maxdays) {
-					$out.="<td class=\"".$this->cssNoMonthDay."\"></td>";
+					$out.="<td class=\"".$escapador->escapeHtmlAttr($this->cssNoMonthDay)."\"></td>";
 					$stop=1;
 				} else {
 					$out.=$this->mkDay($i, $objeto_js, $eventos);
@@ -1205,28 +1212,29 @@ class calendario //extends activecalendar
 	function mkWeekDays()
 	{
 		$out = '';
+		$escapador = toba::escaper();
 		if ($this->startOnSun) {
 			if ($this->mostrar_semanas) {
-				$out .="<tr class=\"".$this->cssWeekDay."\"><td>"."Sem"."</td>";
+				$out .="<tr class=\"".$escapador->escapeHtmlAttr($this->cssWeekDay)."\"><td>"."Sem"."</td>";
 			}
-			$out.='<td>'.$this->getDayName(0).'</td>';
-			$out.='<td>'.$this->getDayName(1).'</td>';
-			$out.='<td>'.$this->getDayName(2).'</td>';
-			$out.='<td>'.$this->getDayName(3).'</td>';
-			$out.='<td>'.$this->getDayName(4).'</td>';
-			$out.='<td>'.$this->getDayName(5).'</td>';
-			$out.='<td>'.$this->getDayName(6)."</td></tr>\n";
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(0)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(1)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(2)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(3)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(4)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(5)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(6))."</td></tr>\n";
 		} else {
 			if ($this->mostrar_semanas) {
-				$out .="<tr class=\"".$this->cssWeekDay."\"><td>".'Sem'.'</td>';
+				$out .="<tr class=\"".$escapador->escapeHtmlAttr($this->cssWeekDay)."\"><td>".'Sem'.'</td>';
 			}
-			$out.='<td>'.$this->getDayName(1).'</td>';
-			$out.='<td>'.$this->getDayName(2).'</td>';
-			$out.='<td>'.$this->getDayName(3).'</td>';
-			$out.='<td>'.$this->getDayName(4).'</td>';
-			$out.='<td>'.$this->getDayName(5).'</td>';
-			$out.='<td>'.$this->getDayName(6).'</td>';
-			$out.='<td>'.$this->getDayName(0)."</td></tr>\n";
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(1)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(2)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(3)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(4)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(5)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(6)).'</td>';
+			$out.='<td>'.$escapador->escapeHtml($this->getDayName(0))."</td></tr>\n";
 			$this->firstday=$this->firstday-1;
 			if ($this->firstday<0) {
 				$this->firstday=6;
@@ -1267,24 +1275,24 @@ class calendario //extends activecalendar
 	{
 		$week = $this->weekNumber($date);
 		$year = $this->mkActiveDate('Y',$date);
-		
+		$escapador = toba::escaper();
 		if (!$this->get_weekLinks()) {
 			if ($week == $this->getSelectedWeek() && $year == $this->getSelectedYear()) {
-				$out = "<td class=\"".$this->cssSelecDay."\">".$this->weekNumber($date)."</td>\n";
+				$out = "<td class=\"".$escapador->escapeHtmlAttr($this->cssSelecDay)."\">".$escapador->escapeHtml($this->weekNumber($date))."</td>\n";
 			} else {
-				$out = "<td class=\"".$this->cssWeek."\">".$this->weekNumber($date)."</td>\n";
+				$out = "<td class=\"".$escapador->escapeHtmlAttr($this->cssWeek)."\">".$escapador->escapeHtml($this->weekNumber($date))."</td>\n";
 			}
 		} else {
 			if ($this->compare_week($this->weekNumber($date),$this->actyear) == 1) {
-				$out = "<td class=\"".$this->cssWeekNoSelec."\">".$this->weekNumber($date)."</td>\n";	
+				$out = "<td class=\"".$escapador->escapeHtmlAttr($this->cssWeekNoSelec)."\">".$escapador->escapeHtml($this->weekNumber($date))."</td>\n";	
 			} else {	
 				$evento_js = toba_js::evento('seleccionar_semana', $eventos['seleccionar_semana'], "{$this->weekNumber($date)}||{$this->mkActiveDate('Y',$date)}");
-				$js = "{$objeto_js}.set_evento($evento_js);";
+				$js = $escapador->escapeHtmlAttr($objeto_js).".set_evento($evento_js);";
 				
 				if ($week == $this->getSelectedWeek() && $year == $this->getSelectedYear()) {
-					$out = "<td class=\"".$this->cssSelecDay."\" style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$this->weekNumber($date)."</td>\n";	
+					$out = "<td class=\"".$escapador->escapeHtmlAttr($this->cssSelecDay)."\" style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($this->weekNumber($date))."</td>\n";	
 				} else {
-					$out = "<td class=\"".$this->cssWeek."\" style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$this->weekNumber($date)."</td>\n";	
+					$out = "<td class=\"".$escapador->escapeHtmlAttr($this->cssWeek)."\" style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($this->weekNumber($date))."</td>\n";	
 				}
 			}		
 		}	
@@ -1322,47 +1330,47 @@ class calendario //extends activecalendar
 		if (is_null($objeto_js)) {
 			$objeto_js = $this->get_id_objeto_js();
 		}		
-		
+		$escapador = toba::escaper();
 		$evento_js = toba_js::evento('seleccionar_dia', $eventos['seleccionar_dia'], "{$day}||{$this->actmonth}||{$this->actyear}");
-		$js = "{$objeto_js}.set_evento($evento_js);";
+		$js = $escapador->escapeHtmlAttr($objeto_js) .".set_evento($evento_js);";
 		$day = $this->mkActiveTime(0,0,1,$this->actmonth,$var,$this->actyear);
 		
 		$resalta_hoy = ($this->siempre_resalta_dia_actual || $this->getSelectedDay() < 0);
 
 		if ($this->solo_pasados && $this->compare_date($day) == 1) {
 			//Es una fecha futura y no se permite clickearla
-			$out="<td class=\"".$this->cssSunday."\">".$var.$content.'</td>';		
+			$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSunday)."\">".$escapador->escapeHtml($var).$content.'</td>';		
 		} elseif (($this->get_dayLinks()) && ((!$this->get_enableSatSelection() && ($this->getWeekday($var) == 0)) || ((!$this->get_enableSunSelection() && $this->getWeekday($var) == 6)))) {
-			$out="<td class=\"".$this->cssSunday."\">".$var.'</td>';			
+			$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSunday)."\">".$escapador->escapeHtml($var).'</td>';			
 		} elseif ($var==$this->getSelectedDay() && $this->actmonth==$this->getSelectedMonth() && $this->actyear==$this->getSelectedYear()) {
 			if (!$this->get_dayLinks()) {
-				$out="<td class=\"".$this->cssSelecDay."\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSelecDay)."\">".$escapador->escapeHtml($var).$content.'</td>';
 			} else {
-				$out="<td class=\"".$this->cssSelecDay."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSelecDay)."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($var).$content.'</td>';
 			}
 		} elseif ($var==$this->daytoday && $this->actmonth==$this->monthtoday && $this->actyear==$this->yeartoday && $resalta_hoy && $this->getSelectedMonth()==$this->monthtoday && $this->getSelectedWeek()<0) {
 			if (!$this->get_dayLinks()) {
-				$out="<td class=\"".$this->cssToday."\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssToday)."\">".$escapador->escapeHtml($var).$content.'</td>';
 			} else {
-				$out="<td class=\"".$this->cssToday."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssToday)."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($var).$content.'</td>';
 			}
 		} elseif ($this->getWeekday($var) == 0 && $this->crSunClass){
 			if (!$this->get_dayLinks()) {
-				$out="<td class=\"".$this->cssSunday."\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSunday)."\">".$escapador->escapeHtml($var).$content.'</td>';
 			} else {
-				$out="<td class=\"".$this->cssSunday."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSunday)."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($var).$content.'</td>';
 			}
 		} elseif ($this->getWeekday($var) == 6 && $this->crSatClass) {
 			if (!$this->get_dayLinks()) {
-				$out="<td class=\"".$this->cssSaturday."\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSaturday)."\">".$escapador->escapeHtml($var).$content.'</td>';
 			} else {
-				$out="<td class=\"".$this->cssSaturday."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssSaturday)."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($var).$content.'</td>';
 			}
 		} else {
 			if (!$this->get_dayLinks()) {
-				$out="<td class=\"".$this->cssMonthDay."\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssMonthDay)."\">".$escapador->escapeHtml($var).$content.'</td>';
 			} else {
-				$out="<td class=\"".$this->cssMonthDay."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$var.$content.'</td>';
+				$out="<td class=\"".$escapador->escapeHtmlAttr($this->cssMonthDay)."\"style='cursor: pointer;cursor:hand;' onclick=\"$js\">".$escapador->escapeHtml($var).$content.'</td>';
 			}
 		}		
 
@@ -1395,9 +1403,10 @@ class calendario //extends activecalendar
 		} else {
 			$glueNav='?';
 		}
-		$yearNavLink="<a href=\"".$this->urlNav.$glueNav.$this->yearID."=".$year."\">";
-		$monthNavLink="<a href=\"".$this->urlNav.$glueNav.$this->yearID."=".$year."&amp;".$this->monthID."=".$month."\">";
-		$dayLink="<a href=\"".$this->url.$glue.$this->yearID."=".$year."&amp;".$this->monthID."=".$month."&amp;".$this->dayID."=".$day."\">".$day.'</a>';
+		$escapador = toba::escaper();
+		$yearNavLink="<a href=\"".$this->urlNav.$glueNav.$this->yearID."=".$escapador->escapeUrl($year)."\">";
+		$monthNavLink="<a href=\"".$this->urlNav.$glueNav.$this->yearID."=".$escapador->escapeUrl($year)."&amp;".$this->monthID."=".$escapador->escapeUrl($month)."\">";
+		$dayLink="<a href=\"".$this->url.$glue.$this->yearID."=".$escapador->escapeUrl($year)."&amp;".$this->monthID."=".$escapador->escapeUrl($month)."&amp;".$this->dayID."=".$escapador->escapeUrl($day)."\">".$escapador->escapeHtml($day).'</a>';
 		if ($year && $month && $day) return $dayLink;
 		if ($year && !$month && !$day) return $yearNavLink;
 		if ($year && $month && !$day) return $monthNavLink;
@@ -1419,7 +1428,8 @@ class calendario //extends activecalendar
 		} else {
 			$glueNav='?';
 		}
-		$weekNavLink = "<a href=\"".$this->url.$glue.$this->weekID."=".$week."&amp;".$this->yearID."=".$year."\">".$week.'</a>';
+		$escapador = toba::escaper();
+		$weekNavLink = "<a href=\"".$this->url.$glue.$this->weekID."=".$escapador->escapeUrl($week)."&amp;".$this->yearID."=".$escapador->escapeUrl($year)."\">".$escapador->escapeHtml($week).'</a>';
 		return $weekNavLink;
 	}
 	/*

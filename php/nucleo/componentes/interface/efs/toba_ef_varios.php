@@ -68,11 +68,12 @@ class toba_ef_checkbox extends toba_ef
 				$html .= toba_recurso::imagen_toba('nucleo/efcheck_off.gif',true,16,16);            
 			}
 		 } else {
+			 $escapador = toba::escaper();
 			$js = '';
 			if ($this->cuando_cambia_valor != '') {
-				$js = "onchange=\"{$this->get_cuando_cambia_valor()}\"";
+				$js = 'onchange="'. $escapador->escapeHtmlAttr($this->get_cuando_cambia_valor()).'"';
 			}         	
-			$tab = $this->padre->get_tab_index();
+			$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 			$extra = " tabindex='$tab'";		
 			$html = toba_form::checkbox($this->id_form, $this->estado, $this->valor, $this->clase_css, $extra.' '.$js);
 		 }
@@ -129,7 +130,8 @@ class toba_ef_checkbox extends toba_ef
 	protected function parametros_js()
 	{
 		$param_padre = parent::parametros_js();
-		$params = "$param_padre,  '{$this->valor}' ";		//Le paso el valor que tomaria estando checkeado para comparar en modo solo lectura
+		$val = toba::escaper()->escapeJs($this->valor);
+		$params = "$param_padre,  '$val' ";		//Le paso el valor que tomaria estando checkeado para comparar en modo solo lectura
 		return $params;
 	}
 	
@@ -145,11 +147,12 @@ class toba_ef_checkbox extends toba_ef
 		} else {
 			$valor = $this->valor_info;
 		}
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$valor</div>";
-			break;
+				$valor = $escapador->escapeHtml($valor);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$valor</div>";
 			case 'pdf':
 				return $valor;
 			case 'excel':
@@ -219,11 +222,12 @@ class toba_ef_fijo extends toba_ef_oculto
 	
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		$estado = (isset($this->estado)) ? $this->estado : null;
 		if (! $this->permitir_html) {
-			$estado = texto_plano($estado);
+			$estado = $escapador->escapeHtml($estado);
 		}
-		$html = "<div class='{$this->clase_css}' id='{$this->id_form}'>".$estado."</div>";
+		$html = "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."' id='". $escapador->escapeHtmlAttr($this->id_form)."'>".$estado."</div>";
 		$html .= $this->get_html_iconos_utilerias();
 		return $html;
 	}
@@ -278,39 +282,41 @@ class toba_ef_html extends toba_ef
 		parent::__construct($padre, $nombre_formulario, $id, $etiqueta, $descripcion, $dato, $obligatorio, $parametros);
 	}
 
-	function get_consumo_javascript()
+	/*function get_consumo_javascript()
 	{
 		$consumo = parent::get_consumo_javascript();
-		$consumo[] = "packages/ckeditor/ckeditor";
+		$consumo[] = "ckeditor/ckeditor";
 		return $consumo;
-	}
+	}*/
 	
 	/**
 	 * Retorna el objeto fckeditor para poder modificarlo según su propia API
 	 * @param mixed valor a pasarle al editor
 	 * @return fckeditor
 	 */
-	function get_editor($valor)	
+	function get_editor($valor)
 	{
-		$name = $this->id_form;
-		$attr = '';
-		$out = "<textarea name=\"" . $name . "\" id=\"".$name. "\" " . $attr . ">" . htmlspecialchars($valor) . "</textarea>\n";
-		$url_archivo = toba_recurso::js('ckeditor_cfg/config.js');
-				
-		$opciones = array(	'width' => $this->ancho,
-						'height' => $this->alto,
-						'toolbar' => $this->botonera,
-						'skin' => 'kama');
-		$opciones['customConfig'] = $url_archivo;
-		$opciones['readOnly'] =  $this->es_solo_lectura();		
-		$opciones =  array_map('utf8_e_seguro', $opciones);
-		if (isset($this->templates_ck) && ! empty($this->templates_ck)) {
-			$opciones['templates_files'] =  $this->templates_ck;
-		} 
-		if (! empty($opciones)) {			
-			$this->js_config = \json_encode($opciones);
+		if (! isset($this->fckeditor)) {
+			require_once(toba_dir().'/www/js/ckeditor/ckeditor_php5.php');
+			$url = toba_recurso::url_toba().'/js/ckeditor/';
+			$this->fckeditor = new CKeditor($url) ;
 		}
-		return $out;
+		
+		$opciones = array();		
+		$opciones['width'] = $this->ancho;
+		$opciones['height'] = $this->alto;
+		$opciones['toolbar'] = $this->botonera;
+		$opciones['skin'] = 'kama';
+		if (isset($this->templates_ck)) {
+			$opciones['templates_files'] = $this->templates_ck;
+
+		} 
+		
+		$this->fckeditor->returnOutput = true;							//Reinicializo variable para que no haga el echo del html
+		$editor =  $this->fckeditor->editor($this->id_form, $valor, $opciones, array(), false);
+		$this->js_config = $this->fckeditor->encoded_config($opciones,array());	
+
+		return $editor;
 	}
 	
 	function get_estado()
@@ -354,8 +360,9 @@ class toba_ef_html extends toba_ef
 		}else{
 			$estado = "";
 		}		
+		$escapador = toba::escaper();
 		if ($this->es_solo_lectura()) {
-			$html = "<div class='ef-html' style='width: {$this->ancho}'>$estado</div>";
+			$html = "<div class='ef-html' id='". $escapador->escapeHtmlAttr($this->id_form)."' style='width: ". $escapador->escapeHtmlAttr($this->ancho) ."'>$estado</div>";
 		} else {
 			$html = $this->get_editor($estado);			
 		}
@@ -373,7 +380,7 @@ class toba_ef_html extends toba_ef
 	
 	
 	function crear_objeto_js()
-	{		
+	{
 		return "new ef_html({$this->parametros_js()})";
 	}	
 }

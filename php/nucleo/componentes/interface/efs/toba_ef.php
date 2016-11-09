@@ -432,11 +432,13 @@ abstract class toba_ef
 	 */
 	function get_descripcion_estado($tipo_salida)
 	{
+		$escapador = toba::escaper();
 		$estado = $this->get_estado();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$estado</div>";
+				$estado = $escapador->escapeHtml($estado);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$estado</div>";
 			break;
 			case 'pdf':
 			case 'xml':
@@ -734,13 +736,14 @@ abstract class toba_ef
 	 */
 	protected function parametros_js()
 	{
+		$escapador = toba::escaper();
 		$obligatorio = ( $this->obligatorio ) ? "true" : "false";
 		$oculto_relaj = ($this->obligatorio_oculto_relaj) ? "true" : "false";
 		$relajado = ( $this->cascada_relajada ) ? "true" : "false"; 
 		$colapsable = ( $this->expandido ) ? "false" : "true";
-		$etiqueta = str_replace("/", "\\/", $this->etiqueta);
-		$etiqueta = str_replace(array('"', "'"), '', $etiqueta);
-		return "'{$this->id_form_orig}', '$etiqueta', [$obligatorio, $relajado, $oculto_relaj], $colapsable";
+		$etiqueta = $escapador->escapeJs(str_replace("/", "\\/", $this->etiqueta));
+		$etiqueta = $escapador->escapeJs(str_replace(array('"', "'"), '', $etiqueta));
+		return "'".$escapador->escapeJs($this->id_form_orig)."', '$etiqueta', [$obligatorio, $relajado, $oculto_relaj], $colapsable";
 	}
 
 	/**

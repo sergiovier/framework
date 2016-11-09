@@ -43,7 +43,7 @@ class toba_menu_css extends toba_menu
 					ul.horizontal .carpeta {
 						background-repeat: no-repeat;
 						background-position: center right;
-						background-image: url("'.$this->imagen_nodo.'");
+						background-image: url("'.toba::escaper()->escapeCss($this->imagen_nodo).'");
 					}
 				</style>
 				<!--[if IE 7]>
@@ -56,7 +56,7 @@ class toba_menu_css extends toba_menu
 			';
 		
 		$id_tag = ($this->modo_prueba) ? 'prueba' : 'menu-h';
-		$this->arbol .= "\n<ul id='$id_tag'  class='horizontal'>\n";		
+		$this->arbol .= "\n<ul id='". toba::escaper()->escapeHtmlAttr($id_tag)."'  class='horizontal'>\n";		
 		//-- Recorro para encontrar la raiz
 		$this->buscar_raiz();
 		$this->arbol .= "</ul>";	
@@ -64,6 +64,7 @@ class toba_menu_css extends toba_menu
 	
 	protected function get_padres($nodo)
 	{
+		$escapador = toba::escaper();
 		$inden = str_repeat("\t",$this->prof );
 		$clase_base = ($this->prof == 1) ? 'nivel-0' : '';
 		
@@ -75,13 +76,13 @@ class toba_menu_css extends toba_menu
 			if (isset($this->items[$nodo]['js'])) {
 				$js = $this->items[$nodo]['js']; 
 			} elseif (! $this->modo_prueba) {
-				$js = "return toba.ir_a_operacion(\"$proyecto\", \"$item\", false)";
+				$js = 'return toba.ir_a_operacion("'. $escapador->escapeHtmlAttr($proyecto).'", "'.  $escapador->escapeHtmlAttr($item).'", false)';
 			}			
-			$this->arbol .= $inden . "<li><a class='$clase_base' tabindex='32767' href='#' onclick='$js' title='".$this->items[$nodo]['nombre']."'>";
+			$this->arbol .= $inden . "<li><a class='". $escapador->escapeHtmlAttr($clase_base)."' tabindex='32767' href='#' onclick='$js' title='". $escapador->escapeHtmlAttr($this->items[$nodo]['nombre'])."'>";
 			
 			if ($this->item_abre_popup($nodo)) {
 				$this->arbol .= '<img title="Abrir la operación en paralelo a la actual" class="menu-link-nueva-ventana" src="'. $this->imagen_nueva_ventana. '" ';
-				$this->arbol .= " onclick='return toba.ir_a_operacion(\"$proyecto\", \"$item\", true)' />";
+				$this->arbol .= " onclick='return toba.ir_a_operacion(\"". $escapador->escapeHtmlAttr($proyecto)."\", \"". $escapador->escapeHtmlAttr($item)."\", true)' />";
 			}											
 			$this->arbol .= $this->get_imagen($nodo).$this->items[$nodo]['nombre'];
 			$this->arbol .= '</a>';
@@ -90,7 +91,7 @@ class toba_menu_css extends toba_menu
 		} else {
 			//Es carpeta
 			$clase_base .= ($this->prof > 1) ? " carpeta" : "";
-			$this->arbol .= $inden . "<li><a class='$clase_base'>".$this->get_imagen($nodo). $this->items[$nodo]['nombre'] . "</a>\n";
+			$this->arbol .= $inden . "<li><a class='". $escapador->escapeHtmlAttr($clase_base)."'>". $this->get_imagen($nodo). $escapador->escapeHtml($this->items[$nodo]['nombre']) . "</a>\n";
 			$this->arbol .= $inden . "\t<ul>\n";
 			$this->recorrer_hijos($nodo);
 			$this->arbol .= $inden . "\t</ul>\n";
@@ -101,13 +102,14 @@ class toba_menu_css extends toba_menu
 	protected function get_imagen($nodo)
 	{
 		$img = '';
+		$escapador = toba::escaper();
 		if (isset($this->items[$nodo]['imagen'])) {
 			$url_img = toba_recurso::imagen_de_origen($this->items[$nodo]['imagen'],
 											$this->items[$nodo]['imagen_recurso_origen']);
-			$img .= "<img src='$url_img' border=0 alt='' /> ";
+			$img .= "<img src='". $escapador->escapeHtmlAttr($url_img)."' border=0 alt='' /> ";
 		} else {
 			$url_img = toba_recurso::imagen_toba('nulo.gif');
-			$img .= "<img src='$url_img' width=1 height=16 border=0 alt='' />";
+			$img .= "<img src='". $escapador->escapeHtmlAttr($url_img)."' width=1 height=16 border=0 alt='' />";
 		}		
 		return $img;
 	}
@@ -122,7 +124,7 @@ class toba_menu_css extends toba_menu
 		echo $this->arbol;
 		if ($this->hay_algun_item) {
 			toba_js::cargar_consumos_globales(array('basicos/listmenu'));
-			echo toba_js::ejecutar("var $nombre_var = new simpleMenu('$id_tag', 'horizontal');");
+			echo toba_js::ejecutar("var ". toba::escaper()->escapeJs($nombre_var)." = new simpleMenu('$id_tag', 'horizontal');");
 		}
 		$this->menu_enviado = true;
 	}

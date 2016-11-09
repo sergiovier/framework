@@ -4,9 +4,9 @@ require_once(toba_dir()."/php/3ros/Graph/Graph.php");	//Necesario para el calcul
 /**
  * Mantiene un conjunto relacionado de {@link toba_datos_tabla datos_tabla}, brindando servicios para cargar y sincronizar esta relación con algún medio de persistencia (general una BD relacional)
  * 
- * @package Componentes
- * @subpackage Persistencia
- * @todo En el dump_esquema incluir la posición actual de los cursores
+ * 	@package Componentes
+ *  @subpackage Persistencia
+ *  @todo En el dump_esquema incluir la posición actual de los cursores
  */
 class toba_datos_relacion extends toba_componente 
 {
@@ -174,6 +174,7 @@ class toba_datos_relacion extends toba_componente
 		} else {
 			self::$debug_pasadas = 1;	
 		}
+		$escapador = toba::escaper();
 		$grafo = self::grafo_relaciones($this->_info_dependencias, $this->_info_relaciones);
 		$diagrama = "digraph G {
 						rankdir=LR;
@@ -193,7 +194,7 @@ class toba_datos_relacion extends toba_componente
 			//Se incluye el javascript para poder dumpear los datos de la tabla
 			$var_tabla = $id_tabla.self::$debug_pasadas;
 			echo toba_js::abrir();
-			echo "var $var_tabla = ".toba_js::arreglo($tabla->get_filas(null, true, false), true).";\n";
+			echo 'var'. $escapador->escapeJs($var_tabla).' = '.toba_js::arreglo($tabla->get_filas(null, true, false), true).";\n";
 			echo toba_js::cerrar();
 			
 			//Se incluye la tabla como nodo

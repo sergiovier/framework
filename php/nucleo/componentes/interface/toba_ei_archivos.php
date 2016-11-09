@@ -144,8 +144,9 @@ class toba_ei_archivos extends toba_ei
 	 */
 	function get_path_relativo()
 	{
-		if (! isset($this->_path_absoluto))
+		if (! isset($this->_path_absoluto)) {
 			return $this->_dir_actual;
+		}
 		$pos = strlen($this->_path_absoluto);
 		$relativo = substr($this->_dir_actual, $pos);
 		return $relativo;
@@ -158,8 +159,9 @@ class toba_ei_archivos extends toba_ei
 	function set_path_absoluto($dir)
 	{
 		$this->_path_absoluto = realpath($dir) . '/';
-		if (!isset($this->_dir_actual))
+		if (!isset($this->_dir_actual)) {
 			$this->_dir_actual = $this->_path_absoluto;
+		}
 	}
 	
 	/**
@@ -223,7 +225,8 @@ class toba_ei_archivos extends toba_ei
 	function generar_html()
 	{
 		echo toba_form::hidden($this->_submit, '');
-		echo toba_form::hidden($this->_submit."__seleccion", '');		
+		echo toba_form::hidden($this->_submit."__seleccion", '');
+		$escapador = toba::escaper();		
 	
 		$dir = opendir($this->_dir_actual);
 		$archivos = array();
@@ -244,12 +247,13 @@ class toba_ei_archivos extends toba_ei
 		{  
 			$ruta = $this->_dir_actual."/".$archivo;
 			$info = pathinfo($ruta);
-			if (!isset($info['extension']))
+			if (!isset($info['extension'])) {
 				$info['extension'] = '';
-
+			}
 			$es_padre = ($archivo == '..');
-			if ($es_padre && !$es_el_relativo)
+			if ($es_padre && !$es_el_relativo) {
 				$hay_padre = true;
+			}
 			$es_actual = ($archivo == '.');
 			if (!$es_padre && !$es_actual && is_dir($ruta) && !in_array($archivo, $this->_ocultos)) {
 				$carpetas[] = $archivo;
@@ -266,10 +270,10 @@ class toba_ei_archivos extends toba_ei
 		$titulo = $this->_info['titulo'];
 		if (! isset($titulo)) {	
 			$path_relativo = ($this->get_path_relativo() != '') ? 'php/'.$this->get_path_relativo() : 'php';
-			$titulo = "<span title='{$this->_dir_actual}'>$path_relativo</span>";
+			$titulo = "<span title='". $escapador->escapeHtmlAttr($this->_dir_actual)."'>". $escapador->escapeHtml($path_relativo).'</span>';
 		}
 		$this->generar_html_barra_sup($titulo, false,"ei-arch-barra-sup");		
-		echo "<div  id='cuerpo_{$this->objeto_js}'>\n";		
+		echo "<div  id='". $escapador->escapeHtmlAttr('cuerpo_'. $this->objeto_js)."'>\n";		
 
 		
 		$img_crear_carpeta = toba_recurso::imagen_toba('nucleo/carpeta_nueva_24.gif', true);
@@ -278,17 +282,17 @@ class toba_ei_archivos extends toba_ei
 		
 		echo "<span style='float: right'>";
 		if ($this->crear_carpetas) {
-			echo "<a href='#' onclick='{$this->objeto_js}.crear_carpeta()' title='Crear carpeta'>$img_crear_carpeta</a>";
+			echo "<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".crear_carpeta()' title='Crear carpeta'>$img_crear_carpeta</a>";
 		}
 		if ($this->crear_archivos && ! $this->solo_carpetas) {
-			echo "<a href='#' onclick='{$this->objeto_js}.crear_archivo()' title='Crear archivo'>$img_crear_archivo</a>";
+			echo "<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".crear_archivo()' title='Crear archivo'>$img_crear_archivo</a>";
 		}
 		echo "</span>\n";			
 		
 		if ($hay_padre) {
 			$img_subir = toba_recurso::imagen_toba('nucleo/subir.gif', true);
 			echo "<span class='ei-archivos-listado'>
-					<a href='#' onclick='{$this->objeto_js}.ir_a_carpeta(\"..\")' title='Subir de carpeta'>$img_subir</a>
+					<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".ir_a_carpeta(\"..\")' title='Subir de carpeta'>$img_subir</a>
 				  </span>\n";						
 		}
 
@@ -296,15 +300,15 @@ class toba_ei_archivos extends toba_ei
 		echo "<div style='clear:left'>";
 		foreach ($carpetas as $carpeta) {
 			echo "<div class='ei-archivos-carpeta'>$img_carpeta 
-				<a href='#' onclick='{$this->objeto_js}.ir_a_carpeta(\"$carpeta\")' 
-					title='Entrar a la carpeta'>$carpeta</a></div>\n";
+				<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".ir_a_carpeta(\"". $escapador->escapeHtmlAttr($carpeta)."\")' 
+					title='Entrar a la carpeta'>". $escapador->escapeHtml($carpeta)."</a></div>\n";
 		}
 		if (! $this->solo_carpetas) {
 			$img_archivo = toba_recurso::imagen_toba('nucleo/php_22.gif', true);
 			foreach ($archivos as $archivo) {
 				echo "<div class='ei-archivos-archivo'>$img_archivo 
-						<a href='#' onclick='{$this->objeto_js}.seleccionar_archivo(\"$archivo\")' 
-						 title='Seleccionar el archivo'>$archivo</a>\n</div>";
+						<a href='#' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".seleccionar_archivo(\"". $escapador->escapeHtmlAttr($archivo)."\")' 
+						 title='Seleccionar el archivo'>". $escapador->escapeHtml($archivo)."</a>\n</div>";
 			}
 		}
 		echo "</div>";
@@ -321,9 +325,11 @@ class toba_ei_archivos extends toba_ei
 	 */
 	protected function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$identado = toba_js::instancia()->identado();
-		$path = addslashes($this->get_path_relativo());
-		echo $identado."window.{$this->objeto_js} = new ei_archivos('{$this->objeto_js}', '{$this->_submit}', '$path');\n";
+		$path = $escapador->escapeJs($this->get_path_relativo());
+		$id_js = $escapador->escapeJs($this->objeto_js);		
+		echo $identado."window.{$id_js} = new ei_archivos('{$id_js}', '". $escapador->escapeJs($this->_submit)."', '$path');\n";
 	}
 
 	/**

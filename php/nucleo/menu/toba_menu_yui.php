@@ -30,7 +30,7 @@ class toba_menu_yui extends toba_menu
 		$inden = str_repeat("\t",$this->prof *3);
 		$clase = 'yuimenuitem';
 		$this->arbol .= $inden . "<li class='$clase'>";
-		
+		$escapador = toba::escaper();
 		if (!$this->items[$nodo]['carpeta']) {
 			$opciones = array('validar' => false, 'menu' => true);
 			$target = '';
@@ -40,15 +40,15 @@ class toba_menu_yui extends toba_menu
 			}
 			$vinculo = toba::vinculador()->get_url($this->items[$nodo]['proyecto'], $this->items[$nodo]['item'], array(), $opciones);			
 			if (! $this->modo_prueba) {
-				$this->arbol .= "<a href='$vinculo' title='{$this->items[$nodo]['nombre']}' $target >{$this->items[$nodo]['nombre']}</a>";
+				$this->arbol .= "<a href='". $escapador->escapeHtmlAttr($vinculo)."' title='". $escapador->escapeHtmlAttr($this->items[$nodo]['nombre'])."' $target >". $escapador->escapeHtml($this->items[$nodo]['nombre'])."</a>";
 			} else {
-				$this->arbol .= $this->items[$nodo]['nombre'];
+				$this->arbol .= $escapador->escapeHtml($this->items[$nodo]['nombre']);
 			}
 			$this->hay_algun_item = true;
 		} else {
 			//Es carpeta
-			$this->arbol .= $this->items[$nodo]['nombre'] . "\n";
-			$this->arbol .= $inden . "\t<div id='".$this->id++."'  class='yuimenu'>\n";
+			$this->arbol .= $escapador->escapeHtml($this->items[$nodo]['nombre']) . "\n";
+			$this->arbol .= $inden . "\t<div id='".$escapador->escapeHtmlAttr($this->id++)."'  class='yuimenu'>\n";
 			$this->arbol .= $inden . "\t\t<div class='bd'>\n";
 			$this->arbol .= $inden . "\t\t\t<ul>\n";
 			$this->recorrer_hijos($nodo);

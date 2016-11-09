@@ -46,6 +46,7 @@ class toba_menu_libmenu extends toba_menu
 
 	protected function get_padres($nodo)
 	{
+		$escapador = toba::escaper();
 		$inden = str_repeat("\t",$this->prof );
 		$clase_base = ($this->prof == 1) ? 'm_r' : '';
 		if (!$this->items[$nodo]['carpeta']) {
@@ -55,21 +56,21 @@ class toba_menu_libmenu extends toba_menu
 			if (isset($this->items[$nodo]['js'])) {
 				$js = $this->items[$nodo]['js'];
 			}  elseif (! $this->modo_prueba) {
-				$js = "return toba.ir_a_operacion(\"$proyecto\", \"$item\", false)";
+				$js = 'return toba.ir_a_operacion("'. $escapador->escapeHtmlAttr($proyecto).'", "'. $escapador->escapeHtmlAttr($item).'", false)';
 			}
 			$this->arbol .= $inden . "<div class='m_o $clase_base' onclick='$js'>";
 			if ($this->item_abre_popup($nodo)) {
-				$this->arbol .= '<img title="Abrir la operación en paralelo a la actual" class="menu-link-nueva-ventana" src="'. $this->imagen_nueva_ventana. '" ';
-				$this->arbol .= " onclick='return toba.ir_a_operacion(\"$proyecto\", \"$item\", true)' />";
+				$this->arbol .= '<img title="Abrir la operación en paralelo a la actual" class="menu-link-nueva-ventana" src="'. $escapador->escapeHtmlAttr($this->imagen_nueva_ventana). '" ';
+				$this->arbol .= " onclick='return toba.ir_a_operacion(\"". $escapador->escapeHtmlAttr($proyecto)."\", \"". $escapador->escapeHtmlAttr($item)."\", true)' />";
 			}
-			$this->arbol .= $this->get_imagen($nodo).$this->items[$nodo]['nombre'];
+			$this->arbol .= $this->get_imagen($nodo). $escapador->escapeHtml($this->items[$nodo]['nombre']);
 			$this->arbol .= $inden . "</div>\n";
 			$this->hay_algun_item = true;
 		} else {
 			//Es carpeta
 			$this->arbol .= $inden . "<div class='m_s $clase_base'>\n" .
 										"<div class='m_e $clase_base'>" .
-											$this->get_imagen($nodo). $this->items[$nodo]['nombre'] .
+											$this->get_imagen($nodo). $escapador->escapeHtml($this->items[$nodo]['nombre']) .
 										"</div>";
 			$this->arbol .= $inden . "<div class='m_n'>\n";
 			$this->recorrer_hijos($nodo);
@@ -81,10 +82,11 @@ class toba_menu_libmenu extends toba_menu
 	protected function get_imagen($nodo)
 	{
 		$img = '';
+		$escapador = toba::escaper();
 		if (isset($this->items[$nodo]['imagen'])) {
 			$url_img = toba_recurso::imagen_de_origen($this->items[$nodo]['imagen'],
 									$this->items[$nodo]['imagen_recurso_origen']);
-			$img .= "<img src='$url_img' border=0 alt='' /> ";
+			$img .= "<img src='". $escapador->escapeHtmlAttr($url_img)."' border=0 alt='' /> ";
 		} else {
 			//$url_img = toba_recurso::imagen_toba('nulo.gif');
 			//$img .= "<img src='$url_img' width=1 height=16 border=0 alt='' />";

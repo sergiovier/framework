@@ -429,9 +429,10 @@ class toba_ei_pantalla extends toba_ei
 	 */
 	function generar_html()
 	{
-		echo "\n<!-- ################################## Inicio CI ( ".$this->_id[1]." ) ######################## -->\n\n";		
-		$ancho = isset($this->_info_ci["ancho"]) ? "style='width:{$this->_info_ci["ancho"]};'" : '';
-		echo "<table class='ei-base ci-base' $ancho id='{$this->objeto_js}_cont'><tr><td style='padding:0;'>\n";
+		$escapador = toba::escaper();
+		echo "\n<!-- ################################## Inicio CI ( ". $escapador->escapeHtml($this->_id[1])." ) ######################## -->\n\n";		
+		$ancho = isset($this->_info_ci["ancho"]) ? "style='width:". $escapador->escapeHtmlAttr($this->_info_ci["ancho"]).";'" : '';
+		echo "<table class='ei-base ci-base' $ancho id='". $escapador->escapeHtmlAttr($this->objeto_js. '_cont')."'><tr><td style='padding:0;'>\n";
 		echo $this->controlador->get_html_barra_editor();
 		$class_extra = '';
 		if ($this->_info_ci['tipo_navegacion'] == self::NAVEGACION_TAB_HORIZONTAL) {
@@ -439,7 +440,7 @@ class toba_ei_pantalla extends toba_ei
 		}
 		$this->generar_html_barra_sup(null,true,"ci-barra-sup $class_extra");
 		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? "style='display:none'" : "";
-		echo "<div $colapsado id='cuerpo_{$this->objeto_js}'>\n";
+		echo "<div $colapsado id='". $escapador->escapeHtmlAttr('cuerpo_' . $this->objeto_js)."'>\n";
 		
 		//-->Listener de eventos
 		if ( (count($this->_eventos) > 0) || (count($this->_eventos_usuario_utilizados) > 0) ) {
@@ -448,7 +449,7 @@ class toba_ei_pantalla extends toba_ei
 		}
 		
 		//--> Cuerpo del CI
-		$alto = isset($this->_info_ci["alto"]) ? "style='_height:".$this->_info_ci["alto"].";min-height:" . $this->_info_ci["alto"] . "'" : "";
+		$alto = isset($this->_info_ci["alto"]) ? "style='_height:".$escapador->escapeHtmlAttr($this->_info_ci["alto"]).";min-height:" . $escapador->escapeHtmlAttr($this->_info_ci["alto"]) . "'" : "";
 		echo "<div class='ci-cuerpo' $alto>\n";
 		$this->generar_html_cuerpo();
 		echo "</div>\n";
@@ -463,7 +464,7 @@ class toba_ei_pantalla extends toba_ei
 		
 		echo "\n</div>";
 		echo "</td></tr></table>";
-		echo "\n<!-- ###################################  Fin CI  ( ".$this->_id[1]." ) ######################## -->\n\n";
+		echo "\n<!-- ###################################  Fin CI  ( ". $escapador->escapeHtml($this->_id[1])." ) ######################## -->\n\n";
 	}
 
 	/**
@@ -472,12 +473,13 @@ class toba_ei_pantalla extends toba_ei
 	 */
 	protected function generar_html_cuerpo()
 	{
+		//$escapador = toba::escaper();
 		switch($this->_info_ci['tipo_navegacion'])
 		{
 			case self::NAVEGACION_TAB_HORIZONTAL:									//*** TABs horizontales
 				echo "<table class='tabla-0' width='100%'>\n";
 				//Tabs
-				$estilo = 'background: url("'.toba_recurso::imagen_skin('tabs/bg.gif').'") repeat-x bottom;';
+				//$estilo = $escapador->escapeCss( 'background: url("'.toba_recurso::imagen_skin('tabs/bg.gif').'") repeat-x bottom;');
 				echo "<tr><td class='ci-tabs-h-lista'>";
 				$this->generar_tabs_horizontales();
 				echo "</td></tr>\n";
@@ -523,12 +525,13 @@ class toba_ei_pantalla extends toba_ei
 	protected function generar_html_contenido()
 	{
 		//--- Descripcion de la PANTALLA
+		$escapador = toba::escaper();
 		$es_wizard = $this->_info_ci['tipo_navegacion'] == 'wizard';
 		if ($this->_info_pantalla['descripcion'] !="" || $es_wizard) {
 			$tipo = isset($this->_info_pantalla['descripcion_tipo']) ? $this->_info_pantalla['descripcion_tipo'] : null;			
 			if ($es_wizard) {
 				echo "<div class='ci-wiz-enc'><div class='ci-wiz-titulo'>";
-				echo $this->get_etiqueta();
+				echo $escapador->escapeHtml($this->get_etiqueta());
 				echo "</div>";
 				if ($this->_info_pantalla['descripcion'] != "") {
 					$this->generar_html_descripcion($this->_info_pantalla['descripcion'], $tipo);	
@@ -546,7 +549,7 @@ class toba_ei_pantalla extends toba_ei
 			echo "<div class='ci-pant-sep'></div>\n";
 		}
 		$this->generar_layout();
-		echo "<div id='{$this->objeto_js}_pie'></div>";
+		echo "<div id='". $escapador->escapeHtmlAttr($this->objeto_js. '_pie')."'></div>";
 	}
 	
 	/**
@@ -615,6 +618,7 @@ class toba_ei_pantalla extends toba_ei
 	 */
 	protected function generar_toc_wizard()
 	{
+		$escapador = toba::escaper();
 		echo "<ol class='ci-wiz-toc-lista'>";
 		$pasada = true;
 		foreach ($this->_lista_tabs as $id => $pantalla) {
@@ -626,8 +630,8 @@ class toba_ei_pantalla extends toba_ei
 				$clase = 'ci-wiz-toc-pant-actual';
 				$pasada = false;
 			}
-			echo "<li class='$clase'>";
-			echo $pantalla->get_etiqueta();
+			echo "<li class='". $escapador->escapeHtmlAttr($clase)."'>";
+			echo $escapador->escapeHtml($pantalla->get_etiqueta());
 			echo "</li>";
 		}		
 		echo "</ol>";
@@ -670,15 +674,16 @@ class toba_ei_pantalla extends toba_ei
 	 */	
 	protected function generar_utilidades_impresion_html()
 	{
+		$escapador = toba::escaper();
 		$id_frame = "{$this->_submit}_print";
 		echo "<iframe style='position:absolute;width: 0px; height: 0px; border-style: none;' "
-			."name='$id_frame' id='$id_frame' src='about:blank'></iframe>";
+			."name='". $escapador->escapeHtmlAttr($id_frame)."' id='" . $escapador->escapeHtmlAttr($id_frame)."' src='about:blank'></iframe>";
 		echo toba_js::abrir();
 		echo "
 		function imprimir_html( url, forzar_popup )
 		{
 			var usar_popup = (forzar_popup) ? true : false ;
-			var f = window.frames.$id_frame.document;
+			var f = window.frames.". $escapador->escapeJs($id_frame).".document;
 			if ( f && !usar_popup ) {
 			    var html = '';
 			    html += '<html>';
@@ -730,11 +735,17 @@ class toba_ei_pantalla extends toba_ei
 	 */	
 	protected function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$id = toba_js::arreglo($this->_id, false);
 		$identado = toba_js::instancia()->identado();	
 		$ajax = toba_js::bool($this->_navegacion_ajax);
+		$id_sf = $escapador->escapeJs($this->objeto_js);
+		$nombre_sf = $escapador->escapeJs($this->_nombre_formulario);
+		$submit_sf = $escapador->escapeJs($this->_submit);
+		$rol_controlador_sf = $escapador->escapeJs($this->_id_en_controlador);
+		
 		//Crea le objeto CI
-		echo $identado."window.{$this->objeto_js} = new ci($id, '{$this->objeto_js}', '{$this->_nombre_formulario}', '{$this->_submit}', '{$this->_id_en_controlador}', $ajax);\n";
+		echo $identado."window.{$id_sf} = new ci($id, '{$id_sf}', '{$nombre_sf}', '{$submit_sf}', '{$rol_controlador_sf}', $ajax);\n";
 
 		//Agrega la lista de pantallas con las que trabaja el ci
 		toba_js::instancia()->identar(1);				
@@ -743,7 +754,7 @@ class toba_ei_pantalla extends toba_ei
 			foreach($this->_lista_tabs as $id => $tab) {
 				$pantallas_activas[$id] = $tab->esta_activado();
 			}
-			echo $identado."window.{$this->objeto_js}.agregar_pantallas(".toba_js::arreglo($pantallas_activas, true)."); \n";
+			echo $identado."window.{$id_sf}.agregar_pantallas(".toba_js::arreglo($pantallas_activas, true)."); \n";
 		}
 				
 		//Crea los objetos hijos		
@@ -756,7 +767,7 @@ class toba_ei_pantalla extends toba_ei
 		//ATENCION: Esto no permite tener el mismo formulario instanciado dos veces
 		echo "\n";
 		foreach ($objetos as $id => $objeto) {
-			echo $identado."window.{$this->objeto_js}.agregar_objeto($objeto, '$id');\n";
+			echo $identado."window.{$id_sf}.agregar_objeto($objeto, '". $escapador->escapeJs($id)."');\n";
 		}
 	}
 
@@ -766,7 +777,7 @@ class toba_ei_pantalla extends toba_ei
 	function generar_js()
 	{
 		$identado = toba_js::instancia()->identado();
-		echo "\n$identado//---------------- CREANDO OBJETO {$this->objeto_js} --------------  \n";
+		echo "\n$identado//---------------- CREANDO OBJETO ". toba::escaper()->escapeJs($this->objeto_js) ." --------------  \n";
 		$this->crear_objeto_js();
 		$this->controlador->extender_objeto_js();
 		$this->extender_objeto_js();

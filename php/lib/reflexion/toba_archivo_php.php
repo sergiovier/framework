@@ -189,10 +189,6 @@ class toba_archivo_php
 	 */
 	function edicion_fin()
 	{
-/*		echo "Contenido: <pre>";
-		echo htmlentities($this->contenido);
-		echo "</pre>";
-*/		
 		toba_manejador_archivos::crear_arbol_directorios(dirname($this->nombre));
 		$contenido = self::convertir_formato_so($this->contenido);
 		file_put_contents($this->nombre, $contenido);

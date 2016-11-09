@@ -48,20 +48,29 @@ class toba_ajax_respuesta
 	function comunicar()
 	{
 		if (isset($this->modo)) {
+			$escapador = toba::escaper();
 			switch ($this->modo) {
 				case 'D':
 					$json = new Services_JSON();
 					toba::logger()->debug("[Respuesta AJAX]  ".var_export($this->contenido, true));
-					echo $json->encode($this->contenido);
+					if (is_array($this->contenido)) {
+						$cont = array();
+						foreach($this->contenido as $clave => $valor) {
+							$cont[$escapador->escapeJs($clave)] = (is_array($valor)) ? $this->escapar_arreglo($valor) : $escapador->escapeJs($valor);
+						}							
+					} else {
+						$cont = $escapador->escapeJs($this->contenido);
+					}
+					echo $json->encode($cont);
 					break;
 				case 'H':
-					echo $this->contenido;
+					echo $this->contenido;									//Esto se supone que envia HTML explicitamente
 					break;
 				case 'P':
 					if (is_array($this->contenido)) {
 						foreach ($this->contenido as $clave => $valor) {
 							echo "<--toba:$clave-->";
-							echo $valor;
+							echo $valor;									//Esto no se escapa, ya que se envia HTML y JS de manera conciente
 						}
 					}
 					break;
@@ -69,6 +78,14 @@ class toba_ajax_respuesta
 		}
 	}
 
+	protected function escapar_arreglo($valores)
+	{
+		$resultado = array(); $escapador = toba::escaper();
+		foreach($valores as $klave => $valor) {
+			$resultado[$escapador->escapeJs($klave)] = (is_array($valor)) ? $this->escapar_arreglo($valor): $escapador->escapeJs($valor);
+		}
+		return $resultado;
+	}
 	
 	
 }

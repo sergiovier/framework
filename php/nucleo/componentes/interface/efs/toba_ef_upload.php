@@ -27,15 +27,17 @@ class toba_ef_upload extends toba_ef
 		// Controlar las extensiones válidas...
 		if (isset($parametros['upload_extensiones']) && trim($parametros['upload_extensiones']) != '') {
 			$this->extensiones_validas = array();
-			foreach (explode(',', $parametros['upload_extensiones']) as $valor)
+			foreach (explode(',', $parametros['upload_extensiones']) as $valor) {
 				$this->extensiones_validas[] = strtolower(trim($valor));
+			}
 		}		
 		parent::__construct($padre,$nombre_formulario, $id,$etiqueta,$descripcion,$dato,$obligatorio, $parametros);
 	}	
 	
 	function get_input()
 	{
-		$tab = $this->padre->get_tab_index();
+		$escapador = toba::escaper();
+		$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());		
 		$extra = " tabindex='$tab'";		
 		$estado = $this->get_estado_input();
 		//--- Se puede cargar con el nombre del archivo o el arreglo que php brinda
@@ -48,7 +50,7 @@ class toba_ef_upload extends toba_ef
 		//-- Si hay un archivo lo deja marcado en sesion para la etapa siguiente
 		if (isset($nombre_archivo) && trim($nombre_archivo) != '') {
 			if (! $this->permitir_html) {
-				$nombre_archivo = texto_plano($nombre_archivo);
+				$nombre_archivo = $escapador->escapeHtml($nombre_archivo);
 			}
 			toba::memoria()->set_dato_sincronizado($this->id_form."_cargado", true);
 		}
@@ -56,9 +58,9 @@ class toba_ef_upload extends toba_ef
 		if (! $this->es_solo_lectura()) {
 			if (isset($nombre_archivo) && $nombre_archivo != '') {
 				$salida .= toba_form::archivo($this->id_form, null, $this->clase_css, "style='display:none'");
-				$salida .= "<div id='{$this->id_form}_desicion' class='ef-upload-desc'>". $nombre_archivo . "</div>";
+				$salida .= "<div id='". $escapador->escapeHtmlAttr($this->id_form. '_desicion')."' class='ef-upload-desc'>". $nombre_archivo . "</div>";
 				$salida .= toba_form::checkbox("{$this->id_form}_check", null, 1, 'ef-checkbox', "$extra onclick=\"{$this->objeto_js()}.set_editable()\"");
-				$salida .= "<label for='{$this->id_form}_check'>Cambiar el Archivo</label>";
+				$salida .= "<label for='". $escapador->escapeHtmlAttr($this->id_form. '_check')."'>Cambiar el Archivo</label>";
 			} else {
 				$salida = toba_form::archivo($this->id_form, null, $this->clase_css, $extra);
 				$salida .= toba_form::checkbox("{$this->id_form}_check", 1, 1, 'ef-checkbox', "style='display:none'");

@@ -38,7 +38,7 @@ class toba_ef_cuit extends toba_ef
     
 	function cargar_estado_post()
 	{
-	    if(isset($_POST[$this->id_form . '_1']) || isset($_POST[$this->id_form . '_2']) || isset($_POST[$this->id_form . '_3'])){
+	    if(isset($_POST[$this->id_form . '_1']) || isset($_POST[$this->id_form . '_2']) || isset($_POST[$this->id_form . '_3'])) {
    			$this->estado =  str_pad(trim($_POST[$this->id_form . "_1"]), 2, '0', STR_PAD_LEFT) .
    							 str_pad(trim($_POST[$this->id_form . "_2"]), 8, '0', STR_PAD_LEFT) . 
    							 trim($_POST[$this->id_form . "_3"]);
@@ -97,9 +97,9 @@ class toba_ef_cuit extends toba_ef
 		if( !isset($this->estado)) { 
 			$this->estado="";
 		}
-		
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';		
-		$html = "<div class='{$this->clase_css}'>";
+		$escapador = toba::escaper();
+		$tab = ' tabindex="'. $escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';		
+		$html = "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>";
 		$html .= toba_form::text($this->id_form . "_1", substr($this->estado,0,2),$this->es_solo_lectura(), 2, 2, 'ef-input', $this->javascript.$this->input_extra.$tab); 
 		$html .= ' - ';
 		$html .= toba_form::text($this->id_form . "_2", substr($this->estado,2,8),$this->es_solo_lectura(), 8, 8, 'ef-input', $this->javascript.$this->input_extra.$tab); 
@@ -115,10 +115,12 @@ class toba_ef_cuit extends toba_ef
 		$formato = new toba_formateo($tipo_salida);
 		$estado = $this->get_estado();
 		$desc = ($estado != '') ? $formato->formato_cuit($estado) : '';
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$desc</div>";
+				$desc = $escapador->escapeHtml($desc);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 				break;
 			case 'pdf':
 			case 'excel':			

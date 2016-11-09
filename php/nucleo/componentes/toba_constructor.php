@@ -59,6 +59,8 @@ class toba_constructor
 				}				
 			}
 			$datos['_const_instancia_numero'] = $instancia_nro;			
+		} elseif ($datos['basica']['carpeta'] == 1)  {					
+			throw new toba_error_seguridad('Lo que intenta acceder no es una operación');
 		} else {					//**** Creacion de ITEMS
 			$clase = "toba_solicitud_".$datos['basica']['item_solic_tipo'];
 		}

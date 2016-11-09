@@ -16,7 +16,7 @@ class toba_tp_basico_titulo extends toba_tp_basico
 		$this->info_version();
 		echo "<div class='item-barra'>";
 		$this->generar_ayuda();		
-		echo "<div class='item-barra-tit'>".$this->titulo_item()."</div>";
+		echo "<div class='item-barra-tit'>". toba::escaper()->escapeHtml($this->titulo_item())."</div>";
 		echo "</div>\n\n";
 	}
 	
@@ -36,6 +36,7 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	{
 		$mensaje = toba::mensajes()->get_operacion_actual();
 		if (isset($mensaje)) {
+			$escapador = toba::escaper();
 			if (strpos($mensaje, ' ') !== false) {	//Detecta si es una url o un mensaje completo
 				$desc = toba_parser_ayuda::parsear($mensaje);
 				$ayuda = toba_recurso::ayuda(null, $desc, 'item-barra-ayuda', 0);
@@ -46,7 +47,7 @@ class toba_tp_basico_titulo extends toba_tp_basico
 				if (! toba_parser_ayuda::es_texto_plano($mensaje)) {
 					$mensaje = toba_parser_ayuda::parsear($mensaje, true); //Version resumida
 				}
-				$js = "abrir_popup('ayuda', '$mensaje', {width: 800, height: 600, scrollbars: 1})";
+				$js = "abrir_popup('ayuda', '". $escapador->escapeHtmlAttr($mensaje)."', {width: 800, height: 600, scrollbars: 1})";
 				echo "<a class='barra-superior-ayuda' href='#' onclick=\"$js\" title='Abrir ayuda'>".toba_recurso::imagen_toba("ayuda_grande.gif", true)."</a>";
 			}
 		}	
@@ -64,6 +65,7 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	{
 		$version = toba::proyecto()->get_parametro('version');
 		if( $version && ! (toba::proyecto()->get_id() == 'toba_editor') ) {
+			$escapador = toba::escaper();
 			$info = '';
 			$version_fecha = toba::proyecto()->get_parametro('version_fecha');
 			if($version_fecha) {
@@ -75,16 +77,16 @@ class toba_tp_basico_titulo extends toba_tp_basico
 			}
 			$version_link = toba::proyecto()->get_parametro('version_link');
 			if($version_link) {
-				$info .= "<hr /><a href=\'http://$version_link\' target=\"_bank\">Más información</a><br>";	
+				$info .= "<hr /><a href=\'". $escapador->escapeHtmlAttr("http://$version_link")."\' target=\"_bank\">Más información</a><br>";	
 			}
 			if($info) {
-				$info = "Versión: <strong>$version</strong><br>" . $info;
+				$info = "Versión: <strong>". $escapador->escapeHtml($version)."</strong><br>" . $info;
 				$info = toba_recurso::ayuda(null, $info, 'enc-version');
 			}else{
 				$info = "class='enc-version'";
 			}
 			echo "<div $info >";		
-			echo 'Versión <strong>' . $version .'</strong>';
+			echo 'Versión <strong>' . $escapador->escapeHtml($version) .'</strong>';
 			echo '</div>';		
 		}
 	}	

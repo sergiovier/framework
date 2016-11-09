@@ -160,7 +160,7 @@ class toba_ef_editable extends toba_ef
 	function get_estilo_visualizacion_pixeles()
 	{		
 		if (isset(self::$ratio_pixel) && ($this->tamano > self::$limite_minimo)) {
-			$en_pixels = floor($this->tamano * self::$ratio_pixel);
+			$en_pixels = toba::escaper()->escapeHtmlAttr(floor($this->tamano * self::$ratio_pixel));
 			return ' style=\'width: '.$en_pixels.'px;\' ';
 		}
 		return '';
@@ -169,7 +169,7 @@ class toba_ef_editable extends toba_ef
 	protected function get_info_placeholder()
 	{		
 		if (trim($this->placeholder) != '') {
-			$ph  = texto_plano($this->placeholder);
+			$ph  = toba::escaper()->escapeHtmlAttr($this->placeholder);
 			return " placeholder='$ph' ";
 		}
 		return '';
@@ -202,12 +202,13 @@ class toba_ef_editable extends toba_ef
 		
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		$this->input_extra .= $this->get_estilo_visualizacion_pixeles();
 		$this->input_extra .= $this->get_info_placeholder();		
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';
+		$tab = ' tabindex="'. $escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';
 		$input = toba_form::text($this->id_form, $this->estado,$this->es_solo_lectura(),$this->maximo,$this->tamano, $this->clase_css, $this->javascript.' '.$this->input_extra.$tab);
 		if (isset($this->unidad)) {
-			$input = "<span class='ef-editable-unidad'>".$input .' '.$this->unidad.'</span>';
+			$input = "<span class='ef-editable-unidad'>".$input .' '. $escapador->escapeHtml($this->unidad).'</span>';
 		}
 		$input .= $this->get_html_iconos_utilerias();
 		return $input;
@@ -221,8 +222,9 @@ class toba_ef_editable extends toba_ef
 
 	function parametros_js()
 	{
-		$exp = isset($this->expreg) ? addslashes($this->expreg) : '';
-		return parent::parametros_js().", '{$this->mascara}', '$exp'";
+		$exp = isset($this->expreg) ? toba::escaper()->escapeJs($this->expreg) : '';
+		$mascara = toba::escaper()->escapeJs($this->mascara);
+		return parent::parametros_js().", '$mascara', '$exp'";
 	}
 	
 	function crear_objeto_js()
@@ -355,11 +357,13 @@ class toba_ef_editable_numero extends toba_ef_editable
 	function get_descripcion_estado($tipo_salida)
 	{
 		$formato = new toba_formateo($tipo_salida);
-		$desc =  $formato->formato_numero($this->get_estado());		
+		$desc =  $formato->formato_numero($this->get_estado());	
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$desc</div>";
+				$desc = $escapador->escapeHtml($desc);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 			break;
 			case 'xml':
 			case 'pdf':
@@ -372,10 +376,11 @@ class toba_ef_editable_numero extends toba_ef_editable
 
 	function get_input()
 	{	
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';
+		$escapador = toba::escaper();
+		$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';
 		$input = toba_form::text($this->id_form, $this->estado,$this->es_solo_lectura(),$this->maximo,$this->tamano, $this->clase_css, $this->javascript.' '.$this->input_extra.$tab);
 		if (isset($this->unidad)) {
-			$input = "<span class='ef-editable-unidad'>".$input .' '.$this->unidad.'</span>';
+			$input = "<span class='ef-editable-unidad'>".$input .' '. $escapador->escapeHtml($this->unidad).'</span>';
 		}
 		$input .= $this->get_html_iconos_utilerias();
 		return $input;
@@ -383,9 +388,10 @@ class toba_ef_editable_numero extends toba_ef_editable
 	
 	function parametros_js()
 	{
-		$inferior = "new Array('{$this->rango_inferior['limite']}', {$this->rango_inferior['incluido']})";
-		$superior = "new Array('{$this->rango_superior['limite']}', {$this->rango_superior['incluido']})";
-		return parent::parametros_js().", [$inferior, $superior], '{$this->mensaje_validacion_rango()}'";
+		$escapador = toba::escaper();
+		$inferior = "new Array('". $escapador->escapeJs($this->rango_inferior['limite'])."', ". $escapador->escapeJs($this->rango_inferior['incluido']).")";
+		$superior = "new Array('". $escapador->escapeJs($this->rango_superior['limite'])."', ". $escapador->escapeJs($this->rango_superior['incluido']).")";
+		return parent::parametros_js().", [$inferior, $superior], '". $escapador->escapeJs($this->mensaje_validacion_rango())."'";
 	}		
 	
 	function crear_objeto_js()
@@ -424,15 +430,15 @@ class toba_ef_editable_moneda extends toba_ef_editable_numero
 	{
 		$formato = new toba_formateo($tipo_salida);
 		$desc =  $formato->formato_moneda($this->get_estado());
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$desc</div>";
-			break;
+				$desc = $escapador->escapeHtml($desc);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 			case 'xml':
 			case 'pdf':
 				return $desc;	
-			break;
 			case 'excel':
 				return $formato->formato_moneda($this->get_estado());
 		}
@@ -455,8 +461,9 @@ class toba_ef_editable_numero_porcentaje extends toba_ef_editable_numero
 	
 	function __construct($padre,$nombre_formulario, $id,$etiqueta,$descripcion,$dato,$obligatorio,$parametros)
 	{
-		if (! isset($parametros['edit_tamano']))
+		if (! isset($parametros['edit_tamano'])) {
 			$parametros['edit_tamano']= 4;
+		}
 		if (!isset($parametros['edit_unidad'])) {
 			$parametros['edit_unidad'] = '%';
 		}
@@ -480,17 +487,17 @@ class toba_ef_editable_numero_porcentaje extends toba_ef_editable_numero
 	{
 		$formato = new toba_formateo($tipo_salida);
 		$desc =  $formato->formato_porcentaje($this->get_estado());
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$desc</div>";
-			break;
+				$desc = $escapador->escapeHtml($desc);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 			case 'xml':
 			case 'pdf':
 				return $desc;	
 			case 'excel':
 				return $formato->formato_porcentaje($estado);
-			break;
 		}
 	}	
 }
@@ -526,18 +533,19 @@ class toba_ef_editable_clave extends toba_ef_editable
     
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		$this->input_extra .= $this->get_estilo_visualizacion_pixeles();
-		$tab = ' tabindex="'.$this->padre->get_tab_index(2).'"';
+		$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index(2)).'"';
 		$estado = isset($this->estado)? $this->estado : "";
 		
 		$opciones_extra = $this->input_extra . $tab;
 		$estilo_extra = ' style="display:block;" ';
-		$js = " onKeyUp=\"{$this->objeto_js()}.runPassword(this.value,'{$this->id_form}');\" ";
+		$js = ' onKeyUp="'. $this->objeto_js().".runPassword(this.value,'". $escapador->escapeJs($this->id_form)."');\" ";
 		$html = toba_form::password($this->id_form,$estado, $this->maximo, $this->tamano, 'ef-input',$js. $opciones_extra );
 		if ($this->confirmar_clave) {										//Agrego div para mostrar la 'fortaleza' del pwd y tambien ef para confirmacion
 			$html .= '<div  class="ef-editable-clave-barra-info">					
-					<div id="'.$this->id_form.'_text" style="font-size: 10px;"></div>
-					<div id="'.$this->id_form.'_bar" class="ef-editable-clave-fortaleza"></div></div>';			
+					<div id="'.$escapador->escapeHtmlAttr($this->id_form.'_text').'" style="font-size: 10px;"></div>
+					<div id="'.$escapador->escapeHtmlAttr($this->id_form.'_bar').'" class="ef-editable-clave-fortaleza"></div></div>';			
 			$html .= toba_form::password($this->id_form ."_test", $estado, $this->maximo, $this->tamano, 'ef-input', $opciones_extra . $estilo_extra);			
 		}
 		$html .= $this->get_html_iconos_utilerias();
@@ -652,14 +660,15 @@ class toba_ef_editable_fecha extends toba_ef_editable
 	
 	function get_input()
 	{		
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';
+		$escapador = toba::escaper();
+		$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';
 		$html = "<span class='ef-fecha'>";
 		$html .= toba_form::text($this->id_form,$this->estado, $this->es_solo_lectura(),$this->tamano,
 								$this->tamano, $this->clase_css, $this->input_extra.$tab);
 		if (! $this->es_solo_lectura()) {
-			$html .= "<a id='link_". $this->id_form . "' ";
-			$html .= " onclick='calendario.select(document.getElementById(\"{$this->id_form}\"),\"link_".$this->id_form."\",\"dd/MM/yyyy\");return false;' ";
-			$html .= " href='#' name='link_". $this->id_form . "'>".toba_recurso::imagen_toba('calendario.gif',true,16,16,"Seleccione la fecha")."</a>\n";
+			$html .= "<a id='". $escapador->escapeHtmlAttr('link_'. $this->id_form) . "' ";
+			$html .= " onclick='calendario.select(document.getElementById(\"". $escapador->escapeHtmlAttr($this->id_form)."\"),\"". $escapador->escapeHtmlAttr('link_'.$this->id_form)."\",\"dd/MM/yyyy\");return false;' ";
+			$html .= " href='#' name='". $escapador->escapeHtmlAttr('link_'. $this->id_form) . "'>".toba_recurso::imagen_toba('calendario.gif',true,16,16,"Seleccione la fecha")."</a>\n";
 		}
 		$html .= $this->get_html_iconos_utilerias();
 		$html .= "</span>\n";
@@ -699,10 +708,15 @@ class toba_ef_editable_fecha extends toba_ef_editable
 	function parametros_js()
 	{
 		if (isset($this->rango_fechas)) {
+			$escapador = toba::escaper();
 			$desde = explode('-', $this->rango_fechas[0]);
 			$hasta = explode('-', $this->rango_fechas[1]);
 			$desde[1]--;
 			$hasta[1]--;
+			for ($i=0; $i< 3; $i++) {
+				$desde[$i] = $escapador->escapeJs($desde[$i]);
+				$hasta[$i] = $escapador->escapeJs($hasta[$i]);
+			}			
 			$rango = "[new Date('{$desde[0]}','{$desde[1]}','{$desde[2]}'), new Date('{$hasta[0]}','{$hasta[1]}','{$hasta[2]}')]";
 		} else {
 			$rango = 'null';
@@ -720,17 +734,17 @@ class toba_ef_editable_fecha extends toba_ef_editable
 		$formato = new toba_formateo($tipo_salida);
 		$estado = $this->get_estado();
 		$desc = ($estado != '') ? $formato->formato_fecha($estado) : '';
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$desc</div>";
-			break;
+				$desc = $escapador->escapeHtml($desc);				
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 			case 'xml':
 			case 'pdf':
 				return $desc;
 			case 'excel':
 				return $formato->formato_fecha($estado);
-			break;
 		}
 	}	
 }
@@ -826,8 +840,9 @@ class toba_ef_editable_fecha_hora extends toba_ef_editable
 	{		
 		$estado_fecha = (! is_null($this->estado)) ? $this->estado['fecha']: '';
 		$estado_hora = (! is_null($this->estado))? $this->estado['hora'] : '';
+		$escapador = toba::escaper();
 		
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';
+		$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';
 		$id_form_fecha = $this->id_form . '_fecha';
 		$id_form_hora = $this->id_form . '_hora';
 		$html = "<span class='ef-fecha-hora'>";
@@ -836,9 +851,9 @@ class toba_ef_editable_fecha_hora extends toba_ef_editable
 		if (! $this->es_solo_lectura()) {	//Hay que ver si es solo lectura por la cascada o que?
 			$visibilidad = "style= 'visibility:visible;'";
 		}
-		$html .= "<a id='link_". $this->id_form . "' ";
-		$html .= " onclick='calendario.select(document.getElementById(\"$id_form_fecha\"),\"link_".$this->id_form."\",\"dd/MM/yyyy\");return false;' ";
-		$html .= " href='#' name='link_". $this->id_form . "' $visibilidad>".toba_recurso::imagen_toba('calendario.gif',true,16,16,"Seleccione la fecha")."</a>\n";
+		$html .= "<a id='". $escapador->escapeHtmlAttr('link_'. $this->id_form) . "' ";
+		$html .= " onclick='calendario.select(document.getElementById(\"". $escapador->escapeHtmlAttr($id_form_fecha)."\"),\"". $escapador->escapeHtmlAttr('link_'.$this->id_form)."\",\"dd/MM/yyyy\");return false;' ";
+		$html .= " href='#' name='".$escapador->escapeHtmlAttr('link_'. $this->id_form) . "' $visibilidad>".toba_recurso::imagen_toba('calendario.gif',true,16,16,"Seleccione la fecha")."</a>\n";
 
 		$html .= toba_form::text($id_form_hora, $estado_hora, $this->es_solo_lectura(), 5,  5, $this->clase_css . '  ef-numero ', $this->input_extra. $tab);
 		$html .= $this->get_html_iconos_utilerias();
@@ -888,10 +903,15 @@ class toba_ef_editable_fecha_hora extends toba_ef_editable
 	function parametros_js()
 	{
 		if (isset($this->rango_fechas)) {
+			$escapador = toba::escaper();
 			$desde = explode('-', $this->rango_fechas[0]);
 			$hasta = explode('-', $this->rango_fechas[1]);
 			$desde[1]--;
 			$hasta[1]--;
+			for ($i=0; $i< 3; $i++) {
+				$desde[$i] = $escapador->escapeJs($desde[$i]);
+				$hasta[$i] = $escapador->escapeJs($hasta[$i]);
+			}
 			$rango = "[new Date('{$desde[0]}','{$desde[1]}','{$desde[2]}'), new Date('{$hasta[0]}','{$hasta[1]}','{$hasta[2]}')]";
 		} else {
 			$rango = 'null';
@@ -908,11 +928,12 @@ class toba_ef_editable_fecha_hora extends toba_ef_editable
 	{
 		$formato = new toba_formateo($tipo_salida);
 		$estado = $this->get_estado();
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				$desc = (! is_null($estado)) ? $formato->formato_fecha($estado[0]) . " $estado[1] " : '';
-				$desc = "<div class='{$this->clase_css}'>$desc</div>";
+				$desc = (! is_null($estado)) ? $escapador->escapeHtml($formato->formato_fecha($estado[0]) . " $estado[1] ") : '';
+				$desc = "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 				break;				
 			case 'excel':
 				$desc = $formato->formato_fecha_hora("{$estado[0]} {$estado[1]}");
@@ -969,10 +990,11 @@ class toba_ef_editable_hora extends toba_ef_editable
 	}
 
 	function get_input()
-	{
+	{		
 		$estado_hora = (! is_null($this->estado))? $this->estado : '';
+		$escapador = toba::escaper();
 
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';
+		$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';
 		$html = "<span class='ef-fecha-hora'>";
 		$visibilidad = "style= 'visibility:hidden;'";
 		if (! $this->es_solo_lectura()) {	//Hay que ver si es solo lectura por la cascada o que?
@@ -1022,8 +1044,13 @@ class toba_ef_editable_hora extends toba_ef_editable
 	function parametros_js()
 	{
 		if (isset($this->rango_horas)) {
+			$escapador = toba::escaper();
 			$desde = explode(':', $this->rango_horas[0]);
 			$hasta = explode(':', $this->rango_horas[1]);
+			for ($i=0; $i< 2; $i++) {
+				$desde[$i] = $escapador->escapeJs($desde[$i]);
+				$hasta[$i] = $escapador->escapeJs($hasta[$i]);
+			}
 			$rango = "[new Date(0,0,0,'{$desde[0]}','{$desde[1]}'), new Date(0,0,0,'{$hasta[0]}','{$hasta[1]}')]";
 		} else {
 			$rango = 'null';
@@ -1041,10 +1068,12 @@ class toba_ef_editable_hora extends toba_ef_editable
 		$formato = new toba_formateo($tipo_salida);
 		$estado = $this->get_estado();
 		$desc = (! is_null($estado)) ? $formato->formato_hora($estado) : '';
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$desc</div>";
+				$desc = $escapador->escapeHtml($desc);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$desc</div>";
 				break;
 			case 'xml':
 			case 'pdf':
@@ -1142,20 +1171,21 @@ class toba_ef_editable_textarea extends toba_ef_editable
 			$this->estado = '';	
 		}
 		$html = "";
+		$escapador = toba::escaper();
 		if($this->es_solo_lectura()){
 			$clase = $this->clase.' ef-input-solo-lectura';
 			$html .= toba_form::textarea( $this->id_form, $this->estado, $this->lineas, $this->tamano, $clase, $this->wrap, " readonly");
 		}else{
 			$this->input_extra .= $this->get_info_placeholder();
 			if($this->resaltar){
-				$javascript = " onclick='javascript: document.getElementById('{$this->id_form}').select()'";
+				$javascript = " onclick='javascript: document.getElementById('".$escapador->escapeHtmlAttr($this->id_form)."').select()'";
 				$html .= toba_form::button($this->id_form . "_res", "Seleccionar", $javascript );
 			}
 			if ($this->maximo) {
 				$obj = $this->objeto_js();
 				$this->javascript .= "onkeydown=\"$obj.validar()\" onkeyup=\"$obj.validar()\"";
 			}
-			$tab = ' tabindex="'.$this->padre->get_tab_index().'"';	
+			$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';	
 			$html .= toba_form::textarea( $this->id_form, $this->estado,$this->lineas,$this->tamano,$this->clase,$this->wrap,$this->javascript.' '.$this->input_extra.$tab);
 		}
 		$html .= $this->get_html_iconos_utilerias();
@@ -1179,7 +1209,7 @@ class toba_ef_editable_textarea extends toba_ef_editable
 
 	function parametros_js()
 	{
-		$maximo = isset($this->maximo) ? "'{$this->maximo}'" : 'null';
+		$maximo = isset($this->maximo) ? "'".toba::escaper()->escapeJs($this->maximo)."'" : 'null';
 		$ajustable = ($this->ajustable) ? "true" : "false";
 		return parent::parametros_js().", $maximo, $ajustable";	
 	}

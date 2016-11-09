@@ -20,11 +20,13 @@ class toba_rf_subcomponente extends toba_rf
 	function get_input($id)
 	{
 		$id_input = $id.'_oculto';
+		$escapador = toba::escaper();
 		$valor_inicial = $this->no_visible_actual ? 1 : 0;
 		$img_inicial = $this->no_visible_actual ? $this->img_oculto : $this->img_visible;		
-		$html = "<img src='$img_inicial' id='".$id_input."_img' title='Visible / Oculto' onclick='{$this->id_js_arbol}.cambiar_oculto(\"{$this->get_id()}\")' />";
+		$html = "<img src='". $escapador->escapeHtmlAttr($img_inicial)."' id='". $escapador->escapeHtmlAttr($id_input.'_img')."' title='Visible / Oculto' onclick='". $escapador->escapeHtmlAttr($this->id_js_arbol).".cambiar_oculto(\"". $escapador->escapeHtmlAttr($this->get_id())."\")' />";
 		if ($this->comunicacion_elemento_input) {
-			$html .= "<input type='hidden' value='$valor_inicial' id='$id_input' name='$id_input' />";		
+			$id_input = $escapador->escapeHtmlAttr($id_input);
+			$html .= "<input type='hidden' value='". $escapador->escapeHtmlAttr($valor_inicial)."' id='$id_input' name='$id_input' />";		
 		}
 		return $html;
 	}

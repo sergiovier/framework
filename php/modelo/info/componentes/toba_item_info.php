@@ -26,7 +26,7 @@ class toba_item_info implements toba_nodo_arbol
 			$this->cargar_dependencias();
 		}
 		if($this->es_de_menu()) {
-			$this->info_extra .= toba_recurso::imagen_proyecto("menu.gif",true)." - Está incluído en el MENU";
+			$this->info_extra .= /*toba_recurso::imagen_proyecto("menu.gif",true).*/" - Está incluído en el MENU";
 		}
 	}
 
@@ -101,15 +101,16 @@ class toba_item_info implements toba_nodo_arbol
 
 	function vinculo_editor()
 	{
-		if ($this->es_carpeta())
+		if ($this->es_carpeta()) {
 			$item_editor = "1000238";
-		else
+		} else {
 			$item_editor = "1000240";		
+		}
 		return toba::vinculador()->get_url(toba_editor::get_id(), $item_editor,
-										array( apex_hilo_qs_zona => $this->proyecto .apex_qs_separador. $this->id),
-										array(	'menu' => true,
-												'celda_memoria' => 'central')
-							);
+								array( apex_hilo_qs_zona => $this->proyecto .apex_qs_separador. $this->id),
+								array(	'menu' => true,
+										'celda_memoria' => 'central')
+			);
 	}
 
 	/**
@@ -119,9 +120,9 @@ class toba_item_info implements toba_nodo_arbol
 	{
 		if( toba_contexto_info::get_proyecto() == toba_editor::get_id() ) {
 			$vinculo = toba::vinculador()->get_url($this->get_proyecto(), $this->get_id(), 
-															null, array('celda_memoria'=>'central',
-																		'validar' => false,
-																		'menu' => true ) );
+											null, array('celda_memoria'=>'central',
+														'validar' => false,
+														'menu' => true ) );
 		} else {
 			$vinculo = "javascript:top.frame_control.editor.ejecutar_item('".$this->get_id()."');";
 		}
@@ -143,7 +144,7 @@ class toba_item_info implements toba_nodo_arbol
 	
 	function get_id_padre() {	return $this->datos['basica']['item_padre']; }	
 
-	function get_nivel_prof() {	return $this->nivel; }
+	function get_nivel_prof() { return $this->nivel; }
 	
 	function get_camino() { return $this->camino; }
 	

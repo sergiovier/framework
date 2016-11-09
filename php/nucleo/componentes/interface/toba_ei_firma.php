@@ -75,7 +75,7 @@ class toba_ei_firma extends toba_ei
 	function generar_html()
 	{
 		//Genero la interface
-		echo "\n\n<!-- ***************** Inicio EI FIRMA (	".	$this->_id[1] ." )	***********	-->\n\n";
+		echo "\n\n<!-- ***************** Inicio EI FIRMA (	". toba::escaper()->escapeHtml($this->_id[1]) ." )	***********	-->\n\n";
 		echo toba_form::hidden($this->_submit, '');
 		//echo toba_form::hidden($this->_id_post_codigo, ''); // Aca viaja el codigo
 		echo $this->get_html_barra_editor();
@@ -86,6 +86,7 @@ class toba_ei_firma extends toba_ei
 
 	function generar_applet()
 	{
+		$escapador = toba::escaper();
 		$sesion = $this->generar_sesion();
 		$cookie = session_name()."=".session_id();
 		$url_jar = toba_recurso::url_toba()."/firmador_pdf/firmador.jar";
@@ -95,37 +96,36 @@ class toba_ei_firma extends toba_ei
 		
 		$url_enviar = $this->get_url_enviar_pdf(true);
 		$url_base = $this->get_url_base_actual();
-		$url_recibir = toba::vinculador()->get_url(null, null, array('accion' => 'recibir'),array('servicio' => 'ejecutar',
-														 'objetos_destino' => $destino), true);
+		$url_recibir = toba::vinculador()->get_url(null, null, array('accion' => 'recibir'),array('servicio' => 'ejecutar', 'objetos_destino' => $destino), true);
 		$url_recibir = $url_base.$url_recibir;
 
 		echo "<applet  id='AppletFirmador'  code='ar/gob/onti/firmador/view/FirmaApplet' scriptable='true''
-				archive='$url_jar' width='{$this->_ancho}' height='{$this->_alto}' >\n";
+				archive='$url_jar' width='". $escapador->escapeHtmlAttr($this->_ancho)."' height='". $escapador->escapeHtmlAttr($this->_alto)."' >\n";
 		if (! $this->_multiple) {
-			echo "<param  name='URL_DESCARGA'	 value='$url_enviar' />\n";
+			echo "<param  name='URL_DESCARGA' value='". $escapador->escapeHtmlAttr($url_enviar)."' />\n";
 		} else {
-			echo "<param  name='MULTIPLE'	 value='true' />\n";
+			echo "<param  name='MULTIPLE' value='true' />\n";
 		}
-		echo "<param  name='URL_SUBIR'	value='$url_recibir' />
-			  <param  name='MOTIVO'  value='{$this->_motivo_firma}' />
-			  <param  name='CODIGO'  value='$sesion' />
+		echo "<param  name='URL_SUBIR'	 value='". $escapador->escapeHtmlAttr($url_recibir)."' />
+			  <param  name='MOTIVO'  value='".$escapador->escapeHtmlAttr($this->_motivo_firma)."' />
+			  <param  name='CODIGO'  value='".$escapador->escapeHtmlAttr($sesion)."' />
 			  <param  name='PREGUNTAS' value='{ \"preguntasRespuestas\": []}' />
-			  <param  name='COOKIE' value='$cookie' />
+			  <param  name='COOKIE' value='". $escapador->escapeHtmlAttr($cookie)."' />
 			  <param name='classloader_cache' value='false' />
 			  <param name='codebase_lookup' value='false' />
 			  <param name='TOKID'  value='".apex_sesion_csrt."'/>
-			  <param name='TOKVAL'  value='$valor_cross_token'/>
+			  <param name='TOKVAL'  value='".$escapador->escapeHtmlAttr($valor_cross_token)."'/>
 		</applet>
 		";
 		if ($this->_mostrar_pdf) {
 			$this->_url_pdf_embebido = $this->get_url_enviar_pdf(false);
-			$this->_url_pdf_embebido .= '&codigo='.$sesion;
+			$this->_url_pdf_embebido .= '&codigo='.$escapador->escapeUrl($sesion);
 			if ($this->_multiple) {
 				$texto_alternativo = 'Haga click en los documentos para visualizarlos.';
 			} else {
 				$texto_alternativo = "Parece que no tiene Adobe Reader o soporte PDF en este navegador.</br>Para configurar correctamente instale Adobe Reader y siga <a href='http://helpx.adobe.com/acrobat/using/display-pdf-browser-acrobat-xi.html'>estas instrucciones</a>.";
 			}
-			echo "<div id='pdf' style='display: none; height: {$this->_pdf_altura}; text-align: center'><div style='margin-top: 40px; color: gray'>$texto_alternativo</div></div>";
+			echo "<div id='pdf' style='display: none; height: ".$escapador->escapeHtmlAttr($this->_pdf_altura)."; text-align: center'><div style='margin-top: 40px; color: gray'>". $escapador->escapeHtml($texto_alternativo)."</div></div>";
 		}
 	}
 	
@@ -138,8 +138,7 @@ class toba_ei_firma extends toba_ei
 	{
 		$destino = array($this->_id);
 		$url_base = $this->get_url_base_actual();
-		$url_enviar = toba::vinculador()->get_url(null, null, array('accion' => 'enviar'),array('servicio' => 'ejecutar',
-														 'objetos_destino' => $destino), $usa_url_encode);
+		$url_enviar = toba::vinculador()->get_url(null, null, array('accion' => 'enviar'),array('servicio' => 'ejecutar', 'objetos_destino' => $destino), $usa_url_encode);
 		$url_enviar = $url_base.$url_enviar;
 		return $url_enviar;
 	}
@@ -154,14 +153,14 @@ class toba_ei_firma extends toba_ei
 	function generar_sesion()
 	{
 		if (! isset($this->_memoria['token'])) {
-			$this->_memoria['token'] = hash('sha256', uniqid(mt_rand(), true));
+			$this->_memoria['token'] = hash('sha256', uniqid(mt_rand(), true));		//TODO:Esto hay que cambiarlo por una generacion similar a la del token CSRF!!
 		}
 		return $this->_memoria['token'];
 	 }
 
 	 function set_motivo_firma($motivo)
 	 {
-		 $this->_motivo_firma;
+		 $this->_motivo_firma = $motivo;
 	 }
 
 	 function set_multiple($multiple)
@@ -296,21 +295,20 @@ class toba_ei_firma extends toba_ei
 	{
 		$identado = toba_js::instancia()->identado();
 		$id = toba_js::arreglo($this->_id, false);
-
-		echo $identado."window.{$this->objeto_js} = new ei_firma($id, 
-													'{$this->_submit}', 
-													".($this->_multiple ? 'true' : 'false').");\n";
+		$escapador = toba::escaper();
+		$id_js = $escapador->escapeJs($this->objeto_js);
+		echo $identado.'window.'. $id_js." = new ei_firma($id,'" . $escapador->escapeJs($this->_submit) ."',". ($this->_multiple ? 'true' : 'false').");\n";
 
 		echo "
 			function appletLoaded() {
-				{$this->objeto_js}.applet_cargado();
+				{$id_js}.applet_cargado();
 			}
 			function firmaOk() {
-				{$this->objeto_js}.firma_ok();
+				{$id_js}.firma_ok();
 			}
-			if (! {$this->objeto_js}._multiple) {
+			if (! {$id_js}._multiple) {
 				window.onload = function () {
-					{$this->objeto_js}.ver_pdf_inline('{$this->_url_pdf_embebido}');
+					{$id_js}.ver_pdf_inline('". $escapador->escapeJs($this->_url_pdf_embebido)."');
 				};
 			}			
 		";

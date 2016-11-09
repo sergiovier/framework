@@ -21,7 +21,7 @@ class toba_tp_logon extends toba_tp_basico
 	function pre_contenido()
 	{
 		echo "<div class='login-titulo'>". toba_recurso::imagen_proyecto("logo.gif",true);
-		echo "<div>versión ".toba::proyecto()->get_version()."</div>";
+		echo "<div>versión " . toba::escaper()->escapeHtml(toba::proyecto()->get_version())."</div>";
 		echo "</div>";
 		echo "\n<div align='center' class='cuerpo'>\n";		
 	}

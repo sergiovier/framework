@@ -42,18 +42,22 @@ class toba_rf_subcomponente_ef extends toba_rf_subcomponente
 	{
 		$id_solo_lectura = $id.'_solo_lectura';
 		$id_oculto = $id.'_oculto';
+		$escapador = toba::escaper();
 		$check_solo_lectura = $this->solo_lectura_actual ? 1 : 0;				
 		$check_oculto = $this->no_visible_actual ? 1 : 0;
 		$img_solo_lectura = $this->solo_lectura_actual ? $this->img_solo_lectura : $this->img_editable;		
 		$img_oculto = $this->no_visible_actual ? $this->img_oculto : $this->img_visible;		
 		
-		$html = "<img src='$img_solo_lectura' id='".$id_solo_lectura."_img' title='Editable / Solo Lectura' onclick='{$this->id_js_arbol}.cambiar_editable(\"$id_solo_lectura\")' />";
-		$html .= "<input type='hidden' value='$check_solo_lectura' id='$id_solo_lectura' name='$id_solo_lectura' />";
+		$html = "<img src='". $escapador->escapeHtmlAttr($img_solo_lectura)."' id='".$escapador->escapeHtmlAttr($id_solo_lectura.'_img').
+			"' title='Editable / Solo Lectura' onclick='". $escapador->escapeHtmlAttr($this->id_js_arbol).".cambiar_editable(\"". $escapador->escapeHtmlAttr($id_solo_lectura)."\")' />";
+		$html .= "<input type='hidden' value='". $escapador->escapeHtmlAttr($check_solo_lectura)."' id='". $escapador->escapeHtmlAttr($id_solo_lectura)."' name='". $escapador->escapeHtmlAttr($id_solo_lectura)."' />";
 		
 		if ($this->deshabilitar_rest != '1') {					//Si no desactiva explicitamente las restricciones funcionales el 
-			$html .= "<img src='$img_oculto' id='".$id_oculto."_img' title='Visible / Oculto' onclick='{$this->id_js_arbol}.cambiar_oculto(\"{$this->get_id()}\")' />";
-			if ($this->comunicacion_elemento_input) {
-				$html .= "<input type='hidden' value='$check_oculto' id='$id_oculto' name='$id_oculto' />";
+			$html .= "<img src='". $escapador->escapeHtmlAttr($img_oculto)."' id='". $escapador->escapeHtmlAttr($id_oculto.'_img').
+				"' title='Visible / Oculto' onclick='". $escapador->escapeHtmlAttr($this->id_js_arbol).".cambiar_oculto(\"". $escapador->escapeHtmlAttr($this->get_id())."\")' />";			
+			if ($this->comunicacion_elemento_input) {				
+				$id_oculto = $escapador->escapeHtmlAttr($id_oculto);
+				$html .= "<input type='hidden' value='". $escapador->escapeHtmlAttr($check_oculto)."' id='$id_oculto' name='$id_oculto' />";
 			}
 		}
 		return $html;

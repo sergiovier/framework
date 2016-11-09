@@ -63,15 +63,16 @@ class toba_ei_codigo extends toba_ei
 
 	function generar_html()
 	{
+		$escapador = toba::escaper();
 		//Genero la interface
-		echo "\n\n<!-- ***************** Inicio EI CODIGO (	".	$this->_id[1] ." )	***********	-->\n\n";
+		echo "\n\n<!-- ***************** Inicio EI CODIGO (	". $escapador->escapeHtml($this->_id[1]) ." )	***********	-->\n\n";
 		echo toba_form::hidden($this->_submit, '');
 		echo toba_form::hidden($this->_id_post_codigo, ''); // Aca viaja el codigo
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true,"ei-form-barra-sup");
 
 		echo "<textarea id='code'>";
-		echo $this->get_datos();
+		echo $escapador->escapeHtml($this->get_datos());
 		echo "</textarea>";
 	}
 
@@ -85,11 +86,12 @@ class toba_ei_codigo extends toba_ei
 	 */
 	protected function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$identado = toba_js::instancia()->identado();
 		$id = toba_js::arreglo($this->_id, false);
 		$dim = toba_js::arreglo($this->get_dimensiones(), false);
 
-		echo $identado."window.{$this->objeto_js} = new ei_codigo($id, $dim, '{$this->_submit}', '{$this->_id_post_codigo}');\n";
+		echo $identado.'window.'. $escapador->escapeJs($this->objeto_js)." = new ei_codigo($id, $dim, '". $escapador->escapeJs($this->_submit)."', '". $escapador->escapeJs($this->_id_post_codigo)."');\n";
 	}
 
 	/**

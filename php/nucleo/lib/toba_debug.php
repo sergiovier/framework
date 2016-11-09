@@ -7,7 +7,7 @@
 
 	function dump_sql($sql)
 	{
-		echo "<pre>$sql</pre><br />";
+		echo '<pre>'. toba::escaper()->escapeHtml($sql).'</pre><br />';
 	}
 
 	function dump_POST()
@@ -38,14 +38,15 @@
 
 	function dump_arbol($arbol,$identificador="ARBOL",$ancho="80%")
 	{
+		$escapador = toba::escaper();
 		echo "<br>";
-		echo "<table align='center' width='$ancho'>";
-		echo "<tr><td  bgcolor='ff0000'><b>$identificador</b></td></tr>\n";		
+		echo "<table align='center' width='". $escapador->escapeHtmlAttr($ancho)."'>";
+		echo "<tr><td  bgcolor='ff0000'><b>". $escapador->escapeHtml($identificador)."</b></td></tr>\n";		
 		echo "<tr><td  bgcolor='000000'>\n";
 		if(is_array($arbol)){
 			dump_arbol_nivel($arbol);
 		}else{
-			echo $arbol;
+			echo $escapador->escapeHtml($arbol);
 		}
 		echo "</td></tr>\n";
 		echo "</table>\n";
@@ -57,6 +58,7 @@
 		$color="";
 		static $n = 0;
 		echo "<table width='100%' bgcolor='000000'>\n";
+		$escapador = toba::escaper();
 		foreach( $nivel as $valor => $contenido )
 		{
 			if($color=="ffff00"){
@@ -64,7 +66,7 @@
 			}else{
 				$color="ffff00";
 			}
-			echo "<tr><td bgcolor='$color'><b>$valor</b></td>\n";
+			echo "<tr><td bgcolor='". $escapador->escapeHtmlAttr($color)."'><b>". $escapador->escapeHtml($valor)."</b></td>\n";
 			if (is_array($contenido))
 			{
 				echo "<td bgcolor='ff0000'>\n";
@@ -73,7 +75,7 @@
 				$n--;
 				echo "</td>\n";
 			} else {
-				echo "<td bgcolor='ffffff'>" . $contenido ."</td>\n";
+				echo "<td bgcolor='ffffff'>" . $escapador->escapeHtml($contenido) ."</td>\n";
 			}
 			echo "</tr>\n";
 			

@@ -21,7 +21,7 @@ class toba_impr_html implements toba_impresion
 	 */
 	function generar_salida()
 	{
-	    header('Content-Type: text/html; charset=iso-8859-1', true); 
+		header('Content-Type: text/html; charset=iso-8859-1', true); 
 		$this->generar_html_encabezado();
 		foreach( $this->objetos as $objeto ) {
 			$objeto->vista_impresion( $this );	
@@ -44,8 +44,7 @@ class toba_impr_html implements toba_impresion
 		echo "</head><body>\n";
 		echo "<div class='barra-impresion'>";
 		echo "<button onclick='window.print()'>".
-					toba_recurso::imagen_toba('impresora.gif',true,null,null).
-			"    Imprimir</button>";		
+		toba_recurso::imagen_toba('impresora.gif',true,null,null) . "    Imprimir</button>";		
 		echo "</div>";
 		echo $this->encabezado();
 	}

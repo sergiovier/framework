@@ -696,9 +696,9 @@ class toba_ei_formulario extends toba_ei
 					}
 				} else {					//El EF maneja	un	DATO SIMPLE
 					if (isset($datos[$dato])){
-						if (!is_array($datos[$dato]))
+						if (!is_array($datos[$dato])) {
 							$temp = $datos[$dato];
-						elseif (is_array($datos[$dato])) { //ATENCION: Este es el caso para el multi-seleccion, hay que mejorarlo
+						} elseif (is_array($datos[$dato])) { //ATENCION: Este es el caso para el multi-seleccion, hay que mejorarlo
 							$temp = array();
 							foreach ($datos[$dato] as $string) {
 								$temp[] = $string;
@@ -751,7 +751,7 @@ class toba_ei_formulario extends toba_ei
 	 */	
 	function servicio__mostrar_captchas_efs()
 	{
-		$texto 		= toba::memoria()->get_dato_operacion('texto-captcha');
+		$texto = toba::memoria()->get_dato_operacion('texto-captcha');
 		$parametros = toba::memoria()->get_dato_operacion('parametros-captcha');
 		$refrescar  = toba::memoria()->get_parametro('refrescar');
 
@@ -857,15 +857,15 @@ class toba_ei_formulario extends toba_ei
 		}
 		$this->ef($id_ef)->guardar_dato_sesion($sesion, true);
 		$json = new Services_JSON();
-		
+		$escapador = toba::escaper();
 		if (! is_null($sesion)) {			
 			$resultado = array();
 			foreach($valores as $klave => $valor) {						//Lo transformo en recordset para mantener el ordenamiento en Chrome
-				$resultado[] = array($klave, $valor);
+				$resultado[] = array($escapador->escapeJs($klave), $escapador->escapeJs($valor));	//TODO: Ver como cuernos escapar estos datos sin romper todo!
 			}
 			echo $json->encode($resultado);
 		} else {
-			echo $json->encode($valores);
+			echo $json->encode($escapador->escapeJs($valores));
 		}
 	}
 
@@ -939,15 +939,15 @@ class toba_ei_formulario extends toba_ei
 		}*/
 		toba::logger()->debug("Filtrado combo_editable '$id_ef', Respuesta: ".var_export($valores, true));				
 		$json = new Services_JSON();
-		
+		$escapador = toba::escaper();
 		if (is_array($valores)) {
 			$resultado = array();
 			foreach($valores as $klave => $valor) {						//Lo transformo en recordset para mantener el ordenamiento en Chrome
-				$resultado[] = array($klave, $valor);
+				$resultado[] = array($escapador->escapeJs($klave), $escapador->escapeJs($valor));
 			}
 			echo $json->encode($resultado);
 		} else {
-			echo $json->encode($valores);
+			echo $json->encode($escapador->escapeJs($valores));
 		}
 	}
 
@@ -963,9 +963,9 @@ class toba_ei_formulario extends toba_ei
 		$id_ef = trim(toba::memoria()->get_parametro('filtrado-ce-ef'));
 		$valor = trim(toba::memoria()->get_parametro('filtrado-ce-valor'));
 		//$fila_actual = trim(toba::memoria()->get_parametro('filtrado-ce-fila'));
-
+		$escapador = toba::escaper();
 		$descripcion = $this->_carga_opciones_ef->ejecutar_metodo_carga_descripcion_ef($id_ef, $valor);
-		$estado = array($valor => $descripcion);
+		$estado = array($escapador->escapeJs($valor) => $escapador->escapeJs($descripcion));
 		
 		//--- Se arma la respuesta en formato JSON
 		$json = new Services_JSON();
@@ -974,8 +974,9 @@ class toba_ei_formulario extends toba_ei
 	
 	function generar_html()
 	{
+		$escapador = toba::escaper();
 		//Genero la interface
-		echo "\n\n<!-- ***************** Inicio EI FORMULARIO (	".	$this->_id[1] ." )	***********	-->\n\n";
+		echo "\n\n<!-- ***************** Inicio EI FORMULARIO (	". $escapador->escapeHtml($this->_id[1]) ." )	***********	-->\n\n";
 		//Campo de sincroniacion con JS
 		echo toba_form::hidden($this->_submit, '');
 		echo toba_form::hidden($this->_submit.'_implicito', '');
@@ -983,7 +984,7 @@ class toba_ei_formulario extends toba_ei
 		if (isset($this->_info_formulario["ancho"])) {
 			$ancho = convertir_a_medida_tabla($this->_info_formulario["ancho"]);
 		}
-		echo "<table class='{$this->_estilos}' $ancho>";
+		echo "<table class='". $escapador->escapeHtmlAttr($this->_estilos)."' $ancho>";
 		echo "<tr><td style='padding:0'>";
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true,"ei-form-barra-sup");
@@ -1002,11 +1003,12 @@ class toba_ei_formulario extends toba_ei
 		//--- ya que hay algunos que no lo necesitan (ej. cascadas)
 		$this->_carga_opciones_ef->cargar();
 		$this->_rango_tabs = toba_manejador_tabs::instancia()->reservar(250);		
+		$escapador = toba::escaper();
 				
-		$ancho = ($this->_info_formulario['ancho'] != '') ? "width: {$this->_info_formulario['ancho']};" : '';
-		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? "display:none;" : "";
+		$ancho = ($this->_info_formulario['ancho'] != '') ? 'width: '. $escapador->escapeHtmlAttr($this->_info_formulario['ancho']).';' : '';
+		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? 'display:none;' : '';
 	
-		echo "<div class='ei-cuerpo ei-form-cuerpo' style='$ancho $colapsado' id='cuerpo_{$this->objeto_js}'>";
+		echo "<div class='ei-cuerpo ei-form-cuerpo' style='". $escapador->escapeHtmlAttr($ancho)."  $colapsado' id='". $escapador->escapeHtmlAttr('cuerpo_'. $this->objeto_js)."'>";
 		$this->generar_layout();
 		
 		$hay_colapsado = false;
@@ -1018,9 +1020,9 @@ class toba_ei_formulario extends toba_ei
 		}		
 		if ($hay_colapsado) {
 			$img = toba_recurso::imagen_skin('expandir_vert.gif', false);
-			$colapsado = "style='cursor: pointer; cursor: hand;' onclick=\"{$this->objeto_js}.cambiar_expansion();\" title='Mostrar / Ocultar'";
+			$colapsado = "style='cursor: pointer; cursor: hand;' onclick=\"". $escapador->escapeHtmlAttr($this->objeto_js).".cambiar_expansion();\" title='Mostrar / Ocultar'";
 			echo "<div class='ei-form-fila ei-form-expansion'>";
-			echo "<img id='{$this->objeto_js}_cambiar_expansion' src='$img' $colapsado>";
+			echo "<img id='". $escapador->escapeHtmlAttr($this->objeto_js.'_cambiar_expansion')."' src='$img' $colapsado>";
 			echo "</div>";
 		}
 		if ($this->botonera_abajo()) {
@@ -1087,8 +1089,9 @@ class toba_ei_formulario extends toba_ei
 	 */		
 	protected function generar_layout_impresion()
 	{
-		echo "<table class='{$this->_estilos}' width='{$this->_info_formulario['ancho']}'>";		
-		foreach ( $this->_lista_ef_post as $ef){
+		$escapador = toba::escaper();
+		echo "<table class='". $escapador->escapeHtmlAttr($this->_estilos)."' width='". $escapador->escapeHtmlAttr($this->_info_formulario['ancho'])."'>";		
+		foreach ( $this->_lista_ef_post as $ef) {
 			if ($this->_info_formulario['no_imprimir_efs_sin_estado']) {
 				//Los combos que no tienen valor establecido no se imprimen
 				if( $this->_elemento_formulario[$ef] instanceof toba_ef_combo ) {
@@ -1163,6 +1166,7 @@ class toba_ei_formulario extends toba_ei
 	protected function get_html_ef($ef, $ancho_etiqueta=null, $con_etiqueta=true)
 	{
 		$salida = '';
+		$escapador = toba::escaper();
 		if (! in_array($ef, $this->_lista_ef_post)) {
 			//Si el ef no se encuentra en la lista posibles, es probable que se alla quitado con una restriccion o una desactivacion manual
 			return;
@@ -1180,19 +1184,18 @@ class toba_ei_formulario extends toba_ei
 		}
 		$es_fieldset = ($this->_elemento_formulario[$ef] instanceof toba_ef_fieldset);
 		if (! $es_fieldset) {							//Si es fieldset no puedo sacar el <div> porque el navegador cierra visualmente inmediatamente el ef.
-			$salida .= "<div class='$clase' style='$estilo_nodo' id='nodo_$id_ef'>\n";
+			$salida .= "<div class='$clase' style='$estilo_nodo' id='". $escapador->escapeHtmlAttr('nodo_'.$id_ef)."'>\n";
 		}
 		if ($this->_elemento_formulario[$ef]->tiene_etiqueta() && $con_etiqueta) {
 			$salida .= $this->get_etiqueta_ef($ef, $ancho_etiqueta);
 			//--- El margin-left de 0 y el heigth de 1% es para evitar el 'bug de los 3px'  del IE
-			$ancho = isset($ancho_etiqueta) ? $ancho_etiqueta : $this->_ancho_etiqueta;
-			$salida .= "<div id='cont_$id_ef' style='margin-left: $ancho;'>\n";
+			$ancho = isset($ancho_etiqueta) ? $escapador->escapeHtmlAttr($ancho_etiqueta) : $escapador->escapeHtmlAttr($this->_ancho_etiqueta);
+			$salida .= "<div id='". $escapador->escapeHtmlAttr('cont_'.$id_ef)."' style='margin-left: $ancho;'>\n";
 			$salida .= $this->get_input_ef($ef);
 			$salida .= "</div>";
 			if (isset($this->_info_formulario['expandir_descripcion']) && $this->_info_formulario['expandir_descripcion']) {
-				$salida .= '<span class="ei-form-fila-desc">'.$this->_elemento_formulario[$ef]->get_descripcion().'</span>';
+				$salida .= '<span class="ei-form-fila-desc">'.$escapador->escapeHtml($this->_elemento_formulario[$ef]->get_descripcion()).'</span>';
 			}
-
 		} else {		
 			$salida .= $this->get_input_ef($ef);
 		}
@@ -1204,15 +1207,16 @@ class toba_ei_formulario extends toba_ei
 	
 	protected function get_html_impresion_ef($ef)
 	{
+		$escapador = toba::escaper();
 		$html =  "<td class='ei-form-etiq'>\n";
-		$html .= $this->_elemento_formulario[$ef]->get_etiqueta();
+		$html .= $escapador->escapeHtml($this->_elemento_formulario[$ef]->get_etiqueta());
 		$html .= "</td><td class='ei-form-valor'>\n";
 		//Hay que formatear?
 		if(isset($this->_info_formulario_ef[$ef]["formateo"])){
 			$formateo = new $this->_clase_formateo('impresion_html');
 			$funcion = "formato_" . $this->_info_formulario_ef[$ef]["formateo"];
 			$valor_real = $this->_elemento_formulario[$ef]->get_estado();
-			$valor = $formateo->$funcion($valor_real);
+			$valor = $escapador->escapeHtml($formateo->$funcion($valor_real));
 		} else {
 			$valor = $this->_elemento_formulario[$ef]->get_descripcion_estado('impresion_html');
 	    }
@@ -1276,6 +1280,7 @@ class toba_ei_formulario extends toba_ei
 	 */
 	protected function get_etiqueta_ef($ef, $ancho_etiqueta=null)
 	{
+		$escapador = toba::escaper();
 		$estilo = $this->_elemento_formulario[$ef]->get_estilo_etiqueta();
 		$marca ='';		
 		if ($estilo == '') {
@@ -1294,11 +1299,11 @@ class toba_ei_formulario extends toba_ei
 				$desc = toba_recurso::imagen_toba("descripcion.gif",true,null,null,$desc);
 			}
 		}
-		$id_ef = $this->_elemento_formulario[$ef]->get_id_form();
+		$id_ef = $escapador->escapeHtmlAttr($this->_elemento_formulario[$ef]->get_id_form());
 		$editor = $this->generar_vinculo_editor($ef);
-		$etiqueta = $this->_elemento_formulario[$ef]->get_etiqueta();
+		$etiqueta = $escapador->escapeHtml($this->_elemento_formulario[$ef]->get_etiqueta());
 		//--- El _width es para evitar el 'bug de los 3px'  del IE
-		$ancho = isset($ancho_etiqueta) ? $ancho_etiqueta : $this->_ancho_etiqueta;
+		$ancho = isset($ancho_etiqueta) ? $escapador->escapeHtmlAttr($ancho_etiqueta) : $escapador->escapeHtmlAttr($this->_ancho_etiqueta);
 		return "<label style='width:$ancho;' for='$id_ef' class='$estilo'>$editor $desc $etiqueta $marca</label>\n";
 	}
 	
@@ -1309,7 +1314,7 @@ class toba_ei_formulario extends toba_ei
 	{
 		if (toba_editor::modo_prueba()) {
 			$param_editor = array( apex_hilo_qs_zona => implode(apex_qs_separador,$this->_id),
-									'ef' => $id_ef );
+								'ef' => $id_ef );
 			return toba_editor::get_vinculo_subcomponente($this->_item_editor, $param_editor);			
 		}
 		return null;
@@ -1324,21 +1329,23 @@ class toba_ei_formulario extends toba_ei
 	 */
 	protected function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$identado = toba_js::instancia()->identado();
-		$rango_tabs = "new Array({$this->_rango_tabs[0]}, {$this->_rango_tabs[1]})";
+		$rango_tabs = 'new Array('. $escapador->escapeJs($this->_rango_tabs[0]) .',' . $escapador->escapeJs($this->_rango_tabs[1]).')';
 		$esclavos = toba_js::arreglo($this->_carga_opciones_ef->get_cascadas_esclavos(), true, false);
 		$maestros = toba_js::arreglo($this->_carga_opciones_ef->get_cascadas_maestros(), true, false);		
 		$id = toba_js::arreglo($this->_id, false);
 		$invalidos = toba_js::arreglo($this->_efs_invalidos, true);
-		echo $identado."window.{$this->objeto_js} = new ei_formulario($id, '{$this->objeto_js}', $rango_tabs, '{$this->_submit}', $maestros, $esclavos, $invalidos);\n";
+		$id_js = $escapador->escapeJs($this->objeto_js);
+		echo $identado."window.{$id_js} = new ei_formulario($id, '{$id_js}', $rango_tabs, '". $escapador->escapeJs($this->_submit)."', $maestros, $esclavos, $invalidos);\n";
 		if ($this->_disparo_evento_condicionado_a_datos) {
-			echo $identado . "{$this->objeto_js}.set_eventos_condicionados_por_datos(true);";
+			echo $identado . "{$id_js}.set_eventos_condicionados_por_datos(true);";
 		}
 		foreach ($this->_lista_ef_post as $ef) {
 			if (! in_array($ef, $this->_efs_generados)) {
 				throw new toba_error_def($this->get_txt()." Error en la redefinición del layout: Falta salida ef '$ef'");
 			}
-			echo $identado."{$this->objeto_js}.agregar_ef({$this->_elemento_formulario[$ef]->crear_objeto_js()}, '$ef');\n";
+			echo $identado."{$id_js}.agregar_ef({$this->_elemento_formulario[$ef]->crear_objeto_js()}, '". $escapador->escapeJs($ef)."');\n";
 		}
 		if ($this->_detectar_cambios) {
 			foreach (array_keys($this->_eventos_usuario_utilizados) as $id_evento) {
@@ -1350,7 +1357,7 @@ class toba_ei_formulario extends toba_ei
 						}
 					}					
 					$excluidos = toba_js::arreglo($excluidos);
-					echo $identado."{$this->objeto_js}.set_procesar_cambios(true, '$id_evento', $excluidos);\n";					
+					echo $identado."{$id_js}.set_procesar_cambios(true, '". $escapador->escapeJs($id_evento)."', $excluidos);\n";					
 				}
 			}
 		}
@@ -1363,7 +1370,8 @@ class toba_ei_formulario extends toba_ei
 	 */
 	function get_objeto_js_ef($id)
 	{
-		return "{$this->objeto_js}.ef('$id')";
+		$escapador = toba::escaper();
+		return $escapador->escapeJs($this->objeto_js).".ef('". $escapador->escapeJs($id)."')";
 	}
 	
 	/**
@@ -1376,7 +1384,9 @@ class toba_ei_formulario extends toba_ei
 		//Busco las	dependencias
 		foreach ($this->_lista_ef_post	as	$ef){
 			$temp	= $this->_elemento_formulario[$ef]->get_consumo_javascript();
-			if(isset($temp)) $consumo = array_merge($consumo, $temp);
+			if(isset($temp)) {
+				$consumo = array_merge($consumo, $temp);
+			}
 		}
 		$consumo = array_unique($consumo);//Elimino los	duplicados
 		return $consumo;
@@ -1451,16 +1461,16 @@ class toba_ei_formulario extends toba_ei
 			}
 		}
 		//-- Genera la tabla
-        $ancho = null;
-        if (strpos($this->_pdf_tabla_ancho, '%') !== false) {
-        	$ancho = $salida->get_ancho(str_replace('%', '', $this->_pdf_tabla_ancho));	
-        } elseif (isset($this->_pdf_tabla_ancho)) {
-        		$ancho = $this->_pdf_tabla_ancho;
-        }
-        $opciones = $this->_pdf_tabla_opciones;
-        if (isset($ancho)) {
-        	$opciones['width'] = $ancho;		
-        }        
+		$ancho = null;
+		if (strpos($this->_pdf_tabla_ancho, '%') !== false) {
+			$ancho = $salida->get_ancho(str_replace('%', '', $this->_pdf_tabla_ancho));	
+		} elseif (isset($this->_pdf_tabla_ancho)) {
+				$ancho = $this->_pdf_tabla_ancho;
+		}
+		$opciones = $this->_pdf_tabla_opciones;
+		if (isset($ancho)) {
+			$opciones['width'] = $ancho;		
+		}        
 		$datos['titulo_tabla'] = $this->get_titulo();
 		$salida->tabla($datos, false, $this->_pdf_letra_tabla, $opciones);
 	}
@@ -1471,9 +1481,10 @@ class toba_ei_formulario extends toba_ei
 	 * @param string $id_ef Identificador del ef
 	 * @return array
 	 */
-	function get_valores_pdf( $id_ef ) {
+	function get_valores_pdf( $id_ef ) 
+	{
 		$formateo = new $this->_clase_formateo('pdf');
-		$etiqueta = $this->_elemento_formulario[$id_ef]->get_etiqueta();
+		//$etiqueta = $this->_elemento_formulario[$id_ef]->get_etiqueta();
 		//Hay que formatear? Le meto pa'delante...
 		if(isset($this->_info_formulario_ef[$id_ef]["formateo"])){
 			$funcion = "formato_" . $this->_info_formulario_ef[$id_ef]["formateo"];
@@ -1556,16 +1567,16 @@ class toba_ei_formulario extends toba_ei
 		$this->_carga_opciones_ef->cargar();
 		$formateo = new $this->_clase_formateo('pdf');
 		
-        $ancho = null;
-        if (strpos($this->_pdf_tabla_ancho, '%') !== false) {
-        	$ancho = $salida->get_ancho(str_replace('%', '', $this->_pdf_tabla_ancho));	
-        } elseif (isset($this->_pdf_tabla_ancho)) {
-        		$ancho = $this->_pdf_tabla_ancho;
-        }
-        $opciones = $this->_pdf_tabla_opciones;
-        if (isset($ancho)) {
-        	$opciones['width'] = $ancho;		
-        }        
+		$ancho = null;
+		if (strpos($this->_pdf_tabla_ancho, '%') !== false) {
+			$ancho = $salida->get_ancho(str_replace('%', '', $this->_pdf_tabla_ancho));	
+		} elseif (isset($this->_pdf_tabla_ancho)) {
+				$ancho = $this->_pdf_tabla_ancho;
+		}
+		$opciones = $this->_pdf_tabla_opciones;
+		if (isset($ancho)) {
+			$opciones['width'] = $ancho;		
+		}        
 		
 		$xml = '<'.$this->xml_ns.'tabla'.$this->xml_ns_url;
 		$xml .= $this->xml_get_att_comunes();

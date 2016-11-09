@@ -1,6 +1,6 @@
 <?php
-use Symfony\Component\Yaml\Yaml;
-
+	
+use Symfony\Component\Yaml\Yaml;	
 require_once('comando_toba.php');
 class comando_instalacion_silenciosa extends comando_toba
 {	
@@ -40,11 +40,9 @@ class comando_instalacion_silenciosa extends comando_toba
 		$tipo_instalacion = $this->definir_tipo_instalacion_produccion($param);
 		$nombre = $this->definir_nombre_instalacion($param);
 		
-		toba_modelo_instalacion::crear($id_desarrollo, $alias, $nombre, $tipo_instalacion);
-		$id_instancia = $this->get_entorno_id_instancia(true);
-		if (is_null($id_instancia) || trim($id_instancia) == '') {
-			$id_instancia = ($tipo_instalacion == '1') ? 'produccion' : 'desarrollo';
-		}
+		toba_modelo_instalacion::crear($id_desarrollo, $alias, $nombre, $tipo_instalacion);		
+		$id_instancia = ($tipo_instalacion == '1') ? 'produccion' : $this->get_entorno_id_instancia(true);		
+		
 		//--- Crea la definicion de bases
 		$base = $nombre_toba;
 		if (! $this->get_instalacion()->existe_base_datos_definida($base)) {
@@ -239,19 +237,19 @@ class comando_instalacion_silenciosa extends comando_toba
 	protected function parsear_yml($archivo) 
 	{
 		$contenido = array();
-		if (realpath($archivo) === false) {
-			toba::logger()->error("El archivo indicado no existe o no es accesible");
-			die();
-		}				
-		try {
-			$valores = YAML::parse(file_get_contents($archivo));									//Esta mas actualizado que el de PHP, que ademas requiere PECL
-			if (! empty($valores)) {
-				$contenido = $valores['parameters'];
+ 		if (realpath($archivo) === false) {
+ 			toba::logger()->error("El archivo indicado no existe o no es accesible");
+ 			die();
+ 		}				
+ 		try {
+ 			$valores = YAML::parse(file_get_contents($archivo));									//Esta mas actualizado que el de PHP, que ademas requiere PECL
+ 			if (! empty($valores)) {
+ 				$contenido = $valores['parameters'];
 			}
-		} catch(ParseException $e) {
-			toba::logger()->error($e->getMessage());
-			toba::logger()->warning("El contenido del archivo no pudo ser parseado, continuando con valores por defecto");
-		}		
+ 		} catch(ParseException $e) {
+ 			toba::logger()->error($e->getMessage());
+ 			toba::logger()->warning("El contenido del archivo no pudo ser parseado, continuando con valores por defecto");
+ 		}
 		return $contenido;
 	}
 	

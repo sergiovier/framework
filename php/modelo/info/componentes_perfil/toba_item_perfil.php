@@ -26,13 +26,14 @@ class toba_item_perfil extends toba_elemento_perfil
 	
 	function get_input($id)
 	{
+		$escapador = toba::escaper();
 		$id_js = $this->id_js_arbol;		
 		$id_input = $id.'_acceso';
 		$valor_inicial = $this->acceso_actual ? 1 : 0;
 		$img_inicial = $this->acceso_actual ? $this->img_acceso : $this->img_sin_acceso;		
-		$html = "<img src='$img_inicial' id='".$id_input."_img' onclick='$id_js.cambiar_acceso(\"{$this->get_id()}\")' />";
+		$html = "<img src='". $escapador->escapeHtmlAttr($img_inicial)."' id='".$escapador->escapeHtmlAttr($id_input.'_img')."' onclick='". $escapador->escapeHtmlAttr($id_js).".cambiar_acceso(\"".$escapador->escapeHtmlAttr($this->get_id())."\")' />";
 		if ($this->comunicacion_elemento_input) {
-			$html .= "<input type='hidden' value='$valor_inicial' id='$id_input' name='$id_input' />";		
+			$html .= "<input type='hidden' value='". $escapador->escapeHtmlAttr($valor_inicial)."' id='". $escapador->escapeHtmlAttr($id_input)."' name='". $escapador->escapeHtmlAttr($id_input)."' />";		
 		}
 		return $html;
 	}

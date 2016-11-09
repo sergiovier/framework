@@ -2458,6 +2458,7 @@ class toba_ei_cuadro extends toba_ei
 	 */
 	protected function crear_objeto_js()
 	{
+		$escapador = toba::escaper();
 		$identado = toba_js::instancia()->identado();
 		$id = toba_js::arreglo($this->_id, false);
 
@@ -2470,7 +2471,7 @@ class toba_ei_cuadro extends toba_ei
 			$datos = (isset($this->datos) && is_array($this->datos)) ? $this->datos : array();
 			$filas = ',' . toba_js::arreglo(array_keys($datos));
 		}
-		echo $identado."window.{$this->objeto_js} = new ei_cuadro($id, '{$this->objeto_js}', '{$this->_submit}'$filas $id_evt_multiple);\n";
+		echo $identado.'window.'. $escapador->escapeJs($this->objeto_js)." = new ei_cuadro($id, '". $escapador->escapeJs($this->objeto_js)."', '". $escapador->escapeJs($this->_submit)."'$filas $id_evt_multiple);\n";
 	}
 	/**
 	 * @ignore

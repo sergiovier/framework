@@ -72,7 +72,7 @@ class toba_acciones_js
 	{
 		$id = toba::vinculador()->registrar_vinculo($vinculo);
 		if (isset($id)) {
-			$accion = "vinculador.invocar('$id');\n";
+			$accion = "vinculador.invocar('". toba::escaper()->escapeJs($id)."');\n";
 			$this->encolar($accion);
 		} else {
 			toba::logger()->warning("El usuario no puede acceder a la operación ".$vinculo->get_item());

@@ -101,10 +101,12 @@ abstract class toba_ef_seleccion extends toba_ef
 		} else {
 			$valor = null;	
 		}
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$valor</div>";
+				$valor = $escapador->escapeHtml($valor);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$valor</div>";
 			break;
 			case 'pdf':
 				return $valor;	
@@ -247,7 +249,7 @@ class toba_ef_combo extends toba_ef_seleccion
 	function get_input()
 	{
 		$html = "";
-		
+		$escapador = toba::escaper();
 		//El estado que puede contener muchos datos debe ir en un unico string
 		$estado = $this->get_estado_para_input();
 		if ($this->es_solo_lectura()) {
@@ -255,12 +257,12 @@ class toba_ef_combo extends toba_ef_seleccion
 			$html .= toba_form::select("",$estado, $this->opciones, $clase, "disabled");
 			$html .= toba_form::hidden($this->id_form, $estado);
 		} else {
-			$tab = $this->padre->get_tab_index();
+			$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 			$extra = " tabindex='$tab'";
 			$js = '';
 
 			if ($this->cuando_cambia_valor != '') {
-				$js = "onchange=\"{$this->get_cuando_cambia_valor()}\"";
+				$js = 'onchange="'. $escapador->escapeHtmlAttr($this->get_cuando_cambia_valor()).'"';
 			}
 			$html .= toba_form::select($this->id_form, $estado ,$this->opciones, $this->clase_css, $js . $this->input_extra.$extra, $this->categorias);
 		}
@@ -312,14 +314,15 @@ class toba_ef_radio extends toba_ef_seleccion
 	
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		$estado = $this->get_estado_para_input();
 		$html = '';
 		if ($this->es_solo_lectura()) {
 			$html .= toba_form::hidden($this->id_form, $estado);			
 		}
-		$callback = "onchange=\"{$this->get_cuando_cambia_valor()}\"";
+		$callback = 'onchange="'. $escapador->escapeHtmlAttr($this->get_cuando_cambia_valor()).'"';
 		//--- Se guarda el callback en el <div> asi puede ser recuperada en caso de que se borren las opciones
-		$html .= "<div id='opciones_{$this->id_form}' $callback>\n";
+		$html .= "<div id='". $escapador->escapeHtmlAttr('opciones_'. $this->id_form)."' $callback>\n";
 		$html .= "<table>\n";
 		if (!is_array($this->opciones)) {
 			$datos = array();	
@@ -327,20 +330,20 @@ class toba_ef_radio extends toba_ef_seleccion
 			$datos = $this->opciones;	
 		}
 		$i=0;
-		$tab_index = "tabindex='".$this->padre->get_tab_index()."'";
+		$tab_index = "tabindex='".$escapador->escapeHtmlAttr($this->padre->get_tab_index())."'";
 		foreach ($datos as $clave => $valor) {
 			if ($i % $this->cantidad_columnas == 0) {
 				$html .= "<tr>\n";	
 			}
-			$id = $this->id_form . $i;    		
-			$html .= "\t<td><label class='{$this->clase_css}' for='$id'>";
+			$id = $escapador->escapeHtmlAttr($this->id_form . $i);    		
+			$html .= "\t<td><label class='". $escapador->escapeHtmlAttr($this->clase_css)."' for='$id'>";
 			$es_actual = (strval($estado) == strval($clave));
 			if (! $this->es_solo_lectura()) {
 				$sel = ($es_actual) ? "checked" : "";
 				if (! $this->permitir_html) {
-					$clave = texto_plano($clave);
+					$clave = $escapador->escapeHtmlAttr($clave);
 				}
-				$html .= "<input type='radio' id='$id' name='{$this->id_form}' value='$clave' $sel $callback $tab_index />";
+				$html .= "<input type='radio' id='$id' name='". $escapador->escapeHtmlAttr($this->id_form)."' value='$clave' $sel $callback $tab_index />";
 				$tab_index = '';
 			} else {
 				//--- Caso solo lectura
@@ -348,7 +351,7 @@ class toba_ef_radio extends toba_ef_seleccion
 				$html .= toba_recurso::imagen_toba('nucleo/'.$img,true,16,16);
 			}
 			if (! $this->permitir_html) {
-				$valor = texto_plano($valor);
+				$valor = $escapador->escapeHtml($valor);
 			}
 			$html .= "$valor</label></td>\n";			
 			$i++;
@@ -369,7 +372,8 @@ class toba_ef_radio extends toba_ef_seleccion
 		
 	function crear_objeto_js()
 	{
-		return "new ef_radio({$this->parametros_js()}, $this->cantidad_columnas)";
+		$columnas = toba::escaper()->escapeJs($this->cantidad_columnas);
+		return "new ef_radio({$this->parametros_js()}, $columnas)";
 	}	
 }
 

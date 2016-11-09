@@ -54,6 +54,7 @@ class toba_parser_ayuda
 	static function parsear_wiki($id, $nombre, $proyecto=null, $resumido=false)
 	{
 		// Busco la base de la URL
+		$escapador = toba::escaper();
 		$url_base = '';
 		if (isset($proyecto)) {
 			$url_base .= toba::instancia()->get_url_proyecto($proyecto).'/';
@@ -70,21 +71,21 @@ class toba_parser_ayuda
 			if (strpos($id, '#') !== false) {
 				$anchor = substr($id, strpos($id, '#')+1);			
 				$id = substr($id, 0, strpos($id, '#'));
-				$url = $url_base."$id.html#$anchor";
+				$url = $url_base. $escapador->escapeUrl($id).'.html#'.$escapador->escapeUrl($anchor);
 			} else {
-				$url = $url_base."$id.html";
+				$url = $url_base.$escapador->escapeUrl($id).'.html';
 			}
 		} else {
 				
-			$url = $url_base."$id";
+			$url = $url_base. $escapador->escapeUrl($id);
 		}
 		// Genero la salida
 		if ($resumido) {
 			return $url;
 		} else {
 			$img = toba_recurso::imagen_toba("wiki.gif", true);
-			$tag = "<a href=$url target=wiki>$nombre</a>$img";
-			return str_replace("'", "\\'", $tag);
+			$tag = "<a href=". $escapador->escapeHtmlAttr($url)." target=wiki>". $escapador->escapeHtml($nombre)."</a>$img";
+			return $tag;
 		}
 	}
 	
@@ -95,11 +96,11 @@ class toba_parser_ayuda
 			$anchor = substr($id, strpos($id, '#')+1);			
 			$id = substr($id, 0, strpos($id, '#'));
 		}
-		
-		$url = toba_recurso::url_proyecto($proyecto)."/doc/api/$id.html#$anchor";
+		$escapador = toba::escaper();
+		$url = toba_recurso::url_proyecto($proyecto)."/doc/api/". $escapador->escapeUrl($id).'.html#'. $escapador->escapeUrl($anchor);
 		$img = toba_recurso::imagen_proyecto("api.gif", true, null, null, null, null, $proyecto);
-		$tag = "<a href=$url  target=api>$nombre</a>$img";
-		return str_replace("'", "\\'", $tag);
+		$tag = "<a href=". $escapador->escapeHtmlAttr($url)."  target=api>". $escapador->escapeHtml($nombre)."</a>$img";
+		return $tag;
 	}
 	
 	static function parsear_api_js($id, $nombre, $proyecto=null, $resumido=false)
@@ -109,33 +110,36 @@ class toba_parser_ayuda
 			$anchor = substr($id, strpos($id, '#')+1);			
 			$id = substr($id, 0, strpos($id, '#'));
 		}
-		
-		$url = toba_recurso::url_proyecto($proyecto)."/doc/api_js/$id.html#$anchor";
+		$escapador = toba::escaper();
+		$url = toba_recurso::url_proyecto($proyecto)."/doc/api_js/". $escapador->escapeUrl($id).'.html#'. $escapador->escapeUrl($anchor);
 		$img = toba_recurso::imagen_proyecto("api.gif", true);
-		$tag = "<a href=$url  target=api>$nombre</a>$img";
-		return str_replace("'", "\\'", $tag);
+		$tag = "<a href=". $escapador->escapeHtmlAttr($url)."  target=api>". $escapador->escapeHtml($nombre)."</a>$img";
+		return $tag;
 	}	
 	
 	protected static function parsear_link($id, $nombre, $proyecto=null, $resumido=false)
 	{
 		$url = toba_recurso::url_proyecto()."/".$id;
-		$tag = "<a href=$url  target=_blank>$nombre</a>";
-		return str_replace("'", "\\'", $tag);		
+		$escapador = toba::escaper();
+		$tag = "<a href=". $escapador->escapeHtmlAttr($url)."  target=_blank>". $escapador->escapeHtml($nombre)."</a>";
+		return $tag;
 	}
 	
 	protected static function parsear_url($id, $nombre, $proyecto=null, $resumido=false)
 	{
 		$url = $id;
-		$tag = "<a href=$url  target=_blank>$nombre</a>";
-		return str_replace("'", "\\'", $tag);		
+		$escapador = toba::escaper();
+		$tag = "<a href=". $escapador->escapeHtmlAttr($url)."  target=_blank>". $escapador->escapeHtml($nombre)."</a>";
+		return $tag;
 	}
 	
 	protected static function parsear_test($id, $nombre, $proyecto=null, $resumido=false)
 	{
+		$escapador = toba::escaper();
 		if (! $resumido) {
-			return "<test id='$id'>$nombre</test>";
+			return "<test id='". $escapador->escapeHtmlAttr($id)."'>". $escapador->escapeHtml($nombre)."</test>";
 		} else {
-			return "<test>$id</test>";
+			return '"<test>'. $escapador->escapeHtml($id).'</test>';
 		}
 	}
 	

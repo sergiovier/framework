@@ -62,7 +62,8 @@ abstract class toba_filtro_columna_compuesta extends toba_filtro_columna
 		if (isset($this->_estado) && $this->_estado['condicion'] == 'entre' && isset($this->_estado['valor']['hasta'])) {
 			$this->_ef->set_estado($this->_estado['valor']['hasta']);
 		}
-		echo "<div id='{$this->_id_form_cond}_ef_extra' style='display:none'>";		
+		$id_div = toba::escaper()->escapeHtmlAttr($this->_id_form_cond. '_ef_extra');
+		echo "<div id='{$id_div}' style='display:none'>";		
 		echo $this->_ef->get_input();
 		//Se retorna al id original
 		echo $this->_ef->ir_a_fila();
@@ -71,8 +72,9 @@ abstract class toba_filtro_columna_compuesta extends toba_filtro_columna
 	
 	function get_html_condicion()
 	{
+		$id_div = toba::escaper()->escapeHtmlAttr($this->_id_form_cond. '_label_extra');
 		$html = parent::get_html_condicion();
-		$html .= "<div id='{$this->_id_form_cond}_label_extra' style='display:none'>";
+		$html .= "<div id='{$id_div}' style='display:none'>";
 		$html .= '<br>y</div>';
 		return $html;
 	}		

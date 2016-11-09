@@ -11,11 +11,12 @@ class toba_ei_cuadro_salida_impresion_html extends toba_ei_cuadro_salida_html
 	*/
 	function impresion_html_inicio()
 	{
+		$escapador = toba::escaper();
 		$info = $this->_cuadro->get_informacion_basica_cuadro();
-		$cant_columnas = $this->_cuadro->get_cantidad_columnas_total();
+		$cant_columnas = $escapador->escapeHtmlAttr($this->_cuadro->get_cantidad_columnas_total());
 
 
-		$ancho = isset($info["ancho"]) ? $info["ancho"] : "";
+		$ancho = isset($info["ancho"]) ? $escapador->escapeHtmlAttr($info["ancho"]) : "";
 		echo "<TABLE width='$ancho' class='ei-base ei-cuadro-base'>";
 		// Cabecera
 		echo"<tr><td class='ei-cuadro-cabecera' colspan='$cant_columnas'>";
@@ -36,7 +37,7 @@ class toba_ei_cuadro_salida_impresion_html extends toba_ei_cuadro_salida_html
 	{
 		$info = $this->_cuadro->get_informacion_basica_cuadro();
 		if(trim($info["subtitulo"])<>""){
-			echo $info["subtitulo"];
+			echo toba::escaper()->escapeHtml($info["subtitulo"]);
 		}
 	}
 
@@ -83,52 +84,53 @@ class toba_ei_cuadro_salida_impresion_html extends toba_ei_cuadro_salida_html
 
 	function generar_layout_fila($columnas, $datos, $id_fila,  $clave_fila, $evt_multiples, $objeto_js, $estilo_fila, $formateo)
 	{
-			$esta_seleccionada = $this->_cuadro->es_clave_fila_seleccionada($clave_fila);
-			$estilo_seleccion = ($esta_seleccionada) ? "ei-cuadro-fila-sel" : "ei-cuadro-fila";
+		$esta_seleccionada = $this->_cuadro->es_clave_fila_seleccionada($clave_fila);
+		$estilo_seleccion = ($esta_seleccionada) ? "ei-cuadro-fila-sel" : "ei-cuadro-fila";
+		$escapador = toba::escaper();
 
-			 //---> Creo las CELDAS de una FILA <----
-            echo "<tr class='$estilo_fila' >\n";
- 			foreach (array_keys($columnas) as $a) {
-                //*** 1) Recupero el VALOR
-				$valor = "";
-                if(isset($columnas[$a]["clave"])) {
-					if(isset($datos[$id_fila][$columnas[$a]["clave"]])) {
-						$valor_real = $datos[$id_fila][$columnas[$a]["clave"]];
-						//-- Hace el saneamiento para evitar inyección XSS
-						if (!isset($columnas[$a]['permitir_html']) || $columnas[$a]['permitir_html'] == 0) {
-							  $valor_real = texto_plano($valor_real);
-						}
-					}else{
-						$valor_real = null;
-						//ATENCION!! hay una columna que no esta disponible!
+		 //---> Creo las CELDAS de una FILA <----
+		echo "<tr class='". $escapador->escapeHtmlAttr($estilo_fila)."' >\n";
+		foreach (array_keys($columnas) as $a) {
+			//*** 1) Recupero el VALOR
+			$valor = "";
+			if(isset($columnas[$a]["clave"])) {
+				if(isset($datos[$id_fila][$columnas[$a]["clave"]])) {
+					$valor_real = $datos[$id_fila][$columnas[$a]["clave"]];
+					//-- Hace el saneamiento para evitar inyección XSS
+					if (!isset($columnas[$a]['permitir_html']) || $columnas[$a]['permitir_html'] == 0) {
+						  $valor_real =  $escapador->escapeHtml($valor_real);
 					}
-	                //Hay que formatear?
-	                if(isset($columnas[$a]["formateo"])) {
-	                    $funcion = "formato_" . $columnas[$a]["formateo"];
-	                    //Formateo el valor
-	                    $valor = $formateo->$funcion($valor_real);
-	                } else {
-	                	$valor = $valor_real;
-	                }
-	            }
+				}else{
+					$valor_real = null;
+					//ATENCION!! hay una columna que no esta disponible!
+				}
+				//Hay que formatear?
+				if(isset($columnas[$a]["formateo"])) {
+					$funcion = "formato_" . $columnas[$a]["formateo"];
+					//Formateo el valor
+					$valor = $formateo->$funcion($valor_real);
+				} else {
+					$valor = $valor_real;
+				}
+			}
 
-                //*** 2) Genero el HTML
-				$ancho = "";
-            	if(isset($columnas[$a]["ancho"])) {
-	                $ancho = " width='". $columnas[$a]["ancho"] . "'";
-	            }
+			//*** 2) Genero el HTML
+			$ancho = "";
+			if(isset($columnas[$a]["ancho"])) {
+				$ancho = " width='". $escapador->escapeHtmlAttr($columnas[$a]["ancho"] ). "'";
+			}
 
-	          //Emito el valor de la celda
-                echo "<td class='$estilo_seleccion ".$columnas[$a]["estilo"]."' $ancho>\n";
-                if (trim($valor) !== '') {
-                	echo $valor;
-                } else {
-                	echo '&nbsp;';
-                }
-                echo "</td>\n";
-                //Termino la CELDA
-            }
-            echo "</tr>\n";
+		  //Emito el valor de la celda
+			echo "<td class='$estilo_seleccion ".$escapador->escapeHtmlAttr($columnas[$a]["estilo"])."' $ancho>\n";
+			if (trim($valor) !== '') {
+				echo $valor;
+			} else {
+				echo '&nbsp;';
+			}
+			echo "</td>\n";
+			//Termino la CELDA
+		}
+		echo "</tr>\n";
 	}
 
 	//-------------------------------------------------------------------------------
@@ -145,10 +147,11 @@ class toba_ei_cuadro_salida_impresion_html extends toba_ei_cuadro_salida_html
 		if(method_exists($this, $metodo_redeclarado)){
 			$metodo = $metodo_redeclarado;
 		}
+		$escapador = toba::escaper();
 		$nivel_css = $this->get_nivel_css($nodo['profundidad']);
-		$class = "ei-cuadro-cc-tit-nivel-$nivel_css";
+		$class = $escapador->escapeHtmlAttr("ei-cuadro-cc-tit-nivel-$nivel_css");
 		if($this->_cuadro->get_cortes_modo() == apex_cuadro_cc_tabular) {
-				$total_columnas = $this->_cuadro->get_cantidad_columnas_total();
+				$total_columnas = $escapador->escapeHtmlAttr($this->_cuadro->get_cantidad_columnas_total());
 				if ($this->_cuadro->debe_colapsar_cortes()) {
 					echo "<table width='100%' class='tabla-0' border='0'><tr><td width='100%' class='$class ei-cuadro-cc-colapsable'>";
 				} else {
@@ -184,7 +187,7 @@ class toba_ei_cuadro_salida_impresion_html extends toba_ei_cuadro_salida_html
 
 	function impresion_html_inicio_zona_colapsable($id_unico, $estilo)
 	{
-			echo "<table class='tabla-0' id='$id_unico' width='100%' border='1' ><tr><td>\n";
+			echo "<table class='tabla-0' id='". toba::escaper()->escapeHtmlAttr($id_unico)."' width='100%' border='1' ><tr><td>\n";
 	}
 
 	function impresion_html_fin_zona_colapsable()

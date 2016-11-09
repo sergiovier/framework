@@ -21,7 +21,7 @@ class toba_tp_popup extends toba_tp_basico_titulo
 			echo toba_recurso::imagen_toba("ayuda_grande.gif", true);
 			echo "</div>";
 		}		
-		echo "<div class='item-barra-tit'>".$this->titulo_item()."</div>";
+		echo "<div class='item-barra-tit'>". toba::escaper()->escapeHtml($this->titulo_item())."</div>";
 		echo "</div>\n\n";
 	}
 

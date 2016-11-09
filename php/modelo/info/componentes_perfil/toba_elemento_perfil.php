@@ -38,7 +38,7 @@ abstract class toba_elemento_perfil implements toba_nodo_arbol_form
 	{
 		$this->id = $datos['item'];
 		$this->proyecto = $datos['proyecto'];
-		$this->grupo_acceso = $grupo_acceso;
+		$this->grupo_acceso = trim($grupo_acceso);
 		$this->proyecto = $datos['proyecto'];
 		$this->nombre_corto = $datos['nombre'];
 		if (!isset($datos['descripcion'])) {

@@ -92,9 +92,6 @@ class toba_zona
 		}
 	}
 	
-	/**
-	 * Carga la informacion del editable a partir de una subclase y metodo datos.
-	 */
 	protected function cargar_info()
 	{
 		if (isset($this->metodo_cons['archivo'])) {
@@ -130,10 +127,6 @@ class toba_zona
 		}
 	}
 	
-	/**
-	 *  Devuelve la descripcion del editable si es que fue provista entre la informacion
-	 * @return string
-	 */
 	protected function get_editable_nombre()
 	{
 		if (is_scalar($this->editable_info)) {
@@ -148,10 +141,6 @@ class toba_zona
 		return '';	
 	}
 	
-	/**
-	 * Devuelve el identificador del editable propagado
-	 * @return mixed
-	 */
 	protected function get_editable_id()
 	{
 		if (is_array($this->editable_id)) {
@@ -280,12 +269,11 @@ class toba_zona
 	//-------------------------------------------------------------------------------
 	//--------------------------   INTERFACE GRAFICA   ------------------------------
 	//-------------------------------------------------------------------------------
-	/**
-	 * Genera el html de la barra de zona
-	 */
+
 	function generar_html_barra_superior()
 	{
-		echo "<div class='zona-barra-sup' id='zona_{$this->id}'>";
+		$escapador = toba::escaper();
+		echo "<div class='zona-barra-sup' id='". $escapador->escapeHtmlAttr('zona_' .$this->id)."'>";
 		echo "<div class='zona-items'>";
 		$this->generar_html_barra_vinculos();
 		echo "</div>";		
@@ -302,18 +290,15 @@ class toba_zona
 	{
 		if ($this->get_modo_url()){
 			echo "<div class='zona-barra-id'>";
-			echo $this->get_editable_id();
+			echo toba::escaper()->escapeHtml($this->get_editable_id());
 			echo "</div>";
 		}
 	}
 	
-	/**
-	 * Genera el nombre del editable en la barra
-	 */
 	function generar_html_barra_nombre()
 	{
 		echo "<div class='zona-barra-desc'>";
-		echo $this->get_editable_nombre();
+		echo toba::escaper()->escapeHtml($this->get_editable_nombre());
 		echo "</div>";
 	}
 
@@ -326,11 +311,12 @@ class toba_zona
 	function generar_html_barra_vinculos()
 	{
 		$item_solicitado = toba::memoria()->get_item_solicitado();
+		$escapador = toba::escaper();
 		foreach($this->items_vecinos as $item) {
 			$vinculo = toba::vinculador()->get_url($item['item_proyecto'], $item['item']);
 			//Pide el vinculo por si no tiene permisos
 			if (isset($vinculo)) {
-				$js = "onclick=\"toba.ir_a_operacion('{$item['item_proyecto']}', '{$item['item']}', false, true)\"";
+				$js = "onclick=\"toba.ir_a_operacion('". $escapador->escapeHtmlAttr($item['item_proyecto'])."', '". $escapador->escapeHtmlAttr($item['item'])."', false, true)\"";
 				$css = ($item_solicitado[1] == $item['item']) ? 'class="active"' : '';
 	 			echo "<a href='#' $js $css>";
 				if((isset($item['imagen_origen']))&&(isset($item['imagen']))){

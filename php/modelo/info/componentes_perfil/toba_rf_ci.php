@@ -7,7 +7,7 @@ class toba_rf_ci extends toba_rf_componente
 	{
 		parent::__construct($restriccion, $proyecto, $item, $componente, $padre);
 		$this->primer_nivel = $primer_nivel;
-		$grupo = new toba_rf_grupo_pantallas('<b>PANTALLAS</b>', $this);
+		$grupo = new toba_rf_grupo_pantallas('PANTALLAS', $this);
 		$this->agregar_hijo($grupo);
 		$deps = $this->cargar_datos_dependencias();
 		$pantallas = $this->cargar_datos_pantallas();
@@ -148,12 +148,14 @@ class toba_rf_ci extends toba_rf_componente
 	function get_input($id)
 	{
 		if(!$this->primer_nivel) {
+			$escapador = toba::escaper();
 			$id_input = $id.'_oculto';
 			$valor_inicial = $this->no_visible_actual ? 1 : 0;
 			$img_inicial = $this->no_visible_actual ? $this->img_oculto : $this->img_visible;			
-			$html = "<img src='$img_inicial' id='".$id_input."_img' title='Visible / Oculto' onclick='{$this->id_js_arbol}.cambiar_oculto(\"{$this->get_id()}\")' />";
+			$html = "<img src='". $escapador->escapeHtmlAttr($img_inicial)."' id='". $escapador->escapeHtmlAttr($id_input.'_img')."' title='Visible / Oculto' onclick='". $escapador->escapeHtmlAttr($this->id_js_arbol).".cambiar_oculto(\"". $escapador->escapeHtmlAttr($this->get_id())."\")' />";
 			if ($this->comunicacion_elemento_input) {
-				$html .= "<input type='hidden' value='$valor_inicial' id='$id_input' name='$id_input' />";
+				$id_input = $escapador->escapeHtmlAttr($id_input);
+				$html .= "<input type='hidden' value='". $escapador->escapeHtmlAttr($valor_inicial)."' id='$id_input' name='$id_input' />";
 			}
 			return $html;
 		}

@@ -28,15 +28,15 @@ class toba_error extends Exception
 	function get_mensaje_log()
 	{
 		if (isset($this->mensaje_solo_debug)) {
-			return $this->get_mensaje().' '.$this->mensaje_solo_debug;
+			return toba::escaper()->escapeHtml($this->get_mensaje().' '.$this->mensaje_solo_debug);
 		} else {
-			return $this->get_mensaje();
+			return toba::escaper()->escapeHtml($this->get_mensaje());
 		}
 	}
 	
 	function get_titulo_ventana()
 	{
-		return $this->titulo_ventana;
+		return toba::escaper()->escapeHtml($this->titulo_ventana);
 	}
 }
 
@@ -278,10 +278,11 @@ class toba_error_ini_sesion extends toba_error
 class toba_error_comunicacion extends toba_error
 {
 	function __construct($mensaje, $opciones, $headers)
-	{
+	{		
 		if (PHP_SAPI != 'cli') {		
-			$extra = "<ul><li>Opciones: <pre>".print_r($opciones, true)."</pre>";
-			$extra .= "<li>Headers Respuesta: <pre>".print_r($headers, true)."</pre></ul>";
+			$escapador = toba::escaper();
+			$extra = "<ul><li>Opciones: <pre>". $escapador->escapeHtml(print_r($opciones, true))."</pre>";
+			$extra .= "<li>Headers Respuesta: <pre>".$escapador->escapeHtml(print_r($headers, true))."</pre></ul>";
 		} else {
 			$extra = "\nOpciones: ".print_r($opciones, true);			
 		}

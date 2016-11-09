@@ -18,11 +18,6 @@ abstract class toba_filtro_columna
 	protected $_funcion_formateo = null;
 	protected $_condicion_default = null;
 	
-	/**
-	 * Constructor
-	 * @param array $datos
-	 * @param toba_ei $padre
-	 */
 	function __construct($datos, $padre) 
 	{
 		$this->_datos = $datos;
@@ -39,11 +34,7 @@ abstract class toba_filtro_columna
 	//-----------------------------------------------
 	//--- COMANDOS ---------------------------------
 	//-----------------------------------------------	
-	/**
-	 * Indica el estado de la columna
-	 * @param array $estado Array( 'condicion' => 'xx', 'valor' => yy)
-	 * @throws toba_error_def
-	 */
+	
 	function set_estado($estado)
 	{
 		if ($this->hay_condicion_fija()){
@@ -58,38 +49,22 @@ abstract class toba_filtro_columna
 		$this->_ef->set_estado($estado['valor']);
 	}	
 	
-	/**
-	 * Indica si la columna es visible inicialmente
-	 * @param boolean $visible
-	 */
 	function set_visible($visible)
 	{
 		$this->_datos['inicial'] = $visible;
 	}	
 	
-	/**
-	 * Indica si la columna debe colocarse solo lectura
-	 * @param boolean $solo_lectura
-	 */
 	function set_solo_lectura($solo_lectura = true)
 	{
 		$this->_solo_lectura = $solo_lectura;
 		$this->_ef->set_solo_lectura($solo_lectura);
 	}
 	
-	/**
-	 * Indica la expresion de evaluacion de la columna
-	 * @param string $campo
-	 */
 	function set_expresion($campo)
 	{
 		$this->_datos['expresion'] = $campo;
 	}
 	
-	/**
-	 * Carga el estado de la columna
-	 * @throws toba_error_seguridad
-	 */
 	function cargar_estado_post()
 	{
 		$this->_estado = array();	
@@ -108,29 +83,17 @@ abstract class toba_filtro_columna
 		
 	}	
 	
-	/**
-	 * Agrega una condicion a la columna
-	 * @param mixed $id
-	 * @param toba_filtro_condicion $condicion
-	 */
 	function agregar_condicion($id, toba_filtro_condicion $condicion)
 	{
 		$this->_condiciones[$id] = $condicion;
 	}
 	
-	/**
-	 * Elimina la condicion indicada
-	 * @param mixed $id
-	 */
 	function borrar_condicion($id)
 	{
 		unset($this->_condiciones[$id]);
 	}
-
-	/**
-	 * Indica con que funcion se formateara el dato
-	 * @param mixed $funcion
-	 */
+	
+	
 	function set_formateo($funcion)
 	{
 		$this->_funcion_formateo = $funcion;
@@ -139,154 +102,91 @@ abstract class toba_filtro_columna
 	//--- CONSULTAS ---------------------------------
 	//-----------------------------------------------
 	
-	/**
-	 * Indica el id de la columna 
-	 * @return mixed
-	 */
+	
+	
 	function get_id_metadato()
 	{
 		return $this->_datos['objeto_ei_filtro_col'];
 	}
 	
-	/**
-	 * Indica el id del filtro que contiene la columna
-	 * @return mixed
-	 */
 	function get_id_form()
 	{
 		return $this->_padre->get_id_form();
 	}
 	
-	/**
-	 * Indica la posicion de la columna con respecto a las otras
-	 * @return integer
-	 */
 	function get_tab_index()
 	{
 		return $this->_padre->get_tab_index();
 	}
 	
-	/**
-	 * Indica si la columna es obligatoria
-	 * @return boolean
-	 */
 	function es_obligatorio()
 	{
 		return $this->_ef->es_obligatorio();
 	}
-	
-	/**
-	 * Indica si la columna es solo lectura
-	 * @return boolean
-	 */
+
 	function es_solo_lectura()
 	{
 		return $this->_solo_lectura;
 	}
 	
-	/**
-	 * Indica si la columna es visible
-	 * @return boolean
-	 */
 	function es_visible()
 	{
 		return $this->_datos['inicial'];
 	}
 	
-	/**
-	 * Indica si la columna es compuesta, esto es si el dato es complejo
-	 * @return boolean
-	 */
 	function es_compuesto()
 	{
 		return false;
 	}
 	
-	/**
-	 * Devuelve el nombre de la columna
-	 * @return string
-	 */
 	function get_nombre()
 	{
 		return $this->_datos['nombre'];
 	}
 	
-	/**
-	 * Devuelve un objeto de tipo ef
-	 * @return toba_ef
-	 */
 	function get_ef()
 	{
 		return $this->_ef;
 	}
 	
-	/**
-	 * Devuelve la expresion de la columna
-	 * @return string
-	 */
 	function get_expresion()
 	{
 		return $this->_datos['expresion'];
 	}
 
-	/**
-	 * Devuelve la etiqueta de la columna
-	 * @return string
-	 */
 	function get_etiqueta()
 	{
 		return $this->_datos['etiqueta'];
 	}
 
-	/**
-	 * Devuelve la funcion de formateo de la columna
-	 * @return mixed
-	 */
+
 	function get_formateo()
 	{
 		return $this->_funcion_formateo;	
 	}
 	
-	/**
-	 * Invoca la validacion del estado de la columna
-	 * @return boolean
-	 */
 	function validar_estado()
 	{
 		return $this->_ef->validar_estado();
 	}
 	
-	/**
-	 * Resetea el estado de la columna
-	 */
+	
 	function resetear_estado()
 	{
 		$this->_ef->resetear_estado();
 		$this->_estado = null;
 	}
 	
-	/**
-	 * Devuelve el estado de la columna
-	 * @return mixed
-	 */
 	function get_estado()
 	{
 		return $this->_estado;
 	}
-	
-	/**
-	 * Indica si la columna tiene estado
-	 * @return boolean
-	 */
+
 	function tiene_estado()
 	{
 		return isset($this->_estado);
 	}
 	
-	/**
-	 * Indica la cantidad de condiciones de la columna
-	 * @return integer
-	 */
 	function get_cant_condiciones()
 	{
 		return count($this->_condiciones);
@@ -375,12 +275,6 @@ abstract class toba_filtro_columna
 		}
 	}
 	
-	/**
-	 * Fija una condicion 
-	 * @param toba_filtro_condicion $condicion
-	 * @param string $nombre
-	 * @throws toba_error_def
-	 */
 	function set_condicion(toba_filtro_condicion $condicion, $nombre=null)
 	{
 		if (! isset($nombre)) {
@@ -394,10 +288,7 @@ abstract class toba_filtro_columna
 		}		
 	}
 	
-	/**
-	 * Devuelve una clausula SQL en base a su estado interno
-	 * @return string
-	 */
+	
 	function get_sql_where()
 	{
 		if (isset($this->_estado)) {
@@ -410,27 +301,26 @@ abstract class toba_filtro_columna
 	//-----------------------------------------------
 	//--- SALIDA HTML  ------------------------------
 	//-----------------------------------------------
-	/**
-	 * Genera el HTML para graficar la condicion
-	 * @return string
-	 */
+	
 	function get_html_condicion()
 	{
+		$escapador = toba::escaper();
+		$id_cond = $escapador->escapeHtmlAttr($this->_id_form_cond);
 		if (count($this->_condiciones) > 1) {
 			//-- Si tiene mas de una condicion se muestran con un combo
-			$onchange = "{$this->get_objeto_js()}.cambio_condicion(\"{$this->get_nombre()}\");";
+			$onchange = "{$this->get_objeto_js()}.cambio_condicion(\"". $escapador->escapeHtmlAttr($this->get_nombre())."\");";
 			$html = '';
 			if ($this->hay_condicion_default() && (!isset($this->_estado['condicion']) || is_null($this->_estado['condicion']))){
 				//Si no tiene estado y hay default seteado, el default es el nuevo estado
 				$this->_estado['condicion'] = $this->_condicion_default;
 			}
 			if ($this->_solo_lectura || $this->hay_condicion_fija()) {
-				$id = $this->_id_form_cond.'_disabled';
+				$id = $escapador->escapeHtmlAttr($this->_id_form_cond.'_disabled');
 				$disabled = 'disabled';
-				$html .= "<input type='hidden' id='{$this->_id_form_cond}' name='{$this->_id_form_cond}' value='{$this->_estado['condicion']}'/>\n";				
+				$html .= "<input type='hidden' id='{$id_cond}' name='{$id_cond}' value='{$this->_estado['condicion']}'/>\n";				
 			} else {
 				$disabled = '';
-				$id = $this->_id_form_cond;
+				$id = $id_cond;
 			}
 			$html .= "<select id='$id' name='$id' $disabled onchange='$onchange'>";
 			foreach ($this->_condiciones as $id => $condicion) {
@@ -438,38 +328,32 @@ abstract class toba_filtro_columna
 				if (isset($this->_estado) && $this->_estado['condicion'] == $id) {
 					$selected = 'selected';	
 				}
-				$html .= "<option value='$id' $selected>".$condicion->get_etiqueta()."</option>\n";
+				$id_sf = $escapador->escapeHtmlAttr($id);
+				$html .= "<option value='$id_sf' $selected>".$escapador->escapeHtml($condicion->get_etiqueta())."</option>\n";
 			}
 			$html .= '</select>';
 
 			return $html;
 		} else {
 			reset($this->_condiciones);
-			$condicion = key($this->_condiciones);
+			$condicion = $escapador->escapeHtmlAttr(key($this->_condiciones));
 			//-- Si tiene una unica, seria redundante mostrarle la unica opción, se pone un hidden
-			return "<input type='hidden' id='{$this->_id_form_cond}' name='{$this->_id_form_cond}' value='$condicion'/>&nbsp;";
+			return "<input type='hidden' id='{$id_cond}' name='{$id_cond}' value='$condicion'/>&nbsp;";
 		}
 	}	
 	
-	/**
-	 * Genera el HTML para el campo
-	 */
 	function get_html_valor()
 	{
 		echo $this->_ef->get_input();
 	}
 
-	/**
-	 * Genera la etiqueta
-	 * @return string
-	 */
 	function get_html_etiqueta()
 	{
 		$html = '';
 		$marca ='';		
 		if ($this->_ef->es_obligatorio()) {
-			$estilo = 'ei-filtro-etiq-oblig';
-			$marca = '(*)';
+				$estilo = 'ei-filtro-etiq-oblig';
+				$marca = '(*)';
 		} else {
 			$estilo = 'ei-filtro-etiq';
 		}
@@ -479,10 +363,10 @@ abstract class toba_filtro_columna
 			$desc = toba_parser_ayuda::parsear($desc);
 			$desc = toba_recurso::imagen_toba("descripcion.gif",true,null,null,$desc);
 		}
-		$id_ef = $this->_ef->get_id_form();					
+		$id_ef = toba::escaper()->escapeHtmlAttr($this->_ef->get_id_form());					
 		$editor = '';		
 		//$editor = $this->generar_vinculo_editor($ef);
-		$etiqueta = $this->get_etiqueta();
+		$etiqueta = toba::escaper()->escapeHtml($this->get_etiqueta());
 		$html .= "<label for='$id_ef' class='$estilo'>$editor $desc $etiqueta $marca</label>\n";
 		return $html;
 	}
@@ -491,38 +375,22 @@ abstract class toba_filtro_columna
 	//-----------------------------------------------
 	//--- JAVASCRIPT   ------------------------------
 	//-----------------------------------------------
-	/**
-	 * Devuelve el objeto JS correspondiente a la columna
-	 * @param string $id
-	 * @return mixed
-	 */
+
 	function get_objeto_js_ef($id)
 	{
 		return $this->_padre->get_objeto_js_ef($id);
 	}
 	
-	/**
-	 * Devuelve el objeto JS correspondiente al filtro
-	 * @return type
-	 */	
 	function get_objeto_js()
 	{
 		return $this->_padre->get_objeto_js();
 	}
 		
-	/**
-	 * Devuelve el consumo JS de la columna
-	 * @return string
-	 */
 	function get_consumo_javascript()
 	{
 		return $this->_ef->get_consumo_javascript();
 	}
 	
-	/**
-	 * Genera el objeto JS para la columna y lo devuelve
-	 * @return mixed
-	 */
 	function crear_objeto_js()
 	{
 		return $this->_ef->crear_objeto_js();

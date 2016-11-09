@@ -240,9 +240,10 @@ abstract class toba_ef_multi_seleccion extends toba_ef
 	
 	protected function parametros_js()
 	{
+		$escapador = toba::escaper();
 		$limites = array();
-		$limites[0] = isset($this->cant_minima) ? $this->cant_minima : null;
-		$limites[1] = isset($this->cant_maxima) ? $this->cant_maxima : null;
+		$limites[0] = isset($this->cant_minima) ? $escapador->escapeJs($this->cant_minima) : null;
+		$limites[1] = isset($this->cant_maxima) ? $escapador->escapeJs($this->cant_maxima) : null;
 		return parent::parametros_js().','.toba_js::arreglo($limites, false);
 	}
 	
@@ -269,16 +270,16 @@ abstract class toba_ef_multi_seleccion extends toba_ef
 		
 	function get_descripcion_estado($tipo_salida)
 	{
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				$desc = "<ul class='{$this->clase_css}'>\n";
+				$desc = "<ul class='". $escapador->escapeHtmlAttr($this->clase_css)."'>\n";
 				foreach ($this->get_estado_para_input() as $estado) {
-					$desc .= "<li>{$this->opciones[$estado]}</li>\n";
+					$desc .= '"<li>'. $escapador->escapeHtml($this->opciones[$estado])."</li>\n";
 				}
 				$desc .= "</ul>\n";
 				return $desc;	
-			break;
 			case 'pdf':
 				$desc = array();
 				foreach ($this->get_estado_para_input() as $estado) {
@@ -365,19 +366,21 @@ class toba_ef_multi_seleccion_lista extends toba_ef_multi_seleccion
 	{
 		$estado = $this->get_estado_para_input();
 		$html = "";
+		$escapador = toba::escaper();
 		if (!$this->es_solo_lectura() && $this->mostrar_utilidades)	{
+			$id_objeto = $this->objeto_js();
 			$html .= "
-				<div class='ef-multi-sel-todos' id='{$this->id_form}_utilerias'>
-					<a href=\"javascript:{$this->objeto_js()}.seleccionar_todo(true)\">Todos</a> / 
-					<a href=\"javascript:{$this->objeto_js()}.seleccionar_todo(false)\">Ninguno</a></div>
+				<div class='ef-multi-sel-todos' id='". $escapador->escapeHtmlAttr($this->id_form.'_utilerias')."'>
+					<a href=\"javascript:{$id_objeto}.seleccionar_todo(true)\">Todos</a> / 
+					<a href=\"javascript:{$id_objeto}.seleccionar_todo(false)\">Ninguno</a></div>
 			";
 		}
 		$tamanio = isset($this->tamanio) ? $this->tamanio: count($this->opciones);
-		$tab = $this->padre->get_tab_index();
+		$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 		$extra = " tabindex='$tab'";
 		$extra .= ($this->es_solo_lectura()) ? "disabled" : "";
 		if (isset($this->ancho)) {
-			$extra .= " style='width: {$this->ancho}'";
+			$extra .= " style='width: ". $escapador->escapeHtmlAttr($this->ancho)."'";
 		}
 		$html .= toba_form::multi_select($this->id_form, $estado, $this->opciones, $tamanio, $this->clase_css, $extra);
 		$html .= $this->get_html_iconos_utilerias();
@@ -421,7 +424,8 @@ class toba_ef_multi_seleccion_check extends toba_ef_multi_seleccion
     
 	function crear_objeto_js()
 	{
-		return "new ef_multi_seleccion_check({$this->parametros_js()}, $this->cantidad_columnas)";
+		$cant = toba::escaper()->escapeJs($this->cantidad_columnas);
+		return "new ef_multi_seleccion_check({$this->parametros_js()}, $cant)";
 	}	
 	
 	function set_cantidad_columnas($cantidad)
@@ -436,44 +440,46 @@ class toba_ef_multi_seleccion_check extends toba_ef_multi_seleccion
 	
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		$estado = $this->get_estado_para_input();
 		$html = "";
 		$i = 0;
-		$tab = $this->padre->get_tab_index();
+		$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 		$input_extra = " tabindex='$tab'";
 		
 		if ($this->mostrar_utilidades && !$this->es_solo_lectura())	{
+			$id_objeto = $this->objeto_js();
 			$html .= "
-				<div id='{$this->id_form}_utilerias' class='ef-multi-sel-todos'>
-					<a href=\"javascript:{$this->objeto_js()}.seleccionar_todo(true)\">Todos</a> / 
-					<a href=\"javascript:{$this->objeto_js()}.seleccionar_todo(false)\">Ninguno</a></div>
+				<div id='". $escapador->escapeHtmlAttr($this->id_form.'_utilerias')."' class='ef-multi-sel-todos'>
+					<a href=\"javascript:{$id_objeto}.seleccionar_todo(true)\">Todos</a> / 
+					<a href=\"javascript:{$id_objeto}.seleccionar_todo(false)\">Ninguno</a></div>
 			";
 		}
-		$html .= "<div id='{$this->id_form}_opciones' class='{$this->clase_css}'><table>\n";
+		$html .= "<div id='". $escapador->escapeHtmlAttr($this->id_form. '_opciones') . "' class='" . $escapador->escapeHtmlAttr($this->clase_css) ."'><table>\n";
 		foreach ($this->opciones as $clave => $descripcion) {
 			if ($i % $this->cantidad_columnas == 0) {
 					$html .= "<tr>\n";	
 			}
-			$id = $this->id_form.$i;			
+			$id = $escapador->escapeHtmlAttr($this->id_form.$i);			
 			$html .= "\t<td><label class='ef-multi-check' for='$id'>";
 			$ok = in_array($clave, $estado);
 			if (! $this->permitir_html) {
-				$clave = texto_plano($clave);
+				$clave = $escapador->escapeHtmlAttr($clave);
 			}
 			if (! $this->es_solo_lectura()) {
 				$checkeado =  $ok ? "checked" : "";
-				$html .= "<input name='{$this->id_form}[]' id='$id' type='checkbox' value='$clave' $checkeado class='ef-checkbox' $input_extra>";
+				$html .= "<input name='". $escapador->escapeHtmlAttr($this->id_form)."[]' id='$id' type='checkbox' value='$clave' $checkeado class='ef-checkbox' $input_extra>";
 				$input_extra = '';
 			} else {
 				//---Caso solo-lectura	
 				$img = $ok ? 'efcheck_on.gif' : 'efcheck_off.gif';
 				$html .= toba_recurso::imagen_toba('nucleo/'.$img,true,16,16);
 				if ($ok) {
-					$html .= "<input name='{$this->id_form}[]' id='$id' type='hidden' value='$clave'>";
+					$html .= "<input name='".$escapador->escapeHtmlAttr($this->id_form)."[]' id='$id' type='hidden' value='$clave'>";
 				}
 			}
 			if (! $this->permitir_html) {
-				$descripcion = texto_plano($descripcion);
+				$descripcion = $escapador->escapeHtml($descripcion);
 			}
 			$html .= "$descripcion</label></td>\n";		
 			$i++;
@@ -523,8 +529,9 @@ class toba_ef_multi_seleccion_doble extends toba_ef_multi_seleccion
 		$imgs[] = toba_recurso::imagen_toba('nucleo/paginacion/no_anterior.gif', false);
 		$imgs[] = toba_recurso::imagen_toba('nucleo/paginacion/si_anterior.gif', false);
 		$claves = array();
+		$escapador = toba::escaper();
 		foreach (array_keys($this->opciones) as $clave) {
-			$claves[] = texto_plano($clave);
+			$claves[] = $escapador->escapeJs($clave);
 		}
 		$orden_opciones = toba_js::arreglo($claves);
 		return parent::parametros_js().",".toba_js::arreglo($imgs, false).', '.$orden_opciones;
@@ -537,17 +544,19 @@ class toba_ef_multi_seleccion_doble extends toba_ef_multi_seleccion
 		
 	function get_input()
 	{
-		$tab = $this->padre->get_tab_index();
+		$escapador = toba::escaper();
+		$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 		$extra = " tabindex='$tab'";
 		if (isset($this->ancho)) {
-			$extra .= " style='width: {$this->ancho}'";
+			$extra .= " style='width: ". $escapador->escapeHtmlAttr($this->ancho)."'";
 		}		
 		$html = '';
-		if (!$this->es_solo_lectura() && $this->mostrar_utilidades)	{
+		$id_objeto = $this->objeto_js();
+		if (!$this->es_solo_lectura() && $this->mostrar_utilidades)	{			
 			$html .= "
-				<div class='ef-multi-sel-todos' id='{$this->id_form}_utilerias'>
-					<a href=\"javascript:{$this->objeto_js()}.seleccionar_todo(true)\">Todos</a> /
-					<a href=\"javascript:{$this->objeto_js()}.seleccionar_todo(false)\">Ninguno</a>
+				<div class='ef-multi-sel-todos' id='". $escapador->escapeHtmlAttr($this->id_form. '_utilerias')."'>
+					<a href=\"javascript:{$id_objeto}.seleccionar_todo(true)\">Todos</a> /
+					<a href=\"javascript:{$id_objeto}.seleccionar_todo(false)\">Ninguno</a>
 				</div>
 			";
 		}
@@ -564,20 +573,19 @@ class toba_ef_multi_seleccion_doble extends toba_ef_multi_seleccion
 		}	
 		$etiq_izq = "Disponibles";
 		$etiq_der = "Seleccionados";
-		$ef_js = $this->objeto_js();
-		$img_der = toba_recurso::imagen_toba('nucleo/paginacion/no_siguiente.gif', false);
-		$boton_der = "<img src='$img_der' id='{$this->id_form}_img_izq' onclick=\"$ef_js.pasar_a_derecha()\" class='ef-multi-doble-boton'>";
-		$img_izq = toba_recurso::imagen_toba('nucleo/paginacion/no_anterior.gif', false);
-		$boton_izq = "<img src='$img_izq' id='{$this->id_form}_img_der' onclick=\"$ef_js.pasar_a_izquierda()\" class='ef-multi-doble-boton'>";
+		$img_der = $escapador->escapeHtmlAttr(toba_recurso::imagen_toba('nucleo/paginacion/no_siguiente.gif', false));
+		$boton_der = "<img src='$img_der' id='" . $escapador->escapeHtmlAttr($this->id_form. '_img_izq')."' onclick=\"$id_objeto.pasar_a_derecha()\" class='ef-multi-doble-boton'>";
+		$img_izq = $escapador->escapeHtmlAttr(toba_recurso::imagen_toba('nucleo/paginacion/no_anterior.gif', false));
+		$boton_izq = "<img src='$img_izq' id='". $escapador->escapeHtmlAttr($this->id_form. '_img_der')."' onclick=\"$id_objeto.pasar_a_izquierda()\" class='ef-multi-doble-boton'>";
 		
 		$disabled = ($this->es_solo_lectura()) ? "disabled" : "";
-		$html .= "<table class='{$this->clase_css}'>";
+		$html .= "<table class='". $escapador->escapeHtmlAttr($this->clase_css)."'>";
 		$html .= "<tr><td>$etiq_izq</td><td></td><td>$etiq_der</td></tr>";
 		$html .= "<tr><td>";
 
-		$html .= toba_form::multi_select($this->id_form."_izq", array(), $izq, $tamanio, 'ef-combo', "$extra $disabled ondblclick=\"$ef_js.pasar_a_derecha();\" onchange=\"$ef_js.refrescar_iconos('izq');\"");
+		$html .= toba_form::multi_select($this->id_form."_izq", array(), $izq, $tamanio, 'ef-combo', "$extra $disabled ondblclick=\"$id_objeto.pasar_a_derecha();\" onchange=\"$id_objeto.refrescar_iconos('izq');\"");
 		$html .= "</td><td>$boton_der<br /><br />$boton_izq</td><td>";
-		$html .= toba_form::multi_select($this->id_form, array(), $der, $tamanio, 'ef-combo', "$extra $disabled ondblclick=\"$ef_js.pasar_a_izquierda();\" onchange=\"$ef_js.refrescar_iconos('der');\"");
+		$html .= toba_form::multi_select($this->id_form, array(), $der, $tamanio, 'ef-combo', "$extra $disabled ondblclick=\"$id_objeto.pasar_a_izquierda();\" onchange=\"$id_objeto.refrescar_iconos('der');\"");
 		$html .= $this->get_html_iconos_utilerias();
 		$html .= "</td></tr>";
 		$html .= "</table>";

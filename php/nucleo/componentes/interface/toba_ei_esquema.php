@@ -49,24 +49,24 @@ class toba_ei_esquema extends toba_ei
 	
 	function generar_html()
 	{
-        $ancho = '';
-        if (isset($this->_ancho)) {
-        	$ancho = "width ='$this->_ancho'";
-        }		
-        echo "\n<table class='ei-base ei-esquema-base' $ancho>\n";		
+		$escapador = toba::escaper();
+		$ancho = '';
+		if (isset($this->_ancho)) {
+			$ancho = "width ='". $escapador->escapeHtmlAttr($this->_ancho)."'";
+		}		
+		echo "\n<table class='ei-base ei-esquema-base' $ancho>\n";		
 		echo"<tr><td style='padding:0'>\n";		
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true,"ei-esquema-barra-sup");
 		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? "style='display:none'" : "";		
-		echo "<div $colapsado id='cuerpo_{$this->objeto_js}'>";
+		echo "<div $colapsado id='". $escapador->escapeHtmlAttr('cuerpo_'. $this->objeto_js)."'>";
 		//Campo de sincronizacion con JS
 		echo toba_form::hidden($this->_submit, '');
 		if (isset($this->_contenido)) {
 			//Se arma el archivo .dot
 			toba::logger()->debug($this->get_txt() . " [ Diagrama ]:\n$this->_contenido", 'toba');
 			$this->generar_esquema($this->_contenido, $this->_info_esquema['formato'],
-			$this->_info_esquema['dirigido'], $this->_ancho,
-									$this->_alto, $this->_incluir_mapa, $this->objeto_js);
+								$this->_info_esquema['dirigido'], $this->_ancho, $this->_alto, $this->_incluir_mapa, $this->objeto_js);
 		}
 		$this->generar_botones();
 		echo "</div></td></tr>\n";
@@ -98,9 +98,10 @@ class toba_ei_esquema extends toba_ei
 	 */
 	static function generar_sentencia_incrustacion($url, $formato, $ancho=null, $alto=null, $incluir_mapa=null, $objeto_js=null)
 	{
+		$escapador = toba::escaper();
 		if(!$incluir_mapa || !($ancho && $alto)) {
-			$ancho = isset($ancho) ? "width='$ancho'" : "";
-			$alto = isset($alto) ? "height='$alto'" : "";
+			$ancho = isset($ancho) ? "width='". $escapador->escapeHtmlAttr($ancho)."'" : "";
+			$alto = isset($alto) ? "height='". $escapador->escapeHtmlAttr($alto)."'" : "";
 			switch ($formato) {
 				case 'png':
 				case 'gif':
@@ -126,34 +127,38 @@ class toba_ei_esquema extends toba_ei
 			if(substr($ancho, -2) == 'px') {
 				$ancho = substr($ancho, 0, -2); 
 			}
+			$nombre_real = $escapador->escapeHtmlAttr('imagen_real_'.$objeto_js);
+			$nombre_mapa = $escapador->escapeHtmlAttr('imagen_mapa_'.$objeto_js);
 			switch ($formato) {
 				case 'png':
 				case 'gif':
-					$imagen_real = "<img id='imagen_real_$objeto_js' src='$url' border='0'>";				
-					$imagen_mapa = "<img id='imagen_mapa_$objeto_js' src='$url' border='0'>";
+					$imagen_real = "<img id='$nombre_real' src='$url' border='0'>";				
+					$imagen_mapa = "<img id='$nombre_mapa' src='$url' border='0'>";
 				break;
 				case 'svg':
 					/*toba_js::cargar_consumos_globales(array("utilidades/svglib"));
 					echo toba_js::abrir();
 					echo "//aviso_instalacion_svg()";
 					echo toba_js::cerrar();	*/
-					$imagen_real = "<embed id='imagen_real_$objeto_js' src='$url' type='image/svg+xml' palette='foreground' pluginspage='http://www.adobe.com/svg/viewer/install/auto'></embed>"; 
-					$imagen_mapa = "<embed id='imagen_mapa_$objeto_js' src='$url' type='image/svg+xml' palette='foreground' pluginspage='http://www.adobe.com/svg/viewer/install/auto'></embed>";
+					$imagen_real = "<embed id='$nombre_real' src='$url' type='image/svg+xml' palette='foreground' pluginspage='http://www.adobe.com/svg/viewer/install/auto'></embed>"; 
+					$imagen_mapa = "<embed id='$nombre_mapa' src='$url' type='image/svg+xml' palette='foreground' pluginspage='http://www.adobe.com/svg/viewer/install/auto'></embed>";
 				break;
 			}
 			echo "
 			<div class='ei-barra-sup ci-barra-sup ei-barra-sup-sin-botonera' style='height: 20px; width: {$ancho}px; color: white; position: relative'>
-				<span id='colapsado_mapa_$objeto_js' style='position: absolute; width: 16px; height: 16px; left: 0px;  text-align: center; padding: 2px'>".toba_recurso::imagen_toba('colapsado.gif', true). "</span>
+				<span id='". $escapador->escapeHtmlAttr('colapsado_mapa_'.$objeto_js)."' style='position: absolute; width: 16px; height: 16px; left: 0px;  text-align: center; padding: 2px'>".toba_recurso::imagen_toba('colapsado.gif', true). "</span>
 				<div style='height: 20px;position: absolute; left: 20px; width: ".($ancho - 20)."px'> 
-					<span id='escala_mapa_$objeto_js' style='position: absolute; width: 16px; height: 16px; right: 0px; text-align: center; padding: 2px; border-right: 1px solid black'>".toba_recurso::imagen_toba('transform-move.png', true). "</span>
+					<span id='". $escapador->escapeHtmlAttr('escala_mapa_'.$objeto_js)."' style='position: absolute; width: 16px; height: 16px; right: 0px; text-align: center; padding: 2px; border-right: 1px solid black'>"
+							.toba_recurso::imagen_toba('transform-move.png', true)
+					. "</span>
 				</div>
 			</div>
 			<div style='height: {$alto}px; width: {$ancho}px; position: relative'>
-				<div id='marco_$objeto_js' style='height: {$alto}px; width: {$ancho}px; overflow: hidden; position: absolute; top: 0: left: 0;'>
+				<div id='". $escapador->escapeHtmlAttr('marco_'. $objeto_js)."' style='height: {$alto}px; width: {$ancho}px; overflow: hidden; position: absolute; top: 0: left: 0;'>
 					$imagen_real
 				</div>
-				<div id='mapa_$objeto_js' style='position: absolute; top: 0; left: 0; border: 1px solid black; overflow: hidden'>
-					<div id='lupa_$objeto_js' style='position: absolute; top: 0: left: 0; border: 1px solid red'></div>
+				<div id='". $escapador->escapeHtmlAttr('mapa_'.$objeto_js)."' style='position: absolute; top: 0; left: 0; border: 1px solid black; overflow: hidden'>
+					<div id='". $escapador->escapeHtmlAttr('lupa_'.$objeto_js)."' style='position: absolute; top: 0: left: 0; border: 1px solid red'></div>
 					$imagen_mapa
 				</div>
 				
@@ -173,15 +178,15 @@ class toba_ei_esquema extends toba_ei
 			echo "
 			document.readyFunc = function(e) {
 				
-				var img_real = document.getElementById('imagen_real_$objeto_js');
+				var img_real = document.getElementById('". $escapador->escapeJs('imagen_real_'. $objeto_js)."');
 				if (img_real.clientHeight > 0 && img_real.clientWidth > 0) {
 				
-					var marco = document.getElementById('marco_$objeto_js');
-					var mapa = document.getElementById('mapa_$objeto_js');
-					var escala = document.getElementById('escala_mapa_$objeto_js');
-					var colapsado = document.getElementById('colapsado_mapa_$objeto_js');
-					var lupa = document.getElementById('lupa_$objeto_js');
-					var img_mapa = document.getElementById('imagen_mapa_$objeto_js');
+					var marco = document.getElementById('". $escapador->escapeJs('marco_'.$objeto_js)."');
+					var mapa = document.getElementById('". $escapador->escapeJs('mapa_'.$objeto_js)."');
+					var escala = document.getElementById('". $escapador->escapeJs('escala_mapa_'.$objeto_js)."');
+					var colapsado = document.getElementById('". $escapador->escapeJs('colapsado_mapa_'.$objeto_js)."');
+					var lupa = document.getElementById('". $escapador->escapeJs('lupa_'.$objeto_js)."');
+					var img_mapa = document.getElementById('". $escapador->escapeJs('imagen_mapa_'.$objeto_js)."');
 					var ancho_mapa = 200 > marco.clientHeight?marco.clientHeight:200;
 					var ratio;
 					var alto_mapa;
@@ -189,7 +194,7 @@ class toba_ei_esquema extends toba_ei
 						escala.style.display = 'none';
 						mapa.style.display = 'none';
 					}
-					var escalar_$objeto_js = function(skipImg) {
+					var ". $escapador->escapeJs('escalar_'.$objeto_js)." = function(skipImg) {
 						ratio = ancho_mapa/img_real.clientWidth;
 						alto_mapa = img_real.clientHeight*ratio;
 						if(alto_mapa > marco.clientHeight) {
@@ -209,7 +214,7 @@ class toba_ei_esquema extends toba_ei
 							lupa.style.left=(marco.scrollLeft*ratio)+'px';
 						}
 					};
-					escalar_$objeto_js();
+					". $escapador->escapeJs('escalar_'.$objeto_js)."();
 					
 					lupa.date = new Date();
 					$(lupa).draggable({
@@ -242,10 +247,10 @@ class toba_ei_esquema extends toba_ei
 						drag: function() {
 							var left = escala.style.left;
 							ancho_mapa = parseInt(left.substr(0, left.length - 2))+39;
-							escalar_$objeto_js(true);
+							". $escapador->escapeJs('escalar_'.$objeto_js)."(true);
 						},
 						stop: function() {
-							escalar_$objeto_js();
+							". $escapador->escapeJs('escalar_'.$objeto_js)."();
 						}
 					});
 					$(img_mapa).click(function(event) {
@@ -342,7 +347,7 @@ class toba_ei_esquema extends toba_ei
 			$formato = $parametros['formato'];
 			$es_dirigido = $parametros['es_dirigido'];
 		}
-	    $tipo_salida = null;
+		$tipo_salida = null;
 		switch ($formato) {
 			case 'png':
 				$tipo_salida = "image/png";
@@ -362,7 +367,7 @@ class toba_ei_esquema extends toba_ei
 			if (isset($tipo_salida)) {
 				header("Content-type: $tipo_salida");
 			}
-			header("Content-Length: " . filesize($path_completo));	
+			header("Content-Length: " . toba::escaper()->escapeHtml(filesize($path_completo)));	
 			fpassthru($fp);
 			fclose($fp);
 			unlink($path_completo);

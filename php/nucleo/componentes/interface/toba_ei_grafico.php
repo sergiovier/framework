@@ -74,12 +74,13 @@ class toba_ei_grafico extends toba_ei
 
 	function generar_html()
 	{
+		$escapador = toba::escaper();
 		echo "\n<table class='ei-base ei-esquema-base'>\n";
 		echo"<tr><td style='padding:0'>\n";
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true, "ei-esquema-barra-sup");
 		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? "style='display:none'" : "";
-		echo "<div $colapsado id='cuerpo_{$this->objeto_js}'>";
+		echo "<div $colapsado id='". $escapador->escapeHtmlAttr('cuerpo_' .$this->objeto_js)."'>";
 		//Campo de sincronizacion con JS
 		echo toba_form::hidden($this->_submit, '');
 
@@ -99,7 +100,7 @@ class toba_ei_grafico extends toba_ei
 		$destino = array($this->_id);
 		$url = toba::vinculador()->get_url(null, null, array(), array('servicio' => 'mostrar_imagen',
 					'objetos_destino' => $destino));
-		echo "<img src='$url' $this->_ancho $this->_alto border='0'>";
+		echo "<img src='$url' ". $escapador->escapeHtmlAttr($this->_ancho). $escapador->escapeHtmlAttr($this->_alto)." border='0'>";
 
 		//$this->generar_botones();
 		echo "</div></td></tr>\n";

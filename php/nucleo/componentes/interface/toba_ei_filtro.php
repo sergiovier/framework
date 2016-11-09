@@ -311,8 +311,9 @@ class toba_ei_filtro extends toba_ei
 		
 	function generar_html()
 	{
+		$escapador = toba::escaper();
 		//Genero la interface
-		echo "\n\n<!-- ***************** Inicio EI filtro (	".	$this->_id[1] ." )	***********	-->\n\n";
+		echo "\n\n<!-- ***************** Inicio EI filtro (	". $escapador->escapeHtml($this->_id[1]) ." )	***********	-->\n\n";
 		//Campo de sincroniacion con JS
 		echo toba_form::hidden($this->_submit, '');
 		echo toba_form::hidden($this->_submit.'_implicito', '');
@@ -320,7 +321,7 @@ class toba_ei_filtro extends toba_ei
 		if (isset($this->_info_filtro["ancho"])) {
 			$ancho = convertir_a_medida_tabla($this->_info_filtro["ancho"]);
 		}
-		echo "<table class='{$this->_estilos}' $ancho>";
+		echo "<table class='". $escapador->escapeHtmlAttr($this->_estilos)."' $ancho>";
 		echo "<tr><td style='padding:0'>";
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true,"ei-filtro-barra-sup");
@@ -338,18 +339,18 @@ class toba_ei_filtro extends toba_ei
 		$this->_carga_opciones_ef->cargar();		
 		$this->_rango_tabs = toba_manejador_tabs::instancia()->reservar(100);		
 		$this->_colspan = 0;
-	
+		
 		//Ancho y Scroll
 		$estilo = '';
 		$ancho = isset($this->_info_filtro["ancho"]) ? $this->_info_filtro["ancho"] : "auto";
-		$alto_maximo = "auto";
+		//$alto_maximo = "auto";
 		if (isset($this->_colapsado) && $this->_colapsado) {
 			$estilo .= "display:none;";
 		}
 		//Campo de comunicacion con JS
 		echo toba_form::hidden("{$this->objeto_js}_listafilas",'');
 		echo toba_form::hidden("{$this->objeto_js}__parametros", '');		
-		echo "<div class='ei-cuerpo ei-filtro-base' id='cuerpo_{$this->objeto_js}' style='$estilo'>";
+		echo "<div class='ei-cuerpo ei-filtro-base' id='". toba::escaper()->escapeHtmlAttr('cuerpo_' .$this->objeto_js)."' style='$estilo'>";
 		$this->generar_layout($ancho);
 		echo "\n</div>";
 	}	
@@ -361,7 +362,8 @@ class toba_ei_filtro extends toba_ei
 	protected function generar_layout($ancho)
 	{
 		//Botonera de agregar y ordenar
-		echo "<table id='{$this->objeto_js}_grilla' class='ei-filtro-grilla' style='width: $ancho' >\n";
+		$escapador = toba::escaper();
+		echo "<table id='". $escapador->escapeHtmlAttr($this->objeto_js.'_grilla')."' class='ei-filtro-grilla' style='width: ". $escapador->escapeHtmlAttr($ancho)."' >\n";
 		$this->generar_formulario_encabezado();
 		$this->generar_formulario_cuerpo();
 		echo "\n</table>";
@@ -377,13 +379,13 @@ class toba_ei_filtro extends toba_ei
 	{
 		$salida = '';
 		$salida = "<div class='ei-filtro-botonera' id='botonera_{$this->objeto_js}'>";
-		$texto = toba_recurso::imagen_toba('nucleo/agregar.gif', true);
+		//$texto = toba_recurso::imagen_toba('nucleo/agregar.gif', true);
 		$opciones = array(apex_ef_no_seteado => '');
 		foreach ($this->_columnas as $columna) {
 			$opciones[$columna->get_nombre()] = $columna->get_etiqueta();
 		}
 		$salida .= 'Agregar filtro ';
-		$onchange = "onchange='{$this->objeto_js}.crear_fila()'";
+		$onchange = "onchange='". toba::escaper()->escapeHtmlAttr($this->objeto_js).".crear_fila()'";
 		$salida .= toba_form::select("{$this->objeto_js}_nuevo", null, $opciones, 'ef-combo', $onchange);
 		$salida .="</div>\n";
 		return $salida;
@@ -394,7 +396,8 @@ class toba_ei_filtro extends toba_ei
 	 */
 	protected function generar_formulario_encabezado()
 	{
-		echo "<thead id='cabecera_{$this->objeto_js}'>\n";		
+		$escapador = toba::escaper();
+		echo "<thead id='". $escapador->escapeHtmlAttr('cabecera_'. $this->objeto_js)."'>\n";		
 		//------ TITULOS -----	
 		echo "<tr>\n";
 		$i = 1;
@@ -404,7 +407,7 @@ class toba_ei_filtro extends toba_ei
 				$colspan = 'colspan=2';
 			}
 			echo "<th class='ei-filtro-columna' $colspan>\n";
-			echo $etiqueta;
+			echo $escapador->escapeHtml($etiqueta);
 			echo "</th>\n";
 			$i++;
 		}
@@ -419,6 +422,7 @@ class toba_ei_filtro extends toba_ei
 	{
 		echo "<tbody>";			
 		$estilo_celda = "ei-filtro-fila";
+		$escapador = toba::escaper();
 		foreach ($this->_columnas as $nombre_col => $columna) {
 			$this->analizar_visualizacion_columna ($columna);			
 			if ($columna->es_visible()) {
@@ -426,8 +430,8 @@ class toba_ei_filtro extends toba_ei
 			} else {
 				$estilo_fila = "style='display:none;'";
 			}
-			echo "\n<!-- FILA $nombre_col -->\n\n";			
-			echo "<tr $estilo_fila id='{$this->objeto_js}_fila$nombre_col' onclick='{$this->objeto_js}.seleccionar(\"$nombre_col\")'>";
+			echo "\n<!-- FILA ". $escapador->escapeHtml($nombre_col)." -->\n\n";			
+			echo "<tr $estilo_fila id='". $escapador->escapeHtmlAttr($this->objeto_js."_fila$nombre_col")."' onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".seleccionar(\"". $escapador->escapeHtmlAttr($nombre_col)."\")'>";
 			echo "<td class='$estilo_celda ei-filtro-col'>";
 			echo $this->generar_vinculo_editor($nombre_col);
 			echo $columna->get_html_etiqueta();
@@ -448,7 +452,7 @@ class toba_ei_filtro extends toba_ei
 			//Si es obligatoria no se puede borrar
 			if (!$columna->es_solo_lectura() && !$columna->es_obligatorio()) {
 				echo toba_form::button_html("{$this->objeto_js}_eliminar$nombre_col", toba_recurso::imagen_toba('borrar.gif', true), 
-									"onclick='{$this->objeto_js}.seleccionar(\"$nombre_col\");{$this->objeto_js}.eliminar_seleccionada();'", 
+									"onclick='". $escapador->escapeHtmlAttr($this->objeto_js).".seleccionar(\"". $escapador->escapeHtmlAttr($nombre_col)."\");". $escapador->escapeHtmlAttr($this->objeto_js).".eliminar_seleccionada();'", 
 									$this->_rango_tabs[0]++, null, 'Elimina la fila');
 			} else {
 				echo '&nbsp;';
@@ -466,10 +470,10 @@ class toba_ei_filtro extends toba_ei
 	function generar_botones($clase = '', $extra='')
 	{
 		$extra .= $this->get_botonera_manejo_filas();			//Lo coloco aca porque sino debo redefinir toda la ventana superior
-
+		$escapador = toba::escaper();
 		//----------- Generacion
 		if ($this->hay_botones()) {
-			echo "<div class='ei-botonera $clase'>";
+			echo "<div class='ei-botonera ". $escapador->escapeHtmlAttr($clase)."'>";
 			echo $extra;
 			$this->generar_botones_eventos();
 			echo "</div>";
@@ -575,15 +579,16 @@ class toba_ei_filtro extends toba_ei
 		$this->columna($id_columna)->get_ef()->guardar_dato_sesion($sesion, true);
 
 		//--- Se arma la respuesta en formato JSON
+		$escapador = toba::escaper();
 		$json = new Services_JSON();
 		if (! is_null($sesion)) {
 			$resultado = array();
 			foreach($valores as $klave => $valor) {						//Lo transformo en recordset para mantener el ordenamiento en Chrome
-				$resultado[] = array($klave, $valor);
+				$resultado[] = array($escapador->escapeJs($klave), $escapador->escapeJs($valor));
 			}
 			echo $json->encode($resultado);
 		} else {
-			echo $json->encode($valores);
+			echo $json->encode($escapador->escapeJs($valores));
 		}
 	}
 	
@@ -651,15 +656,16 @@ class toba_ei_filtro extends toba_ei
 		toba::logger()->debug("Filtrado combo_editable '$id_ef', Respuesta: ".var_export($valores, true));				
 		
 		//--- Se arma la respuesta en formato JSON
+		$escapador = toba::escaper();
 		$json = new Services_JSON();
 		if (is_array($valores)) {
 			$resultado = array();
 			foreach($valores as $klave => $valor) {						//Lo transformo en recordset para mantener el ordenamiento en Chrome
-				$resultado[] = array($klave, $valor);
+				$resultado[] = array($escapador->escapeJs($klave), $escapador->escapeJs($valor));
 			}
 			echo $json->encode($resultado);
 		} else {
-			echo $json->encode($valores);
+			echo $json->encode($escapador->escapeJs($valores));
 		}
 	}
 
@@ -676,9 +682,9 @@ class toba_ei_filtro extends toba_ei
 		$valor = trim(toba::memoria()->get_parametro('filtrado-ce-valor'));
 		//$fila_actual = trim(toba::memoria()->get_parametro('filtrado-ce-fila'));
 
+		$escapador = toba::escaper();
 		$descripcion = $this->_carga_opciones_ef->ejecutar_metodo_carga_descripcion_ef($id_ef, $valor);
-		$estado = array($valor => $descripcion);
-		
+		$estado = array($escapador->escapeJs($valor) => $escapador->escapeJs($descripcion));
 		//--- Se arma la respuesta en formato JSON
 		$json = new Services_JSON();
 		echo $json->encode($estado);
@@ -693,16 +699,19 @@ class toba_ei_filtro extends toba_ei
 	 */
 	protected function crear_objeto_js()
 	{
-		$efs_esclavos = $this->_carga_opciones_ef->get_cascadas_esclavos();
+		$escapador = toba::escaper();
+		$this->_carga_opciones_ef->get_cascadas_esclavos();
 		$identado = toba_js::instancia()->identado();
 		$id = toba_js::arreglo($this->_id, false);
 		$esclavos = toba_js::arreglo($this->_carga_opciones_ef->get_cascadas_esclavos(), true, false);
 		$maestros = toba_js::arreglo($this->_carga_opciones_ef->get_cascadas_maestros(), true, false);
-		echo $identado."window.{$this->objeto_js} = new ei_filtro($id, '{$this->objeto_js}', '{$this->_submit}', $maestros, $esclavos);\n";
+		$id_js = $escapador->escapeJs($this->objeto_js);
+		
+		echo $identado."window.{$id_js} = new ei_filtro($id, '{$id_js}', '". $escapador->escapeJs($this->_submit)."', $maestros, $esclavos);\n";
 		foreach ($this->_columnas as $columna) {
 			$visible = $columna->es_visible() ? 'true' : 'false';
 			$compuesto = $columna->es_compuesto() ? 'true' : 'false';
-			echo $identado."{$this->objeto_js}.agregar_ef({$columna->crear_objeto_js()}, '{$columna->get_nombre()}', $visible, $compuesto);\n";
+			echo $identado."{$id_js}.agregar_ef({$columna->crear_objeto_js()}, '". $escapador->escapeJs($columna->get_nombre())."', $visible, $compuesto);\n";
 		}
 
 		//Ciclo por los eventos para definir el comportamiento que lance el predeterminado
@@ -715,7 +724,7 @@ class toba_ei_filtro extends toba_ei
 					}
 				}
 				$excluidos = toba_js::arreglo($excluidos);
-				echo $identado."{$this->objeto_js}.set_procesar_cambios(true, '$id_evento', $excluidos);\n";
+				echo $identado."{$id_js}.set_procesar_cambios(true, '". $escapador->escapeJs($id_evento)."', $excluidos);\n";
 			}
 		}
 	}
@@ -727,7 +736,8 @@ class toba_ei_filtro extends toba_ei
 	 */
 	function get_objeto_js_ef($id)
 	{
-		return "{$this->objeto_js}.ef('$id')";
+		$escapador = toba::escaper();
+		return $escapador->escapeJs($this->objeto_js). ".ef('". $escapador->escapeJs($id)."')";
 	}	
 	
 	function get_objeto_js()
@@ -770,7 +780,7 @@ class toba_ei_filtro extends toba_ei
 	 */
 	protected function generar_layout_impresion($ancho)
 	{
-		echo "<table class='ei-filtro-grilla' width='$ancho'>";
+		echo "<table class='ei-filtro-grilla' width='". toba::escaper()->escapeHtmlAttr($ancho)."'>";
 		$this->generar_encabezado_impresion();
 		$this->generar_cuerpo_impresion();
 		echo "\n</table>";		
@@ -796,36 +806,37 @@ class toba_ei_filtro extends toba_ei
 	{
 		echo "<tbody>";			
 		$estilo_celda = "ei-filtro-fila";
+		$escapador = toba::escaper();
 		foreach ($this->_columnas as $nombre_col => $columna) {
 			if (! $columna->es_visible()) {
 				continue;
 			} 
 			
 			$estado_col = $columna->get_estado();
-			if (!$columna->get_ef()->tiene_estado()){
+			if (!$columna->get_ef()->tiene_estado()) {
 				continue;
 			}
 			
-			echo "\n<!-- FILA $nombre_col -->\n\n";			
+			echo "\n<!-- FILA ". $escapador->escapeHtml($nombre_col)." -->\n\n";			
 			echo "<tr >";
 			echo "<td class='$estilo_celda ei-filtro-col'>";			
-			echo $columna->get_ef()->get_etiqueta();
+			echo $escapador->escapeHtml($columna->get_ef()->get_etiqueta());
 			echo "</td>\n";
 			
 			//-- Condición
 			echo "<td class='$estilo_celda ei-filtro-cond'>";			
 			if (! is_null($estado_col)){				
-			 	echo $columna->condicion()->get_etiqueta();
+			 	echo $escapador->escapeHtml($columna->condicion()->get_etiqueta());
 			}
 			echo "</td>\n";
 
 			//-- Valor			
 			$fn_formateo = $columna->get_formateo();
-			if (! is_null($fn_formateo)){
+			if (! is_null($fn_formateo)) {
 				$formateo = new $this->_clase_formateo('impresion_html');				
 				$funcion = "formato_" . $fn_formateo;
 				$valor_real = $columna->get_ef()->get_estado();
-				$valor = $formateo->$funcion($valor_real);				
+				$valor = $escapador->escapeHtml($formateo->$funcion($valor_real));				
 			}else{
 				$valor = $columna->get_ef()->get_descripcion_estado('impresion_html');
 			}			

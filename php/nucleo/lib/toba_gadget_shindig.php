@@ -13,24 +13,25 @@ class toba_gadget_shindig extends toba_gadget
 
 	function generar_html()
 	{
+		$escapador = toba::escaper();
 		$orden = $this->get_orden();
-		$url = $this->get_gadget_url();
-		$titulo = $this->get_titulo();
+		$url = $escapador->escapeJs($this->get_gadget_url());
+		$titulo = $escapador->escapeJs($this->get_titulo());
 		
-		echo "<div id='gadget-chrome-$orden' class='gadgets-gadget-chrome'></div>\n";
+		echo "<div id='". $escapador->escapeHtmlAttr("gadget-chrome-$orden")."' class='gadgets-gadget-chrome'></div>\n";
 
 		echo toba_js::abrir();
 
 		echo "
-			var gadget$orden = gadgets.container.createGadget({specUrl: '$url', title: '$titulo', elim: ".($this->es_eliminable() ? 'true':'false')."});
-			gadgets.container.addGadget(gadget$orden);
+			var ". $escapador->escapeJs("gadget$orden")." = gadgets.container.createGadget({specUrl: '$url', title: '$titulo', elim: ".($this->es_eliminable() ? 'true':'false')."});
+			gadgets.container.addGadget(". $escapador->escapeJs("gadget$orden").");
 
 			if (typeof gadgets.container.layoutManager.gadgetChromeIds_ == 'undefined') {
 				gadgets.container.layoutManager.gadgetChromeIds_ = [];
 			}
-			gadgets.container.layoutManager.gadgetChromeIds_.push('gadget-chrome-$orden');
+			gadgets.container.layoutManager.gadgetChromeIds_.push('". $escapador->escapeJs("gadget-chrome-$orden")."');
 
-			gadgets.container.renderGadget(gadget$orden);
+			gadgets.container.renderGadget(". $escapador->escapeJs("gadget$orden").");
 		";
 
 		echo toba_js::cerrar();

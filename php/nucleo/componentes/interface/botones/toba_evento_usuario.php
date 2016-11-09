@@ -316,16 +316,11 @@ class toba_evento_usuario extends toba_boton
 	 */
 	function get_html_evento_diferido($id_submit, $fila, $objeto_js, $id_componente)
 	{
-		if ( $this->anulado ) return null;
+		if ( $this->anulado ) { return null;}
 		$tab_order = toba_manejador_tabs::instancia()->siguiente();
-		$tip = '';
 		$html = '';
-		if (isset($this->datos['ayuda'])) {
-			$tip = $this->datos['ayuda'];
-		}
 		$clase_predeterminada = $this->esta_sobre_fila() ? 'ei-boton-fila' : 'ei-boton';
 		$clase = ( isset($this->datos['estilo']) && (trim( $this->datos['estilo'] ) != "")) ? $this->datos['estilo'] : $clase_predeterminada;
-		$estilo_inline = $this->oculto ? 'display: none' : null;
 		$js = $this->get_invocacion_js($objeto_js, $id_componente);
 		if (isset($js)) {
 			$js = 'onclick="'.$js.'"';
@@ -351,8 +346,9 @@ class toba_evento_usuario extends toba_boton
 	 */
 	function get_invocacion_js($objeto_js=null, $id_componente = null)
 	{
+		$escapador = toba::escaper();
 		if (! isset($objeto_js)) {
-			$objeto_js = $this->contenedor->get_id_objeto_js();
+			$objeto_js = $escapador->escapeJs($this->contenedor->get_id_objeto_js());
 		}
 		if (! isset($id_componente)) {
 			$id_componente = $this->contenedor->get_id();
@@ -408,19 +404,20 @@ class toba_evento_usuario extends toba_boton
 			$id_vinculo = toba::vinculador()->registrar_vinculo( $this->vinculo() );
 			if( !isset( $id_vinculo ) ) { //Si no tiene permisos no devuelve un identificador
 				return null;
-			}
-			
+			}			
+			$id_vinculo = $escapador->escapeJs($id_vinculo);			
+			$id_ev = $escapador->escapeJs($this->get_id());			
 			$es_boton_visible = ($this->esta_en_botonera() || $this->esta_sobre_fila()) && $this->esta_activado();
 			// Escribo la sentencia que invocaria el vinculo
 			if ($this->posee_confirmacion() && $es_boton_visible)  {
-				$conf_msg = $this->get_msg_confirmacion();
-				$js = "{$objeto_js}.invocar_vinculo_confirmado('".$this->get_id()."', '$id_vinculo', '$conf_msg');";
+				$conf_msg = $escapador->escapeJs($this->get_msg_confirmacion());
+				$js = "{$objeto_js}.invocar_vinculo_confirmado('$id_ev', '$id_vinculo', '$conf_msg');";
 			} else {
-				$js = "{$objeto_js}.invocar_vinculo('".$this->get_id()."', '$id_vinculo');";
+				$js = "{$objeto_js}.invocar_vinculo('$id_ev', '$id_vinculo');";
 			}
 		} elseif ( $this->posee_accion_respuesta_popup() ) {
 			//--- En una respuesta a un ef_popup
-			$param = addslashes(str_replace('"',"'",$this->parametros));
+			$param = $escapador->escapeJs(str_replace('"',"'",$this->parametros));			
 			$js = "iniciar_respuesta_popup(this, '$param');";
 		} else {
 			// Manejo estandar de eventos

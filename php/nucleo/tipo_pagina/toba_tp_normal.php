@@ -77,7 +77,7 @@ class toba_tp_normal extends toba_tp_basico_titulo
 		}
 		
 		//--- Logo
-		echo "<div id='enc-logo' style='height:{$this->alto_cabecera}'>";
+		echo "<div id='enc-logo' style='height:". toba::escaper()->escapeHtmlAttr($this->alto_cabecera)."'>";
 		$this->mostrar_logo();
 		echo "</div>\n";
 	}
@@ -93,7 +93,7 @@ class toba_tp_normal extends toba_tp_basico_titulo
 		if (count($proyectos) > 1) {
 			//-- Si hay al menos dos proyectos
 			echo '<div class="enc-cambio-proy">';
-			echo '<a href="#" title="Ir a la inicio" onclick="vinculador.ir_a_proyecto(\''.$actual.'\');">'.
+			echo '<a href="#" title="Ir a la inicio" onclick="vinculador.ir_a_proyecto(\''.toba::escaper()->escapeHtmlAttr($actual).'\');">'.
 					toba_recurso::imagen_toba("home.png",true).'</a>';
 			$datos = rs_convertir_asociativo($proyectos, array(0), 1);
 			echo toba_form::select(apex_sesion_qs_cambio_proyecto, $actual, 
@@ -117,7 +117,7 @@ class toba_tp_normal extends toba_tp_basico_titulo
 			if (is_null($actual)) {
 				$actual = apex_ef_no_seteado;
 			}			
-			echo toba_form::abrir('chng_profile', toba::vinculador()->get_url());
+			echo toba_form::abrir('chng_profile', toba::escaper()->escapeHtmlAttr(toba::vinculador()->get_url()));
 			echo toba_form::select(apex_sesion_qs_cambio_pf, $actual, $datos, 'ef-combo', 'onchange="submit();"');	
 			echo toba_form::cerrar();			
 			echo '</div>';

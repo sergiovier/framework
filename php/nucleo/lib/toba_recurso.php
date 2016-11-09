@@ -153,7 +153,7 @@ class toba_recurso
 	static function imagen_toba($imagen,$html=false,$ancho=null,$alto=null,$alt=null,$mapa=null,$js=null)
 	{
 		$version = toba::memoria()->get_dato_instancia('toba_revision_recursos_cliente');
-		$agregado_url = (!  is_null($version) && trim($imagen) != '') ? "?av=$version": '';
+		$agregado_url = (!  is_null($version) && trim($imagen) != '') ? "?av=". toba::escaper()->escapeUrl($version): '';
 		$src = toba_recurso::url_toba() . '/img/' . $imagen . $agregado_url ;
 		if($html){
 			return toba_recurso::imagen($src, $ancho, $alto, $alt,$mapa,$js);
@@ -175,24 +175,28 @@ class toba_recurso
 	 */		
 	static function imagen($src,$ancho=null,$alto=null,$alt=null,$mapa=null, $js='', $estilo='')
 	{
+		$escapador = toba::escaper();
 		$wiki = false;
 		$x = ""; $y = ""; $a="";$m="";
-		if(isset($ancho)) $x = " width='$ancho' ";
-		if(isset($alto)) $y = " height='$alto' ";
+		if(isset($ancho)) $x = " width='". $escapador->escapeHtmlAttr($ancho)."' ";
+		if(isset($alto)) $y = " height='". $escapador->escapeHtmlAttr($alto)."' ";
 
 		if(isset($alt)) {
 			$a = self::ayuda(null, $alt);
 		}
 		if(isset($mapa) && $mapa != '') {
-			$m = " usemap='$mapa'";
+			$mapa_sf = $escapador->escapeHtmlAttr($mapa);
+			$m = " usemap='$mapa_sf'";
 		}
 		if ($estilo != '') {
-			$estilo ="style=\"$estilo\"";
+			$estilo_sf = $escapador->escapeHtmlAttr($estilo);
+			$estilo ="style=\"$estilo_sf\"";
 		}
+		$src_sf = $escapador->escapeHtmlAttr($src);
 		if (toba_editor::modo_prueba()) {
-			$img = "<img alt='' onerror='toba.falta_imagen(this.src)' src=$src $x $y $a $m  $estilo $js/>";
+			$img = "<img alt='' onerror='toba.falta_imagen(this.src)' src='$src_sf' $x $y $a $m  $estilo $js/>";
 		} else {
-			$img = "<img alt=\"\" src=$src $x $y $a $m  $estilo $js/>";
+			$img = "<img alt='' src='$src_sf' $x $y $a $m  $estilo $js/>";
 		}
 		return $img;
 	}
@@ -208,22 +212,27 @@ class toba_recurso
 	 */
 	static function ayuda($tecla, $ayuda='', $clases_css='', $delay_ayuda=1000)
 	{
+		$escapador = toba::escaper();
 		$ayuda_extra = '';
 		$a = '';
 		if ($tecla !== null) {
-			$ayuda_extra = "[alt + shift + $tecla]";
-			$a = "accesskey='$tecla'";
+			$tecla_sf = $escapador->escapeHtmlAttr($tecla);
+			$ayuda_extra = "[alt + shift + $tecla_sf]";
+			$a = "accesskey='$tecla_sf'";
 		}
 		if ($ayuda != '') {
 			$ayuda .= ' '.$ayuda_extra;
 			$ayuda = str_replace(array("\n", "\r"), '', $ayuda);
 			$ayuda = str_replace(array("\""), "`", $ayuda);
+			$ayuda = $escapador->escapeHtmlAttr($ayuda);
+			$delay_ayuda = $escapador->escapeHtmlAttr($delay_ayuda);
 			$a .= " onmouseover=\"if (typeof window.tipclick != 'undefined' &amp;&amp; window.tipclick !== null) return window.tipclick.show('$ayuda',this,event, $delay_ayuda);\" onmouseout=\"if (typeof window.tipclick != 'undefined' &amp;&amp; window.tipclick !== null) return window.tipclick.hide();\" ";
 			$clases_css .= ' ayuda';
 		} else {
 			$a .= " title='$ayuda_extra'";
 		}
 		if ($clases_css != "") {
+			$clases_css = $escapador->escapeHtmlAttr($clases_css);
 			$a .= " class='$clases_css'";
 		}
 		return $a;
@@ -239,40 +248,42 @@ class toba_recurso
 	{
 		return toba_recurso::url_toba() . "/js/" . $javascript;
 	}
-	
+
 	static function link_css($archivo='toba', $rol='screen', $buscar_en_proyecto=true)
 	{
 		$link = '';
-
+		$escapador = toba::escaper();
 		$version = toba::memoria()->get_dato_instancia('toba_revision_recursos_cliente');
-		$agregado_url = (!  is_null($version)) ? "?av=$version": '';		
+		$agregado_url = (!  is_null($version)) ? '?av=' .$escapador->escapeUrl($version) : '';		
 
 		//--- Incluye primero el del nucleo
+		$archivo = $escapador->escapeUrl($archivo);
+		$rol_sf = $escapador->escapeHtmlAttr($rol);
 		$url = toba_recurso::url_toba()."/css/$archivo.css$agregado_url";
-		$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol'/>\n";			
+		$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol_sf'/>\n";
 
 		//--- Incluye el del skin si es el estandar
 		if ($archivo == 'toba') {
 			$url = toba_recurso::url_skin()."/toba.css$agregado_url";
-			$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol'/>\n";
+			$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol_sf'/>\n";
 		}
 
 		//--- Incluye el del proyecto, si existe
 		if ($buscar_en_proyecto) {
 			$version = toba::memoria()->get_dato_instancia('proyecto_revision_recursos_cliente');
-			$agregado_url = (!  is_null($version)) ? "?av=$version": '';		
+			$agregado_url = (!  is_null($version)) ? '?av=' .$escapador->escapeUrl($version) : '';
 			
-			$proyecto = toba_proyecto::get_id();
+			$proyecto = toba_proyecto::get_id();			
 			$path = toba::instancia()->get_path_proyecto($proyecto)."/www/css/$archivo.css";
 			if (file_exists($path)) {
 				$url = toba_recurso::url_proyecto($proyecto) . "/css/$archivo.css$agregado_url";
-				$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol'/>\n";
+				$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol_sf'/>\n";
 			}
 			if (toba::proyecto()->personalizacion_activa()) {
 				$www = toba::proyecto()->get_www_pers("css/$archivo.css");
 				if (file_exists($www['path'])) {
 					$url = $www['url']. $agregado_url;
-					$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol'/>\n";
+					$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol_sf'/>\n";
 				}
 			}
 
@@ -280,7 +291,7 @@ class toba_recurso
 			if (file_exists($path)) {
 				$url = toba_recurso::url_proyecto($proyecto) . "/css/".$archivo."_hack_ie.css";
 				$link .= "<!--[if lt IE 8]>\n";
-				$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol'/>\n\n";			
+				$link .= "<link href='$url' rel='stylesheet' type='text/css' media='$rol_sf'/>\n\n";			
 				$link .= "<![endif]-->\n";
 			}			
 		}

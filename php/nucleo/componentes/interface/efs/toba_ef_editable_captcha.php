@@ -120,6 +120,7 @@ class toba_ef_editable_captcha extends toba_ef_editable
 	
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		$this->input_extra .= $this->get_estilo_visualizacion_pixeles();
 		$this->input_extra .= $this->get_info_placeholder();
 		$this->generar_texto_aleatorio();
@@ -128,13 +129,13 @@ class toba_ef_editable_captcha extends toba_ef_editable
 		
 		$this->estado  = false;
 		$longitud = strlen($this->texto); //la longitud maxima de caracteres del ef
-		$tab = ' tabindex="'.$this->padre->get_tab_index().'"';		
+		$tab = ' tabindex="'.$escapador->escapeHtmlAttr($this->padre->get_tab_index()).'"';		
 		$text_input  = toba_form::text($this->id_form, $this->estado, $this->es_solo_lectura(), $longitud, $this->tamano, $this->clase_css, $this->javascript.' '.$this->input_extra.$tab);
 		$url = toba::vinculador()->get_url(null, null, array(), array('servicio' => 'mostrar_captchas_efs', 'objetos_destino' => array( $this->padre->get_id() )));
 		
 		if ($this->permite_refrescar_codigo) {
 			$url_refrescar = toba::vinculador()->get_url(null, null, array('refrescar' => 1), array('servicio' => 'mostrar_captchas_efs', 'objetos_destino' => array( $this->padre->get_id() )));
-			$js = "\"document.getElementById('{$this->id}-captcha').src = '$url_refrescar' + Math.random(); return false;\"";
+			$js = "\"document.getElementById('". $escapador->escapeHtmlAttr($this->id.'-captcha')."').src = '$url_refrescar' + Math.random(); return false;\"";
 			$img_refrescar = toba_recurso::imagen_toba('refrescar.png');
 			$refrescar = "<a href='#' onclick=$js><img src='$img_refrescar' alt='Refrescar código de imágen' title='Refrescar código de imágen' /></a>";
 		} else {
@@ -149,10 +150,10 @@ class toba_ef_editable_captcha extends toba_ef_editable
 		}
 															
 		$input = "<div>
-					<div align='absmiddle' class='{$this->css_captcha}'>
-						<img id='{$this->id}-captcha' src='$url' /> $refrescar $audio
+					<div align='absmiddle' class='". $escapador->escapeHtmlAttr($this->css_captcha)."'>
+						<img id='". $escapador->escapeHtmlAttr($this->id.'-captcha')."' src='$url' /> $refrescar $audio
 					</div>
-					<div class='{$this->clase_css}'>
+					<div class='".$escapador->escapeHtmlAttr($this->clase_css)."'>
 						 $text_input
 					</div>
 				</div>";

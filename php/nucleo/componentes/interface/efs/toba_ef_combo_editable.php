@@ -51,6 +51,7 @@ class toba_ef_combo_editable extends toba_ef_seleccion
 	
 	function get_input()
 	{
+		$escapador = toba::escaper();
 		//-- Si tiene un estado, ponerlo como única opción
 		$this->opciones = array();
 		if (isset($this->descripcion_estado)) {
@@ -65,12 +66,12 @@ class toba_ef_combo_editable extends toba_ef_seleccion
 			$html .= toba_form::hidden($this->id_form, $estado);
 			return $html;
 		} else {
-			$tab = $this->padre->get_tab_index();
+			$tab = $escapador->escapeHtmlAttr($this->padre->get_tab_index());
 			$extra = " tabindex='$tab'";
 			$js = '';
 
 			if ($this->cuando_cambia_valor != '') {
-				$js = "onchange=\"{$this->get_cuando_cambia_valor()}\"";
+				$js = 'onchange="'. $escapador->escapeHtmlAttr($this->get_cuando_cambia_valor()).'"';
 			}
 
 			$html .= toba_form::select($this->id_form, $estado ,$this->opciones, 'ef-combo', $js . $this->input_extra.$extra, $this->categorias);
@@ -97,10 +98,12 @@ class toba_ef_combo_editable extends toba_ef_seleccion
 		} else {
 			$valor = null;
 		}
+		$escapador = toba::escaper();
 		switch ($tipo_salida) {
 			case 'html':
 			case 'impresion_html':
-				return "<div class='{$this->clase_css}'>$valor</div>";
+				$valor = $escapador->escapeHtml($valor);
+				return "<div class='". $escapador->escapeHtmlAttr($this->clase_css)."'>$valor</div>";
 			case 'pdf':
 				return $valor;
 			case 'excel':		
@@ -133,7 +136,7 @@ class toba_ef_combo_editable extends toba_ef_seleccion
 	
 	protected function parametros_js()
 	{
-		$parametros = parent::parametros_js().', '.$this->tamano;
+		$parametros = parent::parametros_js().', '. toba::escaper()->escapeJs($this->tamano);
 		if (!$this->es_solo_lectura()) {
 			$parametros .= $this->habilitar_modo_filtrado?', true':', false';
 			$parametros .= $this->solo_permitir_selecciones?', true':', false';

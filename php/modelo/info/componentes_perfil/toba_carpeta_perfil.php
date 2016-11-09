@@ -48,11 +48,12 @@ class toba_carpeta_perfil extends toba_elemento_perfil
 		$html = '';		
 		$id_js = $this->id_js_arbol;
 		$id_input = $id.'_carpeta';
+		$escapador = toba::escaper();
 		if ($this->comunicacion_elemento_input) {
 			$img_marcar = toba_recurso::imagen_toba('aplicar.png', false);
-			$html .= "<img src='$img_marcar' id='".$id_input."_img' onclick='$id_js.marcar(\"{$this->get_id()}\")' />";
+			$html .= "<img src='". $escapador->escapeHtmlAttr($img_marcar)."' id='".$escapador->escapeHtmlAttr($id_input.'_img')."' onclick='". $escapador->escapeHtmlAttr($id_js).".marcar(\"". $escapador->escapeHtmlAttr($this->get_id())."\")' />";
 		}
-		$html .= "<input type='checkbox' value='1' id='$id_input' name='$id_input' onclick='$id_js.marcar(\"{$this->get_id()}\", this.value)' />";			
+		$html .= "<input type='checkbox' value='1' id='". $escapador->escapeHtmlAttr($id_input)."' name='". $escapador->escapeHtmlAttr($id_input)."' onclick='". $escapador->escapeHtmlAttr($id_js).".marcar(\"". $escapador->escapeHtmlAttr($this->get_id())."\", this.value)' />";			
 		return $html;
 	}
 	
