@@ -11,6 +11,11 @@
         {
             "type": "composer",
             "url": "https://satis.siu.edu.ar"
+        },
+        {
+          "type":"vcs",
+          "version": "dev-master",
+          "url":"https://gitlab.siu.edu.ar/siu/interfaces-manejador-salida-toba.git"
         }
     ],
     "minimum-stability": "dev",
@@ -39,7 +44,8 @@
         "siu/arai-json-migrator" : "~1.0",
         "siu/arai-cli" : "~2.0",
         "siu/jasper":"dev-master",
-        "vlucas/phpdotenv": "~2.0"
+        "vlucas/phpdotenv": "~2.0",
+        "siu/interfaces-manejador-salida-toba":"dev-master",
     },
     "require-dev": {
         "greenlion/PHP-SQL-Parser": "@dev"
