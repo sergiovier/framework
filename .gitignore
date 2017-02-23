@@ -1,5 +1,8 @@
 instalacion/
 vendor/
+.buildpath
+.settings/*
+
 .log.git
 .files.git
 *.iml
