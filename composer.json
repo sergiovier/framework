@@ -11,6 +11,11 @@
         {
             "type": "composer",
             "url": "https://satis.siu.edu.ar"
+        },
+        {
+          "type":"vcs",
+          "version": "dev-master",
+          "url":"https://gitlab.siu.edu.ar/siu/interfaces-manejador-salida-toba.git"
         }
     ],
     "minimum-stability": "dev",
@@ -33,7 +38,8 @@
         "phpmailer/phpmailer": "^5.2",
         "simpletest/simpletest": "^1.1", 
         "element-34/php-webdriver": "^1.12",
-        "siu-toba/text_highlighter": "^0.7"
+        "siu-toba/text_highlighter": "^0.7",
+        "siu/interfaces-manejador-salida-toba":"dev-master"
     },
     "require-dev": {
         "phpdocumentor/phpdocumentor": "2.*"
