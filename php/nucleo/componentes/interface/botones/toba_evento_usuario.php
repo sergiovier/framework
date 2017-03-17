@@ -269,6 +269,8 @@ class toba_evento_usuario extends toba_boton
 	 */
 	function get_html($id_submit, $objeto_js, $id_componente)
 	{
+		$componente =  toba::output()->get("EventoUsuario");
+		
 		if ( $this->anulado ) return null;
 		$tab_order = toba_manejador_tabs::instancia()->siguiente();
 		$tip = '';
@@ -276,37 +278,29 @@ class toba_evento_usuario extends toba_boton
 			$tip = $this->datos['ayuda'];
 		}
 		$acceso = tecla_acceso( $this->datos['etiqueta'] );
+		$imagen = $componente->getImagen($this->datos['imagen'],$this->datos['imagen_recurso_origen']); 
 		if (! $this->es_seleccion_multiple()) {
-			$clase_predeterminada = $this->esta_sobre_fila() ? 'ei-boton-fila' : 'ei-boton';
-			$clase = ( isset($this->datos['estilo']) && (trim( $this->datos['estilo'] ) != "")) ? $this->datos['estilo'] : $clase_predeterminada;
-			$tipo_boton = 'button';		
-			if ( !$this->esta_sobre_fila() && isset($this->datos['defecto']) && $this->datos['defecto']) {
-				$tipo_boton = 'submit';
-				$clase .=  '  ei-boton-defecto';			
-			}
+			$clase = $componente->getCSS($this->esta_sobre_fila(), $this->datos['estilo'],$this->datos['defecto']);
+			$tipo_boton = $componente->getTipoBoton($this->esta_sobre_fila(), $this->datos['estilo'],$this->datos['defecto']);
 			$estilo_inline = $this->oculto ? 'display: none' : null;
-			$html = '';
-			$html .= $this->get_imagen();
-			$html .= $acceso[0];
+			$html = '' . $acceso[0];;
 			$tecla = $acceso[1];			
 			$js = $this->get_invocacion_js($objeto_js, $id_componente);
 			if (isset($js)) {
 				$js = 'onclick="'.$js.'"';				
-					return toba_form::button_html( $id_submit."_".$this->get_id(), $html, $js, $tab_order, $tecla,
+					return $componente->getInputButton( $id_submit."_".$this->get_id(), $html, $imagen , $js, $tab_order, $tecla,
 												$tip, $tipo_boton, '', $clase, true, $estilo_inline, $this->activado);
 			}
 		} else {
 			$js = $this->get_invocacion_js($objeto_js, $id_componente);
-			$html = '<label>';
-			$html .= $this->get_imagen();
+			$imagen = $this->get_imagen();
 			if (isset($js)) {
 				$extra = 'onclick="'.$js.'"';
 				$extra .= " title='$tip'";
 				$extra .= $this->activado ? '' : ' disabled';
 				$valor_actual = ($this->es_check_activo) ? $this->parametros : null;
-				$html .= toba_form::checkbox($id_submit."_".$this->get_id(), $valor_actual, $this->parametros, '', $extra);
+				$html = $componente->getInputCheckbox($id_submit."_".$this->get_id(), $valor_actual, $this->parametros, '', $extra, $imagen );
 			}
-			$html .= '</label>';
 			return $html;
 		}
 	}
