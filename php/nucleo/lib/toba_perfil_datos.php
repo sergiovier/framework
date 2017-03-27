@@ -9,8 +9,9 @@
  * Los perfiles de datos se definen en toba_usuarios (un usuario puede tener 0 o 1 perfil)
  * Las dimensiones se definen por el proyecto en toba_editor
  * 
+ *  TODO  No soporta el uso de parentesis
  * @package Seguridad
- * TODO:  No soporta el uso de parentesis
+ * 
  */
 class toba_perfil_datos
 {
@@ -308,14 +309,15 @@ class toba_perfil_datos
 		//-- 1 -- Busco GATILLOS en el SQL
 		$tablas_gatillo_encontradas = $this->buscar_tablas_gatillo_en_sql( $sql, $fuente_datos );		
 		if (! empty($gatillos_exclusivos)) {
-			foreach($tablas_gatillo_encontradas as $key=> $tabla) {					//Elimino todas aquellas tablas que no esten en los gatillos requeridos
+			$keys_e = array_keys($tablas_gatillo_encontradas);
+			foreach($keys_e as $key) {					//Elimino todas aquellas tablas que no esten en los gatillos requeridos
 				if (! in_array($key, $gatillos_exclusivos)) {
 					unset($tablas_gatillo_encontradas[$key]);
 				}
 			}			
 		}
 		//-- 2 -- Busco las dimensiones implicadas
-		$dimensiones_implicadas = $this->reconocer_dimensiones_implicadas( array_keys($tablas_gatillo_encontradas), $fuente_datos );
+		$dimensiones_implicadas = $this->reconocer_dimensiones_implicadas(array_keys($tablas_gatillo_encontradas), $fuente_datos);
 		//-- 3 -- Obtengo la clausula WHERE correspondiente a cada dimension
 		foreach( $dimensiones_implicadas as $dimension => $tabla ) {
 			if(isset($dimensiones_desactivar) && in_array($dimension,$dimensiones_desactivar)) continue;
