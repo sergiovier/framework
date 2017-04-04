@@ -82,13 +82,15 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 
 		//-- INICIO zona COLAPSABLE del cuadro completo
 		$colapsado = ($cuadro_colapsa) ? "style='display:none'" : "";
-		echo "<TABLE class='ei-cuadro-cuerpo' $colapsado id='cuerpo_$id_js'>";
+		
+		toba::output()->get('SalidaHtml')->getIncioZonaColapsable("cuerpo_$id_js","ei-cuadro-cuerpo", $colapsado );
+		
 		//------- Cabecera -----------------
-		echo "<tr><td class='ei-cuadro-cabecera' colspan='$total_col'>";
 		$this->html_cabecera();
-		echo "</td></tr>\n";
+		
 		//--- INICIO CONTENIDO  -----
-		echo "<tr><td class='ei-cuadro-cc-fondo' colspan='$total_col'>\n";
+		toba::output()->get('SalidaHtml')->getInicioContenido('ei-cuadro-cc-fondo-2',"colspan='$total_col'");
+		
 		// Si el layout es cortes/tabular se genera una sola tabla, que empieza aca
 		if( $this->_cuadro->tabla_datos_es_general() ){
 			$this->html_cuadro_inicio();
@@ -102,19 +104,24 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	protected function generar_tabla_base()
 	{
 		$info_cuadro = $this->_cuadro->get_informacion_basica_cuadro();
-		//-- Scroll
-		if($info_cuadro["scroll"]){
-			$ancho = isset($info_cuadro["ancho"]) ? $info_cuadro["ancho"] : "";
-			$alto = isset($info_cuadro["alto"]) ? $info_cuadro["alto"] : "auto";
-			echo "<div class='ei-cuadro-scroll' style='height: $alto; width: $ancho; '>\n";
-		}else{
-			$ancho = isset($info_cuadro["ancho"]) ? $info_cuadro["ancho"] : "";
-		}
-		//-- Tabla BASE del cuadro
-		$ancho = convertir_a_medida_tabla($ancho);
-		echo "\n<table class='ei-base ei-cuadro-base' $ancho>\n";
-		echo"<tr><td style='padding:0;'>\n";
+		
+		toba::output()->get('SalidaHtml')->getInicioHtml($info_cuadro);
 	}
+		
+	/**
+	 * Genera la cabecera del cuadro, por defecto muestra el titulo, si tiene
+	 */
+	protected function html_cabecera()
+	{
+		$info_cuadro = $this->_cuadro->get_informacion_basica_cuadro();
+		$objeto_js = $this->_cuadro->get_id_objeto_js();
+		$exportacion_excel_plano = $this->_cuadro->permite_exportacion_excel_plano();
+		$filas_disponibles_selector = $this->_cuadro->get_filas_disponibles_selector();
+		$total_col = $this->_cuadro->get_cantidad_columnas_total();
+
+		toba::output()->get('SalidaHtml')->getCabeceraHtml($info_cuadro,$objeto_js, $exportacion_excel_plano,$filas_disponibles_selector,$total_col);
+	}
+	
 
 	/**
 	 * @ignore
@@ -131,8 +138,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$this->html_cuadro_fin();
 		}
 
-		echo "</td></tr>\n";
-		//--- FIN CONTENIDO  ---------
+		toba::output()->get('SalidaHtml')->getFinContenido();//--- FIN CONTENIDO  ---------
+		
 		// Pie
 		echo"<tr><td class='ei-cuadro-pie'>";
 		$this->html_pie();
@@ -153,13 +160,11 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$this->generar_botones();
 			echo "</td></tr>\n";
 		}
-		echo "</TABLE>\n";
+		
 		//-- FIN zona COLAPSABLE
-		echo"</td></tr>\n";
-		echo "</table>\n";
-		if($info_cuadro["scroll"]){
-			echo "</div>\n";
-		}
+		toba::output()->get('SalidaHtml')->getFinZonaColapsable();
+		
+		toba::output()->get('SalidaHtml')->getFinHtml($info_cuadro);
 
 		//Aca tengo que meter el javascript y el html del cosote para ordenar
 		if ($info_cuadro["ordenar"]) {
@@ -167,36 +172,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		}
 	}
 
-	/**
-	 * Genera la cabecera del cuadro, por defecto muestra el titulo, si tiene
-	 */
-	protected function html_cabecera()
-	{
-		$info_cuadro = $this->_cuadro->get_informacion_basica_cuadro();
-		$objeto_js = $this->_cuadro->get_id_objeto_js();
-		
-		if (isset($info_cuadro) && $info_cuadro['exportar_pdf'] == 1) {
-			$img = toba_recurso::imagen_toba('extension_pdf.png', true);
-			echo "<a href='javascript: $objeto_js.exportar_pdf()' title='Exporta el listado a formato PDF'>$img</a>";
-		}
-		if (isset($info_cuadro) && $info_cuadro['exportar_xls'] == 1) {
-			//Si hay vista xls entonces se muestra el link común y para exportar a plano
-			if ($this->_cuadro->permite_exportacion_excel_plano()) {
-				$img_plano = toba_recurso::imagen_toba('exp_xls_plano.gif', true);
-				echo "<a href='javascript: $objeto_js.exportar_excel_sin_cortes()' title='Exporta el listado a formato Excel sin cortes (.xls)'>$img_plano</a>";
-			}
-			$img = toba_recurso::imagen_toba('exp_xls.gif', true);
-			echo "<a href='javascript: $objeto_js.exportar_excel()' title='Exporta el listado a formato Excel (.xls)'>$img</a>";
-		}
-		if ($info_cuadro["ordenar"]) {
-			$img = toba_recurso::imagen_toba('ordenar.gif', true);
-			$filas = toba_js::arreglo($this->_cuadro->get_filas_disponibles_selector());
-			echo "<a href=\"javascript: $objeto_js.mostrar_selector($filas);\" title='Permite ordenar por múltiples columnas'>$img</a>";
-		}
-		if(trim($info_cuadro["subtitulo"])<>""){
-			echo $info_cuadro["subtitulo"];
-		}
-	}
 
 	/**
 	 * Genera el pie del cuadro
@@ -604,7 +579,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$js = $this->get_invocacion_js_eventos_multiples($evt_multiples, $id_fila, $objeto_js);
 
 		 //---> Creo las CELDAS de una FILA <----
-		echo "<tr class='$estilo_fila' >\n";
+		toba::output()->get('SalidaHtml')->getInicioFila($estilo_fila);
 
 		//---> Creo los EVENTOS de la FILA  previos a las columnas<---
 		$this->html_cuadro_celda_evento($id_fila, $clave_fila, true);
@@ -655,7 +630,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		}
 		//---> Creo los EVENTOS de la FILA <---
 		$this->html_cuadro_celda_evento($id_fila, $clave_fila, false);
-		echo "</tr>\n";
+		toba::output()->get('SalidaHtml')->getFinFila();
 	}
 
 	protected function get_invocacion_js_eventos_multiples($evt_multiples, $id_fila, $objeto_js)
@@ -716,7 +691,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	protected function html_cuadro_inicio()
 	{
-		echo "<TABLE width='100%' class='tabla-0' border='0'>\n";
+		toba::output()->get('SalidaHtml')->getInicioCuadro(null);
 	}
 
 	/**
@@ -724,7 +699,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	protected function html_cuadro_fin()
 	{
-		echo "</TABLE>\n";
+		toba::output()->get('SalidaHtml')->getFinCuadro(null);
 	}
 
 		/**
@@ -760,8 +735,11 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$rowspan = ! $hay_grupo_visible ? '' : "rowspan='2'";
 			$html_columnas_agrupadas = '';
 			$grupo_actual = null;
-			echo "<tr>\n";
+			
+			toba::output()->get('SalidaHtml')->getInicioHeadCuadro();
+			
 			$this->html_cuadro_cabecera_columna_evento($rowspan, true);
+			
 			foreach (array_keys($columnas) as $a) {
 				$html_columna = '';
 				//El alto de la columna, si esta agrupada es uno sino es el general
@@ -799,46 +777,26 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			}
 			//-- Eventos sobre fila
 			$this->html_cuadro_cabecera_columna_evento($rowspan, false);
-			echo "</tr>\n";
+			
+			toba::output()->get('SalidaHtml')->getFinHeadCuadro();
+			
 			//-- Columnas Agrupadas
 			if ($html_columnas_agrupadas != '') {
-				echo "<tr>\n";
-				echo $html_columnas_agrupadas;
-				echo "</tr>\n";
+				toba::output()->get('SalidaHtml')->getParseGrupoColumnas($html_columnas_agrupadas);
 			}
 		}
 	}
 
 	protected function html_cuadro_cabecera_columna_evento($rowspan, $pre_columnas)
 	{
-		 //-- Eventos sobre fila
-		if($this->_cuadro->cant_eventos_sobre_fila() > 0) {
-			foreach ($this->_cuadro->get_eventos_sobre_fila() as $evento) {
-				$etiqueta = '&nbsp;';
-				if ($evento->es_seleccion_multiple()) {
-					$etiqueta = $evento->get_etiqueta();
-				}
-
-				/**
-				 * Condiciones gobernantes:
-				 *  Evento con alineacion a Izquierda
-				 *  Se estan graficando eventos pre-columnas de datos
-				 *
-				 *
-				 * El evento se grafica unicamente cuando se dan ambas condiciones o
-				 * cuando no se cumple ninguna de las dos, logicamente  eso seria:
-				 * ((A || !B) && (!A || B)) lo cual es igual a un XOR negado.
-				 */
-				if ( !($pre_columnas xor $evento->tiene_alineacion_pre_columnas())) {
-					echo "<td $rowspan class='ei-cuadro-col-tit'>$etiqueta";
-					if (toba_editor::modo_prueba()) {
-						$info_comp = $this->_cuadro->get_informacion_basica_componente();
-						echo toba_editor::get_vinculo_evento($this->_cuadro->get_id(), $info_comp['clase_editor_item'], $evento->get_id())."\n";
-					}
-					echo "</td>\n";
-				}
-			}
+		$editor = null;
+		$eventos_sobre_fila = $this->_cuadro->get_eventos_sobre_fila();
+		if (toba_editor::modo_prueba()) {
+			$info_comp = $this->_cuadro->get_informacion_basica_componente();
+			$editor = toba_editor::get_vinculo_evento($this->_cuadro->get_id(), $info_comp['clase_editor_item'], $evento->get_id())."\n";
 		}
+		
+		toba::output()->get('SalidaHtml')->getCuadroCabeceraColumnaEvento($rowspan, $pre_columnas,$eventos_sobre_fila, $editor);
 	}
 	
 	/**
@@ -1013,48 +971,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$cantidad_paginas = $this->_cuadro->get_cantidad_paginas();
 		$parametros = $this->_cuadro->get_nombres_parametros();
 		$eventos = $this->_cuadro->get_eventos();
-
-		echo "<div class='ei-cuadro-pag'>";
-		if( isset($total_registros) && !($tamanio_pagina >= $total_registros) ) {
-			//Calculo los posibles saltos
-			//Primero y Anterior
-			if($pagina_actual == 1) {
-				$anterior = toba_recurso::imagen_toba("nucleo/paginacion/anterior_deshabilitado.gif",true);
-				$primero = toba_recurso::imagen_toba("nucleo/paginacion/primero_deshabilitado.gif",true);
-			} else {
-				$evento_js = toba_js::evento('cambiar_pagina', $eventos["cambiar_pagina"], $pagina_actual - 1);
-				$js = "$objeto_js.set_evento($evento_js);";
-				$img = toba_recurso::imagen_toba("nucleo/paginacion/anterior.gif");
-				$anterior = toba_recurso::imagen($img, null, null, 'Página Anterior', '', "onclick=\"$js\"", 'cursor: pointer;cursor:hand;');
-
-				$evento_js = toba_js::evento('cambiar_pagina', $eventos["cambiar_pagina"], 1);
-				$js = "$objeto_js.set_evento($evento_js);";
-				$img = toba_recurso::imagen_toba("nucleo/paginacion/primero.gif");
-				$primero = toba_recurso::imagen($img, null, null, 'Página Inicial', '', "onclick=\"$js\"", 'cursor: pointer;cursor:hand;');
-			}
-			//Ultimo y Siguiente
-			if( $pagina_actual == $cantidad_paginas ) {
-				$siguiente = toba_recurso::imagen_toba("nucleo/paginacion/siguiente_deshabilitado.gif",true);
-				$ultimo = toba_recurso::imagen_toba("nucleo/paginacion/ultimo_deshabilitado.gif",true);
-			} else {
-				$evento_js = toba_js::evento('cambiar_pagina', $eventos["cambiar_pagina"], $pagina_actual + 1);
-				$js = "$objeto_js.set_evento($evento_js);";
-				$img = toba_recurso::imagen_toba("nucleo/paginacion/siguiente.gif");
-				$siguiente = toba_recurso::imagen($img, null, null, 'Página Siguiente', '', "onclick=\"$js\"", 'cursor: pointer;cursor:hand;');
-
-				$evento_js = toba_js::evento('cambiar_pagina', $eventos["cambiar_pagina"], $cantidad_paginas);
-				$js = "$objeto_js.set_evento($evento_js);";
-				$img = toba_recurso::imagen_toba("nucleo/paginacion/ultimo.gif");
-				$ultimo = toba_recurso::imagen($img, null, null, 'Página Final', '', "onclick=\"$js\"", 'cursor: pointer;cursor:hand;');
-			}
-
-			echo "$primero $anterior Página <strong>";
-			$js = "$objeto_js.ir_a_pagina(this.value);";
-			$tamanio = ceil(log10($total_registros));
-			echo toba_form::text($parametros['paginado'], $pagina_actual, false, '', $tamanio, 'ef-numero', "onchange=\"$js\"");
-			echo "</strong> de <strong>{$cantidad_paginas}</strong> $siguiente $ultimo";
-		}
-		echo "</div>";
+        
+		toba::output()->get('SalidaHtml')->getCuadroPaginacion($objeto_js,$total_registros,$tamanio_pagina,$pagina_actual,$cantidad_paginas,$parametros,$eventos);
 	}
 
 	/**
