@@ -89,7 +89,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$this->html_cabecera();
 		
 		//--- INICIO CONTENIDO  -----
-
 		toba::output()->get('SalidaHtml')->getInicioContenido("colspan='$total_col'");
 		
 		// Si el layout es cortes/tabular se genera una sola tabla, que empieza aca
@@ -208,8 +207,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
 			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
+
 			$clase = toba::output()->get('SalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());
-			
 			$this->generar_botones($clase);
 			toba::output()->get('SalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
@@ -750,18 +749,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 
 		}
 	}
-
-	protected function html_cuadro_cabecera_columna_evento($rowspan, $pre_columnas)
-	{
-		$editor = null;
-		$eventos_sobre_fila = $this->_cuadro->get_eventos_sobre_fila();
-		if (toba_editor::modo_prueba()) {
-			$info_comp = $this->_cuadro->get_informacion_basica_componente();
-			$editor = toba_editor::get_vinculo_evento($this->_cuadro->get_id(), $info_comp['clase_editor_item'], $evento->get_id())."\n";
-		}
-		
-		toba::output()->get('SalidaHtml')->getCuadroCabeceraColumnaEvento($rowspan, $pre_columnas,$eventos_sobre_fila, $editor);
-	}
 	
 	/**
 	 * Genera la cabecera de una columna
@@ -777,7 +764,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		/**
 		 * @todo por ahora las imagenes del ornamientos queda fijado en Toba ( Despues veremos )
 		 */
-		//--- �Es ordenable?
 		if (	isset($eventos['ordenar'])
 				&& $columnas[$indice]["no_ordenar"] != 1
 				/*&& $this->_tipo_salida == 'html' */) {
@@ -791,7 +777,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 						$sel = "_sel";//orden ACTIVO
 					}
 					
-					//Comunicaci�n del evento
 					$parametros = array('orden_sentido'=>$sen[0], 'orden_columna'=>$columna);
 					$evento_js = toba_js::evento('ordenar', $eventos['ordenar'], $parametros);
 					$js = "$objeto_js.set_evento($evento_js);";
@@ -832,6 +817,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$total_columnas = $this->_cuadro->get_cantidad_columnas_total();
 		if (! empty($sumarizacion)) {
 			toba::output()->get('SalidaHtml')->getSumarizacion($sumarizacion,null,300,$css, "<tr><td colspan='$total_columnas'>\n","</td></tr>\n");
+
 		}
 	}
 
