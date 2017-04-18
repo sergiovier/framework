@@ -817,7 +817,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$total_columnas = $this->_cuadro->get_cantidad_columnas_total();
 		if (! empty($sumarizacion)) {
 			toba::output()->get('SalidaHtml')->getSumarizacion($sumarizacion,null,300,$css, "<tr><td colspan='$total_columnas'>\n","</td></tr>\n");
-
 		}
 	}
 
