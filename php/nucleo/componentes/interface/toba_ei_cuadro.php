@@ -2360,6 +2360,8 @@ class toba_ei_cuadro extends toba_ei
 		}
 		$this->generar_cabecera_corte_control($nodo, $id_unico);
 		//Genero el corte
+		toba::output()->get('Cuadro')->getInicioCorte($id_unico);
+		
 		$estilo = $this->get_estilo_inicio_colapsado($nodo);
 		$this->generar_inicio_zona_colapsable($id_unico, $estilo);
 
@@ -2370,6 +2372,7 @@ class toba_ei_cuadro extends toba_ei
 			foreach(array_keys($nodo['hijos']) as $corte){
 				$hijo_es_ultimo = ($i == count($nodo['hijos']) -1);
 				$this->crear_corte( $nodo['hijos'][$corte] , $hijo_es_ultimo);
+				toba::output()->get('Cuadro')->getFinCorte($id_unico);
 				$i++;
 			}
 			$this->generar_cc_fin_nivel();
