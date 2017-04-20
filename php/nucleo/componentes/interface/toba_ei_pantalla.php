@@ -452,19 +452,19 @@ class toba_ei_pantalla extends toba_ei
 		}
 		
 		//--> Cuerpo del CI		
-		toba::output()->get('Pantalla')->getInicioWrapperCuerpo($this->_info_ci);
+		toba::output()->get('Pantalla')->getInicioCuerpo($this->_info_ci);
 		$this->generar_html_cuerpo();
-		toba::output()->get('Pantalla')->getFinWrapperCuerpo();
+		toba::output()->get('Pantalla')->getFinCuerpo();
 		
 		//--> Botonera
 		if($this->botonera_abajo()) {
-			$clase = toba::output()->get('Pantalla')->getClaseBotonera(!$this->botonera_abajo());
-			$this->generar_botones($clase);
+			$this->generar_botones('ci-botonera ci-botonera-abajo');
 		}
 		if ( $this->_utilizar_impresion_html ) {
 			$this->generar_utilidades_impresion_html();
 		}		
-	
+		
+
 		toba::output()->get('Pantalla')->getFinColapsado();
 		
 
@@ -495,7 +495,6 @@ class toba_ei_pantalla extends toba_ei
 				break;
 			case self::NAVEGACION_TAB_VERTICAL:								//*** TABs verticales
 				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
-
 				$this->generar_tabs_verticales();
 				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
 				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
@@ -505,17 +504,19 @@ class toba_ei_pantalla extends toba_ei
 			case self::NAVEGACION_WIZARD: 									//*** Wizard (secuencia estricta hacia adelante)
 				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
 
+
 				if ($this->_info_ci['con_toc']) {
 					$this->generar_toc_wizard();
 				}
 				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
+
 				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
 				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
+
 				break;
 			default:										//*** Sin mecanismo de navegacion
 				$this->generar_html_contenido();
-
 		}
 		toba::output()->get('Pantalla')->getFinCuerpo($this->_info_ci['tipo_navegacion']);
 	}
