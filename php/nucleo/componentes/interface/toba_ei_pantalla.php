@@ -452,9 +452,9 @@ class toba_ei_pantalla extends toba_ei
 		}
 		
 		//--> Cuerpo del CI		
-		toba::output()->get('Pantalla')->getInicioCuerpo($this->_info_ci);
+		toba::output()->get('Pantalla')->getInicioWrapperCuerpo($this->_info_ci);
 		$this->generar_html_cuerpo();
-		toba::output()->get('Pantalla')->getFinCuerpo();
+		toba::output()->get('Pantalla')->getFinWrapperCuerpo();
 		
 		//--> Botonera
 		if($this->botonera_abajo()) {
@@ -509,7 +509,6 @@ class toba_ei_pantalla extends toba_ei
 					$this->generar_toc_wizard();
 				}
 				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
-
 				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
 				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
