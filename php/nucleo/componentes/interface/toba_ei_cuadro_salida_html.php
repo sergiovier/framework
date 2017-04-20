@@ -209,6 +209,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
 
 			$clase = toba::output()->get('SalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());
+			
 			$this->generar_botones($clase);
 			toba::output()->get('SalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
