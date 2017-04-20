@@ -154,7 +154,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		//Botonera
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
 			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
-			$this->generar_botones();
+			$clase = toba::output()->get('SalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),!$this->_cuadro->botonera_abajo());
+			$this->generar_botones($clase);
 			toba::output()->get('SalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
 		
@@ -206,7 +207,9 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
 			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
-			$this->generar_botones();
+			$clase = toba::output()->get('SalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());
+			
+			$this->generar_botones($clase);
 			toba::output()->get('SalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
 		toba::output()->get('SalidaHtml')->getFinCuadroVacio();;
