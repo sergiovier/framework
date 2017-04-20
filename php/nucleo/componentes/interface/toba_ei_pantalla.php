@@ -452,9 +452,9 @@ class toba_ei_pantalla extends toba_ei
 		}
 		
 		//--> Cuerpo del CI		
-		toba::output()->get('Pantalla')->getInicioCuerpo($this->_info_ci);
+		toba::output()->get('Pantalla')->getInicioWrapperCuerpo($this->_info_ci);
 		$this->generar_html_cuerpo();
-		toba::output()->get('Pantalla')->getFinCuerpo();
+		toba::output()->get('Pantalla')->getFinWrapperCuerpo();
 		
 		//--> Botonera
 		if($this->botonera_abajo()) {
@@ -474,6 +474,7 @@ class toba_ei_pantalla extends toba_ei
 	/**
 	 * Genera el html de la barra tabs, el toc (si tiene) y el contenido de las dependencias actuales
 	 * @ignore 
+	 * @todo ver la manera de factorizar los metodos
 	 */
 	protected function generar_html_cuerpo()
 	{
@@ -486,17 +487,17 @@ class toba_ei_pantalla extends toba_ei
 				$this->generar_tabs_horizontales();
 				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
 				//Interface de la etapa correspondiente
-				echo "<tr><td class='ci-tabs-h-cont'>";
+				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
-				echo "</td></tr>\n";
+				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
 				break;
 			case self::NAVEGACION_TAB_VERTICAL:								//*** TABs verticales
 				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
 				$this->generar_tabs_verticales();
 				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
-				echo "<td class='ci-tabs-v-cont'>";
+				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
-				echo "</td></tr>\n";
+				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
 				break;
 			case self::NAVEGACION_WIZARD: 									//*** Wizard (secuencia estricta hacia adelante)
 				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
@@ -504,9 +505,9 @@ class toba_ei_pantalla extends toba_ei
 					$this->generar_toc_wizard();
 				}
 				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
-				echo "<td class='ci-wiz-cont'>";
+				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
-				echo "</td>";
+				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
 				break;
 			default:										//*** Sin mecanismo de navegacion
 				$this->generar_html_contenido();
