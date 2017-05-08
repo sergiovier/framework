@@ -721,9 +721,9 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		//Campo de comunicacion con JS
 		echo toba_form::hidden("{$this->objeto_js}_listafilas",'');
 		echo toba_form::hidden("{$this->objeto_js}__parametros", '');		
-		echo "<div class='ei-cuerpo ei-ml-base' id='cuerpo_{$this->objeto_js}' style='$estilo'>";
+		toba::output()->get("FormularioMl")->getPreLayout("cuerpo_{$this->objeto_js}", $estilo);
 		$this->generar_layout($ancho);
-		echo "\n</div>";
+		toba::output()->get("FormularioMl")->getFinPreLayout();		
 	}
 	
 	/**
