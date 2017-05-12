@@ -1168,6 +1168,8 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	{
 		$consumos = parent::get_consumo_javascript();
 		$consumos[] = 'componentes/ei_formulario_ml';
+		$externos = toba::output()->get('FormularioMl')->getConsumosJs();
+		$consumos = array_merge($consumos,$externos);
 		return $consumos;
 	}
 
