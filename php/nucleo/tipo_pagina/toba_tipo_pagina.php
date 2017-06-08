@@ -10,6 +10,8 @@
 class toba_tipo_pagina
 {
 	function encabezado() {}
+	function pre_zona() {}
+	function post_zona() {}
 	function pre_contenido() {}
 	function post_contenido() {}
 	function pie() {}
