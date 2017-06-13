@@ -19,17 +19,14 @@ class toba_tp_basico extends toba_tipo_pagina
 	{
 		$this->cabecera_html();
 		$this->comienzo_cuerpo();
-	}
-	
-	function pre_zona() {
-		toba::output()->get('PaginaBasica')->getPreZona();
+		toba::output()->get('PaginaBasica')->getPreEncabezadoHtml();
 		toba::output()->get('PaginaBasica')->getInicioBarraSuperior();
 		$this->barra_superior();//--- No se cierra el div de encabezado para dar lugar a la zona...
 	}
 	
-	function post_zona() {
+	function post_encabezado() {
 		toba::output()->get('PaginaBasica')->getFinBarraSuperior();
-		toba::output()->get('PaginaBasica')->getPostZona();
+		toba::output()->get('PaginaBasica')->getPostEncabezadoHtml();
 	}
 	
 	function pre_contenido(){}
