@@ -10,9 +10,17 @@ class toba_tp_basico_titulo extends toba_tp_basico
 {
 	protected $clase_encabezado = 'encabezado';	
 
+	function inicio_encabezado_html(){
+		toba::output()->get('PaginaTitulo')->getPreEncabezadoHtml();
+	}
+	
+	function inicio_barra_superior(){
+		toba::output()->get('PaginaTitulo')->getInicioBarraSuperior();
+	}
+	
 	function barra_superior()
 	{
-		echo "<div id='barra_superior' class='barra-superior barra-superior-tit'>\n";		
+				
 		$this->info_version();
 		echo "<div class='item-barra'>";
 		$this->generar_ayuda();		
@@ -91,12 +99,12 @@ class toba_tp_basico_titulo extends toba_tp_basico
 		
 	function pre_contenido()
 	{
-		echo "\n<div align='center' class='cuerpo'>\n";		
+			toba::output()->get('PaginaTitulo')->getPreContenido();
 	}
 	
 	function post_contenido()
 	{
-		echo "\n</div>\n";		
+		toba::output()->get('PaginaTitulo')->getPostContenido();
 	}
 			
 }
