@@ -227,11 +227,11 @@ class toba_solicitud_web extends toba_solicitud
 		if (toba::solicitud()->hay_zona() && toba::zona()->cargada()) {
 			toba::zona()->generar_html_barra_superior();
 		}
-		$this->tipo_pagina()->pre_zona();
+		
 		//--- Se incluyen botones en la botonera de la operacion
 		$this->generar_html_botonera_sup($objetos);
 		
-		$this->tipo_pagina()->post_zona();
+		$this->tipo_pagina()->post_encabezado();
 		
 		$this->tipo_pagina()->pre_contenido();
 		
