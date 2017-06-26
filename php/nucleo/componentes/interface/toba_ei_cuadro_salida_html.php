@@ -469,7 +469,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				$desc = $acumulador_usuario[$id]['descripcion'];
 				$datos[$desc] = $valor;
 			}
-			toba::output()->get('SalidaHtml')->getSumarizacion($datos,null,300,$css,$profundidad,  "<tr><td  class='$css_pie' colspan='$total_columnas'>\n","</td></tr>\n");
+			toba::output()->get('SalidaHtml')->getSumarizacion($datos,null,300,$css,$nivel_css,  "<tr><td  class='$css_pie' colspan='$total_columnas'>\n","</td></tr>\n");
 		}
 	}
 	

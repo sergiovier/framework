@@ -278,10 +278,12 @@ class toba_evento_usuario extends toba_boton
 			$tip = $this->datos['ayuda'];
 		}
 		$acceso = tecla_acceso( $this->datos['etiqueta'] );
-		$imagen = $componente->getImagen($this->datos['imagen'],$this->datos['imagen_recurso_origen']); 
+		$image_resource = isset($this->datos['imagen_recurso_origen'])?$this->datos['imagen_recurso_origen']:null;
+		$imagen = $componente->getImagen($this->datos['imagen'],$image_resource); 
 		if (! $this->es_seleccion_multiple()) {
-			$clase = $componente->getCSS($this->esta_sobre_fila(), $this->datos['estilo'],$this->datos['defecto']);
-			$tipo_boton = $componente->getTipoBoton($this->esta_sobre_fila(), $this->datos['estilo'],$this->datos['defecto']);
+			$defecto = isset($this->datos['defecto']) ? $this->datos['defecto']: null;
+			$clase = $componente->getCSS($this->esta_sobre_fila(), $this->datos['estilo'],$defecto);
+			$tipo_boton = $componente->getTipoBoton($this->esta_sobre_fila(), $this->datos['estilo'],$defecto);
 			$estilo_inline = $this->oculto ? 'display: none' : null;
 			$html = '' . $acceso[0];;
 			$tecla = $acceso[1];			
