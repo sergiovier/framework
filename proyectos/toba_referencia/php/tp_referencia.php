@@ -7,7 +7,7 @@ class tp_referencia extends toba_tp_normal
 
 	function barra_superior()
 	{
-		echo "<div id='barra_superior' class='barra-superior barra-superior-tit'>\n";		
+		//echo "<div id='barra_superior' class='barra-superior barra-superior-tit'>\n";		
 		$this->info_version();
 		echo "<div class='item-barra'>";
 		$this->generar_ayuda();		
