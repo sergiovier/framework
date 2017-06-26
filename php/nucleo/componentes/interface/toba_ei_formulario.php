@@ -1153,7 +1153,9 @@ class toba_ei_formulario extends toba_ei
 		$es_fieldset = ($this->_elemento_formulario[$ef] instanceof toba_ef_fieldset);
 		$id_ef = $this->_elemento_formulario[$ef]->get_id_form();
 		
-		toba::output()->get('Formulario')->getInicioEf($this->_elemento_formulario[$ef]->get_id_form(), $this->_elemento_formulario[$ef]->esta_expandido(), $this->_info_formulario['resaltar_efs_con_estado'], $this->_elemento_formulario[$ef]->seleccionado(),$es_fieldset);
+		$resaltar = isset($this->_info_formulario['resaltar_efs_con_estado'])?$this->_info_formulario['resaltar_efs_con_estado']:null;
+		
+		toba::output()->get('Formulario')->getInicioEf($this->_elemento_formulario[$ef]->get_id_form(), $this->_elemento_formulario[$ef]->esta_expandido(), $resaltar, $this->_elemento_formulario[$ef]->seleccionado(),$es_fieldset);
 		
 		$ancho = isset($ancho_etiqueta) ? $ancho_etiqueta : $this->_ancho_etiqueta;
 		
@@ -1161,7 +1163,8 @@ class toba_ei_formulario extends toba_ei
 			$this->get_etiqueta_ef($ef, $ancho_etiqueta);
 		}
 		
-		toba::output()->get('Formulario')->getParseEf($this->get_input_ef($ef), "cont_$id_ef", $ancho, $this->_elemento_formulario[$ef]->tiene_etiqueta(), $con_etiqueta, $this->_info_formulario['expandir_descripcion'], $this->_elemento_formulario[$ef]->get_descripcion());
+		$expandir = isset($this->_info_formulario['expandir_descripcion'])?$this->_info_formulario['expandir_descripcion']:null;
+		toba::output()->get('Formulario')->getParseEf($this->get_input_ef($ef), "cont_$id_ef", $ancho, $this->_elemento_formulario[$ef]->tiene_etiqueta(), $con_etiqueta, $expandir, $this->_elemento_formulario[$ef]->get_descripcion());
 		
 		
 		toba::output()->get('Formulario')->getFinEf($es_fieldset);
@@ -1248,8 +1251,9 @@ class toba_ei_formulario extends toba_ei
 		$etiqueta = $this->_elemento_formulario[$ef]->get_etiqueta();
 		//--- El _width es para evitar el 'bug de los 3px'  del IE
 		$ancho = isset($ancho_etiqueta) ? $ancho_etiqueta : $this->_ancho_etiqueta;
+		$expandir = isset($this->_info_formulario['expandir_descripcion'])?$this->_info_formulario['expandir_descripcion']:null;
 
-		toba::output()->get('Formulario')->getParseEtiqueta($etiqueta,$id_ef,  $estilo, $this->_elemento_formulario[$ef]->es_obligatorio(),$ancho, $this->_info_formulario['expandir_descripcion'], $this->_elemento_formulario[$ef]->get_descripcion(), $editor);
+		toba::output()->get('Formulario')->getParseEtiqueta($etiqueta,$id_ef,  $estilo, $this->_elemento_formulario[$ef]->es_obligatorio(),$ancho, $expandir , $this->_elemento_formulario[$ef]->get_descripcion(), $editor);
 	}
 	
 	/**
