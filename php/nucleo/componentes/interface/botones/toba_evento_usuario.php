@@ -279,7 +279,7 @@ class toba_evento_usuario extends toba_boton
 		}
 		$acceso = tecla_acceso( $this->datos['etiqueta'] );
 		$image_resource = isset($this->datos['imagen_recurso_origen'])?$this->datos['imagen_recurso_origen']:null;
-		$imagen = $componente->getImagen($this->datos['imagen'],$image_resource); 
+		$imagen = $componente->getImagen($this->datos['imagen'],$image_resource, $this->esta_sobre_fila()); 
 		if (! $this->es_seleccion_multiple()) {
 			$defecto = isset($this->datos['defecto']) ? $this->datos['defecto']: null;
 			$clase = $componente->getCSS($this->esta_sobre_fila(), $this->datos['estilo'],$defecto);
