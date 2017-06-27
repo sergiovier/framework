@@ -72,8 +72,7 @@ abstract class toba_filtro_columna_compuesta extends toba_filtro_columna
 	function get_html_condicion()
 	{
 		$html = parent::get_html_condicion();
-		$html .= "<div id='{$this->_id_form_cond}_label_extra' style='display:none'>";
-		$html .= '<br>y</div>';
+		$html .= toba::output()->get('FiltroColumnas')->getHtmlUnionCondicion("{$this->_id_form_cond}_label_extra");
 		return $html;
 	}		
 	
