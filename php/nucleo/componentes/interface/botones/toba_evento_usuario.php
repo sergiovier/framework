@@ -291,7 +291,7 @@ class toba_evento_usuario extends toba_boton
 			if (isset($js)) {
 				$js = 'onclick="'.$js.'"';				
 					return $componente->getInputButton( $id_submit."_".$this->get_id(), $html, $imagen , $js, $tab_order, $tecla,
-												$tip, $tipo_boton, '', $clase, true, $estilo_inline, $this->activado);
+												$tip, $tipo_boton, '', $clase, true, $estilo_inline, $this->activado, $this->esta_sobre_fila());
 			}
 		} else {
 			$js = $this->get_invocacion_js($objeto_js, $id_componente);
