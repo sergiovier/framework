@@ -16,14 +16,57 @@ class toba_tp_normal extends toba_tp_basico_titulo
 
 	function __construct()
 	{
-		$this->menu = toba::menu();
+		$this->menu = toba::output()->get('Menu');
+	}
+	
+	
+	function inicio_encabezado_html(){
+		toba::output()->get('PaginaNormal')->getPreEncabezadoHtml();
+	}
+	
+	function inicio_barra_superior(){
+		toba::output()->get('PaginaNormal')->getInicioBarraSuperior();
+	}
+	
+	function fin_encabezado_html(){
+		toba::output()->get('PaginaNormal')->getPostEncabezadoHtml();
+	}
+	
+	function fin_barra_superior(){
+		toba::output()->get('PaginaNormal')->getFinBarraSuperior();
+	}
+	
+	function barra_superior()
+	{
+		toba::output()->get('PaginaNormal')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
+	}
+	
+	protected function comienzo_cuerpo_basico()
+	{
+		toba::output()->get('PaginaNormal')->getInicioCuerpo();
+	}
+	
+	protected function estilos_css()
+	{
+		parent::estilos_css();
+		toba::output()->get('PaginaTitulo')->getEstiloCss();
 	}
 	
 	protected function comienzo_cuerpo()
 	{
 		parent::comienzo_cuerpo();
+		$this->cabecera_aplicacion();
+		
 		$this->menu();	
-		$this->cabecera_aplicacion();			
+		
+	}
+	
+	public function pre_contenido(){
+		toba::output()->get('PaginaNormal')->getPreContenido();
+	}
+	
+	public function post_contenido(){
+		toba::output()->get('PaginaNormal')->getPostContenido();
 	}
 
 	protected function menu()
@@ -77,6 +120,7 @@ class toba_tp_normal extends toba_tp_basico_titulo
 		//--- Logo
 		
 		$this->mostrar_logo();
+		
 		
 	}
 

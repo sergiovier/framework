@@ -46,9 +46,13 @@ class toba_tp_basico extends toba_tipo_pagina
 		toba::output()->get('PaginaBasica')->getPostEncabezadoHtml();
 	}
 	
-	function pre_contenido(){}
+	function pre_contenido(){
+		toba::output()->get('PaginaBasica')->getPreContenido();
+	}
 	
-	function post_contenido(){}
+	function post_contenido(){
+		toba::output()->get('PaginaBasica')->getPostContenido();
+	}
 
 	function pie()
 	{
@@ -100,16 +104,19 @@ class toba_tp_basico extends toba_tipo_pagina
 	 */
 	protected function comienzo_cuerpo()
 	{
+		$this->capa_espera();
 		$this->comienzo_cuerpo_basico();
+		
+		
+	}
+	protected function capa_espera(){
+		toba::output()->get('PaginaBasica')->getOverlay();
+		toba::output()->get('PaginaBasica')->getCapaEspera();
 	}
 	
 	protected function comienzo_cuerpo_basico()
 	{
-		toba::output()->get('PaginaBasica')->getInicioCuerpo();
-		
-		toba::output()->get('PaginaBasica')->getOverlay();
-		
-		toba::output()->get('PaginaBasica')->getCapaEspera();
+		toba::output()->get('PaginaBasica')->getInicioCuerpo();		
 	}
 
 	function barra_superior()
