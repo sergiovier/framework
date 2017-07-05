@@ -18,6 +18,14 @@ class toba_tp_basico_titulo extends toba_tp_basico
 		toba::output()->get('PaginaTitulo')->getInicioBarraSuperior();
 	}
 	
+	function fin_encabezado_html(){
+		toba::output()->get('PaginaTitulo')->getPostEncabezadoHtml();
+	}
+	
+	function fin_barra_superior(){
+		toba::output()->get('PaginaTitulo')->getFinBarraSuperior();
+	}
+	
 	function barra_superior()
 	{
 				
