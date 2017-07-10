@@ -457,7 +457,7 @@ abstract class toba_filtro_columna
 	 */
 	function get_html_valor()
 	{
-		echo $this->_ef->get_input();
+		return $this->_ef->get_input();
 	}
 
 	/**
