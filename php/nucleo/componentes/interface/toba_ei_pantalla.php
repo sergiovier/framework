@@ -433,7 +433,7 @@ class toba_ei_pantalla extends toba_ei
 		
 		$ancho = isset($this->_info_ci["ancho"]) ? "style='width:{$this->_info_ci["ancho"]};'" : '';
 		
-		toba::output()->get('Pantalla')->getInicioHtml($this->objeto_js, $ancho);
+		toba::output()->get('Pantalla')->getInicioHtml("{$this->objeto_js}_cont", $ancho);
 		
 		echo $this->controlador->get_html_barra_editor();
 		$class_extra = '';
@@ -457,8 +457,9 @@ class toba_ei_pantalla extends toba_ei
 		toba::output()->get('Pantalla')->getFinWrapperCuerpo();
 		
 		//--> Botonera
+		$clase_abajo = toba::output()->get('Pantalla')->getClaseBotonera(false);
 		if($this->botonera_abajo()) {
-			$this->generar_botones('ci-botonera ci-botonera-abajo');
+			$this->generar_botones($clase_abajo);
 		}
 		if ( $this->_utilizar_impresion_html ) {
 			$this->generar_utilidades_impresion_html();
