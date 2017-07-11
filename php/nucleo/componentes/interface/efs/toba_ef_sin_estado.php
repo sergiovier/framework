@@ -63,7 +63,6 @@ class toba_ef_barra_divisora extends toba_ef_sin_estado
 	
 	function get_input()
 	{
-		toba::output()->get('InputsForm')->getBarraDivisora($this->id_form,$this->etiqueta,$this->clase_css);
 		echo "<div class='{$this->clase_css}' id='{$this->id_form}'>{$this->etiqueta}</div>\n";
 	}
 }
