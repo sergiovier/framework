@@ -1155,7 +1155,7 @@ class toba_ei_formulario extends toba_ei
 		
 		$resaltar = isset($this->_info_formulario['resaltar_efs_con_estado'])?$this->_info_formulario['resaltar_efs_con_estado']:null;
 		
-		toba::output()->get('Formulario')->getInicioEf($this->_elemento_formulario[$ef]->get_id_form(), $this->_elemento_formulario[$ef]->esta_expandido(), $resaltar, $this->_elemento_formulario[$ef]->seleccionado(),$es_fieldset);
+		toba::output()->get('Formulario')->getInicioEf("nodo_{$this->_elemento_formulario[$ef]->get_id_form()}", $this->_elemento_formulario[$ef]->esta_expandido(), $resaltar, $this->_elemento_formulario[$ef]->seleccionado(),$es_fieldset);
 		
 		$ancho = isset($ancho_etiqueta) ? $ancho_etiqueta : $this->_ancho_etiqueta;
 		
@@ -1164,7 +1164,7 @@ class toba_ei_formulario extends toba_ei
 		}
 		
 		$expandir = isset($this->_info_formulario['expandir_descripcion'])?$this->_info_formulario['expandir_descripcion']:null;
-		toba::output()->get('Formulario')->getParseEf($this->get_input_ef($ef), "cont_$id_ef", $ancho, $this->_elemento_formulario[$ef]->tiene_etiqueta(), $con_etiqueta, $expandir, $this->_elemento_formulario[$ef]->get_descripcion());
+		toba::output()->get('Formulario')->getParseEf($this->get_input_ef($ef), "cont_$id_ef", $ancho, $this->_elemento_formulario[$ef]->tiene_etiqueta(), $con_etiqueta, $expandir, $this->_elemento_formulario[$ef]->get_descripcion(),get_class($this->_elemento_formulario[$ef]));
 		
 		
 		toba::output()->get('Formulario')->getFinEf($es_fieldset);
@@ -1327,6 +1327,13 @@ class toba_ei_formulario extends toba_ei
 	{
 		$consumo = parent::get_consumo_javascript();
 		$consumo[] = 'componentes/ei_formulario';
+		$custom_consumo = toba::output()->get('Formulario')->getConsumoJs();
+		if(isset($custom_consumo)){
+			if (!is_array($custom_consumo) && trim($custom_consumo) != '')
+				$consumo[] = $custom_consumo;
+			if (is_array($custom_consumo))
+				$consumo = array_merge($consumo,$custom_consumo);
+		}
 		//Busco las	dependencias
 		foreach ($this->_lista_ef_post	as	$ef){
 			$temp	= $this->_elemento_formulario[$ef]->get_consumo_javascript();
