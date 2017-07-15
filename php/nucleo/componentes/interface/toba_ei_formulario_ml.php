@@ -707,21 +707,13 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		//Ancho y Scroll
 		$estilo = '';
 		$ancho = isset($this->_info_formulario["ancho"]) ? $this->_info_formulario["ancho"] : "auto";
-		if($this->_info_formulario["scroll"]){
-			$alto_maximo = isset($this->_info_formulario["alto"]) ? $this->_info_formulario["alto"] : "auto";
-			if ($ancho != 'auto' || $alto_maximo != 'auto') {
-				$estilo .= "overflow: auto; width: $ancho; height: $alto_maximo; border: 1px inset; margin: 0px; padding: 0px;";
-			} 
-		}else{
-			$alto_maximo = "auto";
-		}		
-		if (isset($this->_colapsado) && $this->_colapsado) {
-			$estilo .= "display:none;";
-		}
+		$alto_maximo = isset($this->_info_formulario["alto"]) ? $this->_info_formulario["alto"] : "auto";
+				
+		$colapsado = isset($this->_colapsado)?$this->_colapsado:null;
 		//Campo de comunicacion con JS
 		echo toba_form::hidden("{$this->objeto_js}_listafilas",'');
 		echo toba_form::hidden("{$this->objeto_js}__parametros", '');		
-		toba::output()->get("FormularioMl")->getPreLayout("cuerpo_{$this->objeto_js}", $estilo);
+		toba::output()->get("FormularioMl")->getPreLayout("cuerpo_{$this->objeto_js}", $ancho,$alto_maximo,$this->_info_formulario["scroll"], $colapsado);
 		$this->generar_layout($ancho);
 		toba::output()->get("FormularioMl")->getFinPreLayout();		
 	}
@@ -875,7 +867,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			$agregar = $this->_info_formulario['filas_agregar'];
 			$ordenar = $this->_info_formulario['filas_ordenar'];
 			if ($agregar_abajo && $this->_mostrar_agregar ) {
-				toba::output()->get('FormularioMl')->getBotonAgregarInferior("{$this->objeto_js}_agregar", "onclick='{$this->objeto_js}.crear_fila();'", $this->_rango_tabs[0]++, $this->_modo_agregar);
+				toba::output()->get('FormularioMl')->getBotonAgregarInferior("{$this->objeto_js}_agregar", "{$this->objeto_js}.crear_fila()", $this->_rango_tabs[0]++, $this->_modo_agregar);
 			}		
 			$this->generar_botones_eventos();
 			toba::output()->get('FormularioMl')->getFinBotoneraMl();
@@ -932,7 +924,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			}			
 			//-- Inicio html de la fila
 			
-			toba::output()->get('FormularioMl')->getInicioFila("{$this->objeto_js}_fila$fila", "{$this->objeto_js}.seleccionar($fila)'",$this->estilo_celda_actual, $estilo_fila,$this->_info_formulario['filas_numerar'], ($a+1), "{$this->objeto_js}_numerofila$fila" );
+			toba::output()->get('FormularioMl')->getInicioFila("{$this->objeto_js}_fila$fila", "{$this->objeto_js}.seleccionar($fila)",$this->estilo_celda_actual, $estilo_fila,$this->_info_formulario['filas_numerar'], ($a+1), "{$this->objeto_js}_numerofila$fila" );
 			//--Layout de las filas
 			$this->generar_layout_fila($fila);//Listo
 			//--Numeración de las filas
@@ -983,10 +975,11 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	 */
 	protected function generar_eventos_fila($fila)
 	{
+		$html_eventos = [];
 		foreach ($this->get_eventos_sobre_fila() as $id => $evento) {
-			$content =  $this->get_invocacion_evento_fila($evento, $fila, $fila, false);			
-			toba::output()->get('FormularioMl')->getFormateoCelda($this->estilo_celda_actual, true, $content);
-		}	
+			$html_eventos[] =  $this->get_invocacion_evento_fila($evento, $fila, $fila, false);		
+		}
+		toba::output()->get('FormularioMl')->getFormateoEventos($this->estilo_celda_actual,$html_eventos);
 	}
 	
 	//-------------------------------------------------------------------------------
@@ -1083,8 +1076,14 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	{
 		$consumos = parent::get_consumo_javascript();
 		$consumos[] = 'componentes/ei_formulario_ml';
-		$externos = toba::output()->get('FormularioMl')->getConsumosJs();
-		$consumos = array_merge($consumos,$externos);
+		$custom_consumo= toba::output()->get('FormularioMl')->getConsumosJs();
+		if(isset($custom_consumo)){
+			if (!is_array($custom_consumo) && trim($custom_consumo) != '')
+				$consumos[] = $custom_consumo;
+			if (is_array($custom_consumo))
+				$consumos = array_merge($consumos,$custom_consumo);
+		}
+		$consumos = array_reverse (array_unique(array_reverse ($consumos)));//Elimino los	duplicados
 		return $consumos;
 	}
 
