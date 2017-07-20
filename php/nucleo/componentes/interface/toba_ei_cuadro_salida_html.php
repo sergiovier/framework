@@ -32,9 +32,9 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		return $this->_cuadro->get_invocacion_evento_fila($evento, $fila, $clave_fila, $salida_como_vinculo, $param_extra);
 	}
 
-	function generar_botones()
+	function generar_botones($clase)
 	{
-		$this->_cuadro->generar_botones();
+		$this->_cuadro->generar_botones($clase);
 	}
 	//--------------------------------------------------------------------------------------------------------------------------------------------------//
 	//																	METODOS GENERALES
@@ -203,7 +203,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$ancho = isset($info_cuadro["ancho"]) ? $info_cuadro["ancho"] : "";
 		$colapsado = (isset($colapsado) && $colapsado) ? "display:none;" : '';
 	
-		toba::output()->get('SalidaHtml')->getMensajeCuadroVacio("cuerpo_$objeto_js",$ancho, $colapsado, ei_mensaje($texto));
+		toba::output()->get('SalidaHtml')->getMensajeCuadroVacio("cuerpo_$objeto_js",$ancho, $colapsado, $texto);
 		
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
 			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
@@ -349,8 +349,9 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				$this->$metodo($nodo);
 				toba::output()->get('SalidaHtml')->getFinCabeceraCC($this->_cuadro->debe_colapsar_cortes(), $nivel_css,$total_columnas, $js);
 		}else{
+			
 				echo "<li class='$class'>\n";
-				$this->$metodo($nodo);
+				//$this->$metodo($nodo);
 		}
 	}
 
@@ -360,6 +361,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	*/
 	protected function html_cabecera_cc_contenido(&$nodo)
 	{
+		
 		toba::output()->get('SalidaHtml')->getContenidoCabeceraCC($this->_cuadro->get_indice_cortes(),$nodo);
 	}
 
@@ -632,6 +634,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	{
 		$id_form = $this->_cuadro->get_id_form();
 		$descripcion_resp_popup = $this->_cuadro->get_descripcion_resp_popup($id_fila);
+		
+		toba::output()->get('SalidaHtml')->getPreCeldaEvento($pre_columnas,$this->_cuadro->get_eventos_sobre_fila());
 		foreach ($this->_cuadro->get_eventos_sobre_fila() as $id => $evento) {
 			$parametros = $this->get_parametros_interaccion($id_fila, $clave_fila);
 			$invocacion_evento_fila = $this->get_invocacion_evento_fila($evento, $id_fila, $clave_fila, false, $parametros);
@@ -641,6 +645,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		
 		//Se agrega la clave a la lista de enviadas
 		$this->_cuadro->agregar_clave_enviada($clave_fila);
+		toba::output()->get('SalidaHtml')->getPostCeldaEvento($pre_columnas,$this->_cuadro->get_eventos_sobre_fila());
 	}
 
 	protected function get_parametros_interaccion($id_fila, $clave_fila)

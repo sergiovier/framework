@@ -677,7 +677,7 @@ abstract class toba_ei extends toba_componente
 					$this->generar_botones();
 				}						
 			
-				toba::output()->get('ElementoInterfaz')->getContenidoBarraSuperior($titulo, $this->_info["descripcion"], $this->_modo_descripcion_tooltip, $this->_info['colapsable'], $colapsado_coherente, $this->objeto_js);
+				toba::output()->get('ElementoInterfaz')->getContenidoBarraSuperior($titulo, $this->_info["descripcion"], $this->_modo_descripcion_tooltip, $this->_info['colapsable'], $colapsado_coherente, $this->objeto_js,$colapsado);
 				//---Titulo			
 				toba::output()->get('ElementoInterfaz')->getFinBarraSuperior();
 				
