@@ -168,7 +168,7 @@ class toba_form
     	$id = ($con_id) ? "id='$nombre'" : '';
     	$estilo_inline = isset($estilo_inline) ? "style='" . $estilo_inline . "'": '';
     	//$habilitado = $habilitado ? '' : 'disabled="disabled"';
-    	$tag = "<a href='#' type='$tipo' name='$nombre' $id  $tab $acceso $extra $estilo_inline $habilitado> <span>$html</span>$valor</a>\n";
+    	$tag = "<a href='#' type='$tipo' name='$nombre' $id  $tab $acceso $extra $estilo_inline $habilitado>$html $valor</a>\n";
     	
     	return $tag;
     }
