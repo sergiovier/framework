@@ -505,7 +505,6 @@ class toba_ei_pantalla extends toba_ei
 			case self::NAVEGACION_WIZARD: 									//*** Wizard (secuencia estricta hacia adelante)
 				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
 
-
 				if ($this->_info_ci['con_toc']) {
 					$this->generar_toc_wizard();
 				}

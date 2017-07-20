@@ -770,6 +770,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		/**
 		 * @todo por ahora las imagenes del ornamientos queda fijado en Toba ( Despues veremos )
 		 */
+
 		if (	isset($eventos['ordenar'])
 				&& $columnas[$indice]["no_ordenar"] != 1
 				/*&& $this->_tipo_salida == 'html' */) {
