@@ -8,14 +8,35 @@ class toba_factory_service {
 	
 	private static $_instance;
 	private static $_services;
+	private static $_config = [
+								'PaginaBasica' => 'bootstrap',
+								'PaginaTitulo' => 'bootstrap',
+								'PaginaNormal' => 'bootstrap',
+								'PaginaPopup' => 'toba',
+								'PaginaLogon' => 'toba',
+								'ElementoInterfaz' => 'bootstrap',
+								'Pantalla' => 'bootstrap',
+								'Cuadro' => 'bootstrap',
+								'SalidaHtml' => 'bootstrap',
+								'Formulario' => 'bootstrap',
+								'FormularioMl' => 'bootstrap',
+								'EventoUsuario' => 'toba',
+								'EventoTab' => 'bootstrap',
+								'InputsForm' => 'toba',
+								'FiltroColumnas' => 'bootstrap',
+								'Menu' => 'bootstrap',
+								'Filtro' => 'bootstrap'
+	];
 	
 	/**
 	 * @param string $component nombre del servicio que se desea obtener
 	 * @return object instancia del objeto solicitado
 	 */	
-	function get($component){
-		
-		return new self::$_services['toba'][$component];
+	function get($component, $default = false){
+		$provider = $default?'toba':self::$_config[$component];
+		$proyecto = toba_proyecto::get_id();
+		$provider = $proyecto == 'toba_editor'?"toba":$provider;
+		return new self::$_services[$provider][$component];
 	}
 	
 	function registrarServicio(IFactory $fabrica){
@@ -34,6 +55,7 @@ class toba_factory_service {
 				//echo self::$_services[$nombre_fabrica][$componente]; 
 			}
 		}		
+		
 	}
 	
 }
