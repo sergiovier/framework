@@ -1,6 +1,6 @@
 <?php
 /**
- * Tipo de página pensado para pantallas de login, presenta un logo y un pie de página básico
+ * Tipo de pï¿½gina pensado para pantallas de login, presenta un logo y un pie de pï¿½gina bï¿½sico
  * 
  * @package SalidaGrafica
  */
@@ -23,6 +23,10 @@ class toba_tp_logon extends toba_tp_basico
 	function post_contenido()
 	{
 		toba::output()->get('PaginaLogon')->getPostContenido();
+	}
+	
+	function footer(){
+		toba::output()->get('PaginaLogon')->getFooterHtml();
 	}
 }
 ?>

@@ -1,8 +1,8 @@
 <?php
 /**
 * 
-* Incluye una barra con nombre y ayuda contextual de la operación, 
-* y centraliza el contenido de la salida de la operación
+* Incluye una barra con nombre y ayuda contextual de la operaciï¿½n, 
+* y centraliza el contenido de la salida de la operaciï¿½n
 * 
 * @package SalidaGrafica
 */
@@ -47,7 +47,7 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	}
 	
 	/**
-	 * Retorna el título de la opreación actual, utilizado en la barra superior
+	 * Retorna el tÃ­tulo de la opreaciÃ³n actual, utilizado en la barra superior
 	 */
 	protected function titulo_item()
 	{
@@ -73,6 +73,10 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	function post_contenido()
 	{
 		toba::output()->get('PaginaTitulo')->getPostContenido();
+	}
+	
+	protected function footer(){
+		toba::output()->get('PaginaTitulo')->getFooterHtml();
 	}
 			
 }

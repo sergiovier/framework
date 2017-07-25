@@ -1,13 +1,13 @@
 <?php
 
 /**
-* El tipo de página básico está pensado como clase base para las personalizaciones fuertes de la salida.
-* Presenta la estructura básica que de la salida html del framework:
+* El tipo de pï¿½gina bï¿½sico estï¿½ pensado como clase base para las personalizaciones fuertes de la salida.
+* Presenta la estructura bï¿½sica que de la salida html del framework:
 *  - Doctype
 *  - Titulo de la pagina
 *  - Codificacion
 *  - Plantillas css
-*  - Includes js básico
+*  - Includes js bï¿½sico
 * 
 * @package SalidaGrafica
 */
@@ -61,10 +61,15 @@ class toba_tp_basico extends toba_tipo_pagina
 			$item = toba::solicitud()->get_datos_item('item');
 			$accion = toba::solicitud()->get_datos_item('item_act_accion_script');
 			toba_editor::generar_zona_vinculos_item($item, $accion);
-		}		
+		}
+		$this->footer();
 		toba::output()->get('PaginaBasica')->getFinCuerpo();
 		toba::output()->get('PaginaBasica')->getFinHtml();
-	}	
+	}
+	
+	protected function footer(){
+		toba::output()->get('PaginaBasica')->getFooterHtml();
+	}
 	
 	protected function cabecera_html()
 	{

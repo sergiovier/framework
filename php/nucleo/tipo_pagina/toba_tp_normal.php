@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Este tipo de página incluye una cabecera con:
- *  - Menú
+ * Este tipo de pï¿½gina incluye una cabecera con:
+ *  - Menï¿½
  *  - Logo
- *  - Información básica del usuario logueado
+ *  - Informaciï¿½n bï¿½sica del usuario logueado
  *  - Capacidad de cambiar de proyecto 
  *  - Capacidad de desloguearse
  * @package SalidaGrafica
@@ -67,6 +67,10 @@ class toba_tp_normal extends toba_tp_basico_titulo
 	
 	public function post_contenido(){
 		toba::output()->get('PaginaNormal')->getPostContenido();
+	}
+	
+	public function footer(){
+		toba::output()->get('PaginaNormal')->getFooterHtml();
 	}
 
 	protected function menu()
@@ -155,6 +159,8 @@ class toba_tp_normal extends toba_tp_basico_titulo
 	{
 		toba::app_launcher()->mostrar_html_app_launcher();
 	}
+	
+	
 	
 }
 ?>
