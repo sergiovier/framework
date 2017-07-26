@@ -16,7 +16,7 @@ class toba_evento_usuario extends toba_boton
 	/**
 	* Devuelve el vinculo asociado al evento
 	* @param boolean $forzar_instancia Por defecto solo se crea una instancia de un vinculo asociada al evento,
-	* 		con este parámetro fuerza a crear un nuevo objeto vinculo
+	* 		con este parï¿½metro fuerza a crear un nuevo objeto vinculo
 	* @return toba_vinculo
 	*/
 	function vinculo($forzar_instancia=false)
@@ -92,7 +92,7 @@ class toba_evento_usuario extends toba_boton
 	
 	/**
 	 * El evento predeterminado si se encuentra en botonera se dispara al presionar la tecla ENTER.
-	 * En caso de existir más de uno en una página el browser utiliza el primero en el orden del fuente HTML.
+	 * En caso de existir mï¿½s de uno en una pï¿½gina el browser utiliza el primero en el orden del fuente HTML.
 	 */
 	function es_predeterminado()
 	{
@@ -279,7 +279,7 @@ class toba_evento_usuario extends toba_boton
 		}
 		$acceso = tecla_acceso( $this->datos['etiqueta'] );
 		$image_resource = isset($this->datos['imagen_recurso_origen'])?$this->datos['imagen_recurso_origen']:null;
-		$imagen = $componente->getImagen($this->datos['imagen'],$image_resource, $this->esta_sobre_fila()); 
+		$imagen = $componente->getImagen($this->datos['imagen'],$image_resource, $this->esta_sobre_fila(),$this->datos['estilo']); 
 		if (! $this->es_seleccion_multiple()) {
 			$defecto = isset($this->datos['defecto']) ? $this->datos['defecto']: null;
 			$clase = $componente->getCSS($this->esta_sobre_fila(), $this->datos['estilo'],$defecto,$this->activado);
@@ -344,7 +344,7 @@ class toba_evento_usuario extends toba_boton
 	}
 	
 	/**
-	 * Genera la invocación JS necesaria para incluir en un onclick por ejemplo
+	 * Genera la invocaciï¿½n JS necesaria para incluir en un onclick por ejemplo
 	 */
 	function get_invocacion_js($objeto_js=null, $id_componente = null)
 	{
