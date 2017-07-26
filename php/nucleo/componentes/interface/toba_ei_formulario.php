@@ -17,11 +17,11 @@ class toba_ei_formulario extends toba_ei
 	protected $_lista_ef_post = array();		// interno | array |	Lista	de	elementos que se reciben por POST
 	protected $_lista_toba_ef_ocultos = array();
 	protected $_nombre_ef_cli = array(); 	// interno | array | ID html de los elementos
-	protected $_parametros_carga_efs;		// Parámetros que se utilizan para cargar opciones a los efs
+	protected $_parametros_carga_efs;		// Parï¿½metros que se utilizan para cargar opciones a los efs
 	protected $_modelo_eventos;
 	protected $_flag_out = false;			// indica si el formulario genero output
 	protected $_evento_mod_estricto;			// Solo dispara la modificacion si se apreto el boton procesar
-	protected $_rango_tabs;					// Rango de números disponibles para asignar al taborder
+	protected $_rango_tabs;					// Rango de nï¿½meros disponibles para asignar al taborder
 	protected $_objeto_js;	
 	protected $_ancho_etiqueta = '150px';
 	protected $_ancho_etiqueta_temp;		//Ancho de la etiqueta anterior a un cambio de la misma
@@ -69,13 +69,13 @@ class toba_ei_formulario extends toba_ei
 	{
 		parent::aplicar_restricciones_funcionales();
 
-		//-- Restricción funcional efs no-visibles y no-editables ------
+		//-- Restricciï¿½n funcional efs no-visibles y no-editables ------
 		$no_visibles = toba::perfil_funcional()->get_rf_form_efs_no_visibles($this->_id[1]);
 		$no_editables = toba::perfil_funcional()->get_rf_form_efs_no_editables($this->_id[1]);
 		if (! empty($no_visibles) || ! empty($no_editables)) {
 			for($a=0;$a<count($this->_info_formulario_ef);$a++) {
 				$id_ef = $this->_info_formulario_ef[$a]['identificador'];
-				//Existe el ef luego de la configuración?
+				//Existe el ef luego de la configuraciï¿½n?
 				if (isset($this->_elemento_formulario[$id_ef])) {
 					$id_metadato = $this->_info_formulario_ef[$a]['objeto_ei_formulario_fila'];
 					if (in_array($id_metadato, $no_editables)) {
@@ -94,7 +94,7 @@ class toba_ei_formulario extends toba_ei
 	}
 	
 	/**
-	 * Método interno para iniciar el componente una vez construido
+	 * Mï¿½todo interno para iniciar el componente una vez construido
 	 * @ignore 
 	 */	
 	function inicializar($parametros=array())
@@ -271,7 +271,7 @@ class toba_ei_formulario extends toba_ei
 	
 	/**
 	 * Cambia el ancho total del formulario
-	 *	@param string $ancho Tamaño del formulario ej: '600px'
+	 *	@param string $ancho Tamaï¿½o del formulario ej: '600px'
 	 */
 	function set_ancho($ancho)
 	{
@@ -280,8 +280,8 @@ class toba_ei_formulario extends toba_ei
 		
 
 	/*
-	*	Setea el tamaño minimo para la etiqueta del ef. El tamaño debe incluir la medida utilizada.
-	*	@param string $ancho Tamaño de la etiqueta ej: '150px'
+	*	Setea el tamaï¿½o minimo para la etiqueta del ef. El tamaï¿½o debe incluir la medida utilizada.
+	*	@param string $ancho Tamaï¿½o de la etiqueta ej: '150px'
 	*	@see restaurar_ancho_etiqueta
 	*/
 	function set_ancho_etiqueta($ancho)
@@ -396,7 +396,7 @@ class toba_ei_formulario extends toba_ei
 
 	/**
 	 * Recorre todos los efs y valida sus valores actuales
-	 * @throws toba_error_validacion En caso de que la validación de algún ef falle
+	 * @throws toba_error_validacion En caso de que la validaciï¿½n de algï¿½n ef falle
 	 */
 	function validar_estado()
 	{
@@ -418,7 +418,7 @@ class toba_ei_formulario extends toba_ei
 	//-------------------------------------------------------------------------------
 
 	/**
-	 * Permite alternar entre mostrar la ayuda a los efs con un tooltip (predeterminado) o a través de un texto visible inicialmente
+	 * Permite alternar entre mostrar la ayuda a los efs con un tooltip (predeterminado) o a travï¿½s de un texto visible inicialmente
 	 * @param boolean $mostrar
 	 */
 	function set_expandir_descripcion($mostrar)
@@ -427,7 +427,7 @@ class toba_ei_formulario extends toba_ei
 	}
 	
 	/**
-	 * Detecta los cambios producidos en los distintos campos en el cliente, cambia los estilos de los mismos y habilita-deshabilita el botón por defecto
+	 * Detecta los cambios producidos en los distintos campos en el cliente, cambia los estilos de los mismos y habilita-deshabilita el botï¿½n por defecto
 	 * en caso de que se hallan producido cambios
 	 */
 	function set_detectar_cambios($detectar = true)
@@ -499,7 +499,7 @@ class toba_ei_formulario extends toba_ei
 
 	
 	/**
-	 * Permite o no la edición de un conjunto de efs de este formulario, pero sus valores se muestran al usuario
+	 * Permite o no la ediciï¿½n de un conjunto de efs de este formulario, pero sus valores se muestran al usuario
 	 *
 	 * @param array $efs Uno o mas efs, si es nulo se asume todos
 	 * @param boolean $readonly Hacer solo_lectura? (true por defecto)
@@ -522,7 +522,7 @@ class toba_ei_formulario extends toba_ei
 	}
 
 	/**
-	 * Establece que un conjunto de efs serán o no obligatorios
+	 * Establece que un conjunto de efs serï¿½n o no obligatorios
 	 * Este estado perdura durante una interaccion
 	 *
 	 * @param array $efs Uno o mas efs, si es nulo se asume todos
@@ -547,8 +547,8 @@ class toba_ei_formulario extends toba_ei
 	
 	
 	/**
-	 * Desactiva la validación particular de un ef tanto en php como en javascript
-	 * Este estado perdura durante una interacción
+	 * Desactiva la validaciï¿½n particular de un ef tanto en php como en javascript
+	 * Este estado perdura durante una interacciï¿½n
 	 */
 	function desactivar_validacion_ef($ef) 
 	{
@@ -561,7 +561,7 @@ class toba_ei_formulario extends toba_ei
 	}
 	
 	/**
-	 * Establece que un conjunto de efs NO seran enviados al cliente durante una interacción
+	 * Establece que un conjunto de efs NO seran enviados al cliente durante una interacciï¿½n
 	 * Para hacer un ef solo_lectura ver {@link toba_ef::set_solo_lectura() set_solo_lectura del ef}
 	 * @param array $efs Uno o mas efs, si es nulo se asume todos
 	 */
@@ -744,7 +744,7 @@ class toba_ei_formulario extends toba_ei
 	//-------------------------------------------------------------------------------
 	
 	/**
-	 * Método que se utiliza en la respuesta a los efs_captcha
+	 * Mï¿½todo que se utiliza en la respuesta a los efs_captcha
 	 * @todo Este esquema solo se banca un solo ef_captcha. Para poder bancarse mas habria que 
 	 * pensar por ejemplo, pasarle al GET "id_ef + text-captcha" para identificar que texto se 
 	 * quiere recuperar. De todas maneras para que mas de un captcha???.
@@ -768,12 +768,12 @@ class toba_ei_formulario extends toba_ei
 	}
 
 	/**
-	 * Método que se utiliza en la respuesta de las cascadas usando AJAX
+	 * Mï¿½todo que se utiliza en la respuesta de las cascadas usando AJAX
 	 */
 	function servicio__cascadas_efs()
 	{
 		if (! isset($_GET['cascadas-ef']) || ! isset($_GET['cascadas-maestros'])) {
-			throw new toba_error_seguridad("Cascadas: Invocación incorrecta");	
+			throw new toba_error_seguridad("Cascadas: Invocaciï¿½n incorrecta");	
 		}
 		$id_ef = trim(toba::memoria()->get_parametro('cascadas-ef'));
 		if (! $this->existe_ef($id_ef)) {
@@ -802,7 +802,7 @@ class toba_ei_formulario extends toba_ei
 				if (!is_array($campos)) {
 					$maestros[$id_ef_maestro] = $this->ef($id_ef_maestro)->normalizar_parametro_cascada($param[1]);	
 				} else {
-					//--- Manejo de claves múltiples					
+					//--- Manejo de claves mï¿½ltiples					
 					if (count($valores) != count($campos)) {
 						throw new toba_error("Cascadas: El ef $id_ef_maestro maneja distinta cantidad de datos que los campos pasados");
 					}
@@ -858,12 +858,12 @@ class toba_ei_formulario extends toba_ei
 	}
 
 	/**
-	 * Método que se utiliza en la respuesta del filtro del combo editable usando AJAX
+	 * Mï¿½todo que se utiliza en la respuesta del filtro del combo editable usando AJAX
 	 */
 	function servicio__filtrado_ef_ce()
 	{
 		if (! isset($_GET['filtrado-ce-ef']) || ! isset($_GET['filtrado-ce-valor'])) {
-			throw new toba_error_seguridad("Filtrado de combo editable: Invocación incorrecta");	
+			throw new toba_error_seguridad("Filtrado de combo editable: Invocaciï¿½n incorrecta");	
 		}
 		toba::memoria()->desactivar_reciclado();
 		$id_ef = trim(toba::memoria()->get_parametro('filtrado-ce-ef'));
@@ -893,7 +893,7 @@ class toba_ei_formulario extends toba_ei
 				if (!is_array($campos)) {
 					$maestros[$id_ef_maestro] = $param[1];
 				} else {
-					//--- Manejo de claves múltiples					
+					//--- Manejo de claves mï¿½ltiples					
 					if (count($valores) != count($campos)) {
 						throw new excepction_toba("Filtrado de combo editable: El ef $id_ef_maestro maneja distinta cantidad de datos que los campos pasados");
 					}
@@ -939,12 +939,12 @@ class toba_ei_formulario extends toba_ei
 	}
 
 	/**
-	 * Método que se utiliza en la respuesta del filtro del combo editable cuando se quiere validar un id seleccionado
+	 * Mï¿½todo que se utiliza en la respuesta del filtro del combo editable cuando se quiere validar un id seleccionado
 	 */
 	function servicio__filtrado_ef_ce_validar()
 	{
 		if (! isset($_GET['filtrado-ce-ef']) || ! isset($_GET['filtrado-ce-valor'])) {
-			throw new toba_error_seguridad("Validación de combo editable: Invocación incorrecta");	
+			throw new toba_error_seguridad("Validaciï¿½n de combo editable: Invocaciï¿½n incorrecta");	
 		}
 		$id_ef = trim(toba::memoria()->get_parametro('filtrado-ce-ef'));
 		$valor = trim(toba::memoria()->get_parametro('filtrado-ce-valor'));
@@ -1014,8 +1014,8 @@ class toba_ei_formulario extends toba_ei
 	
 	/**
 	 * Genera el cuerpo del formulario conteniendo la lista de efs
-	 * Por defecto el layout de esta lista es uno sobre otro, este método se puede extender
-	 * para incluir algún layout específico
+	 * Por defecto el layout de esta lista es uno sobre otro, este mï¿½todo se puede extender
+	 * para incluir algï¿½n layout especï¿½fico
 	 * @ventana Extender para cambiar el layout por defecto
 	 */	
 	protected function generar_layout()
@@ -1064,8 +1064,8 @@ class toba_ei_formulario extends toba_ei
 	
 	/**
 	 * Genera para la impresion html el cuerpo del formulario conteniendo la lista de efs
-	 * Por defecto el layout de esta lista es uno sobre otro, este método se puede extender
-	 * para incluir algún layout específico
+	 * Por defecto el layout de esta lista es uno sobre otro, este mï¿½todo se puede extender
+	 * para incluir algï¿½n layout especï¿½fico
 	 * @ventana Extender para cambiar el layout por defecto de la impresion html
 	 */		
 	protected function generar_layout_impresion()
@@ -1122,7 +1122,7 @@ class toba_ei_formulario extends toba_ei
 			}
 			echo $salida;
 		} else {
-			throw new toba_error_def($this->get_txt()."Template impresión incorrecto");
+			throw new toba_error_def($this->get_txt()."Template impresiï¿½n incorrecto");
 		}
 	}
 
@@ -1130,7 +1130,7 @@ class toba_ei_formulario extends toba_ei
 	 * Genera la etiqueta y el componente HTML de un ef
 	 * @param string $ef Identificador del ef
 	 * @param string $ancho_etiqueta Ancho de la etiqueta del ef. Si no se setea, usa la definida en el editor.
-	 * Recordar incluír las medidas (px, %, etc.). 
+	 * Recordar incluï¿½r las medidas (px, %, etc.). 
 	 */
 	protected function generar_html_ef($ef, $ancho_etiqueta=null)
 	{
@@ -1141,7 +1141,7 @@ class toba_ei_formulario extends toba_ei
 	 * Retorna la etiqueta y el componente HTML de un ef
 	 * @param string $ef Identificador del ef
 	 * @param string $ancho_etiqueta Ancho de la etiqueta del ef. Si no se setea, usa la definida en el editor.
-	 * Recordar incluír las medidas (px, %, etc.). 
+	 * Recordar incluï¿½r las medidas (px, %, etc.). 
 	 */	
 	protected function get_html_ef($ef, $ancho_etiqueta=null, $con_etiqueta=true)
 	{
@@ -1199,8 +1199,8 @@ class toba_ei_formulario extends toba_ei
 	}	
 	
 	/**
-	 * Genera la salida gráfica de un ef particular
-	 * @ventana Extender para agregar html antes o despues de un ef específico
+	 * Genera la salida grï¿½fica de un ef particular
+	 * @ventana Extender para agregar html antes o despues de un ef especï¿½fico
 	 */
 	protected function generar_input_ef($ef)
 	{
@@ -1214,8 +1214,8 @@ class toba_ei_formulario extends toba_ei
 	}
 	
 	/**
-	 * Genera la salida gráfica de un ef particular
-	 * @ventana Extender para agregar html antes o despues de un ef específico
+	 * Genera la salida grï¿½fica de un ef particular
+	 * @ventana Extender para agregar html antes o despues de un ef especï¿½fico
 	 */
 	protected function get_input_ef($ef)
 	{
@@ -1229,7 +1229,7 @@ class toba_ei_formulario extends toba_ei
 	 * General el html de la etiqueta de un ef especifico
 	 * @param string $ef Id. del ef
 	 * @param string $ancho_etiqueta Ancho de la etiqueta del ef. Si no se setea, usa la definida en el editor.
-	 * Recordar incluír las medidas (px, %, etc.). 
+	 * Recordar incluï¿½r las medidas (px, %, etc.). 
 	 */
 	protected function generar_etiqueta_ef($ef, $ancho_etiqueta=null)
 	{
@@ -1240,7 +1240,7 @@ class toba_ei_formulario extends toba_ei
 	 * Retorna el html de la etiqueta de un ef especifico
 	 * @param string $ef Id. del ef
 	 * @param string $ancho_etiqueta Ancho de la etiqueta del ef. Si no se setea, usa la definida en el editor.
-	 * Recordar incluír las medidas (px, %, etc.). 
+	 * Recordar incluï¿½r las medidas (px, %, etc.). 
 	 */
 	protected function get_etiqueta_ef($ef, $ancho_etiqueta=null)
 	{
@@ -1290,7 +1290,7 @@ class toba_ei_formulario extends toba_ei
 		}
 		foreach ($this->_lista_ef_post as $ef) {
 			if (! in_array($ef, $this->_efs_generados)) {
-				throw new toba_error_def($this->get_txt()." Error en la redefinición del layout: Falta salida ef '$ef'");
+				throw new toba_error_def($this->get_txt()." Error en la redefiniciï¿½n del layout: Falta salida ef '$ef'");
 			}
 			echo $identado."{$this->objeto_js}.agregar_ef({$this->_elemento_formulario[$ef]->crear_objeto_js()}, '$ef');\n";
 		}
@@ -1373,8 +1373,8 @@ class toba_ei_formulario extends toba_ei
 	}
 	
 	/**
-	 * Permite setear el tamaño de la tabla que representa el formulario.
-	 * @param integer $tamanio Tamaño de la letra.
+	 * Permite setear el tamaï¿½o de la tabla que representa el formulario.
+	 * @param integer $tamanio Tamaï¿½o de la letra.
 	 */
 	function set_pdf_letra_tabla($tamanio)
 	{
@@ -1488,7 +1488,7 @@ class toba_ei_formulario extends toba_ei
 	/**
 	 * Cambia la forma en que se le da formato a un ef en las salidas pdf, excel y html
 	 * @param string $id_ef
-	 * @param string $funcion Nombre de la función de formateo, sin el prefijo 'formato_'
+	 * @param string $funcion Nombre de la funciï¿½n de formateo, sin el prefijo 'formato_'
 	 * @param string $clase Nombre de la clase que contiene la funcion, por defecto toba_formateo
 	 */
 	function set_formateo_ef($id_ef, $funcion, $clase=null)
