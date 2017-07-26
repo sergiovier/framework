@@ -9,23 +9,23 @@ class toba_factory_service {
 	private static $_instance;
 	private static $_services;
 	private static $_config = [
-								'PaginaBasica' => 'bootstrap',
-								'PaginaTitulo' => 'bootstrap',
-								'PaginaNormal' => 'bootstrap',
+								'PaginaBasica' => 'toba',
+								'PaginaTitulo' => 'toba',
+								'PaginaNormal' => 'toba',
 								'PaginaPopup' => 'toba',
 								'PaginaLogon' => 'toba',
-								'ElementoInterfaz' => 'bootstrap',
-								'Pantalla' => 'bootstrap',
-								'Cuadro' => 'bootstrap',
-								'SalidaHtml' => 'bootstrap',
-								'Formulario' => 'bootstrap',
-								'FormularioMl' => 'bootstrap',
+								'ElementoInterfaz' => 'toba',
+								'Pantalla' => 'toba',
+								'Cuadro' => 'toba',
+								'SalidaHtml' => 'toba',
+								'Formulario' => 'toba',
+								'FormularioMl' => 'toba',
 								'EventoUsuario' => 'toba',
-								'EventoTab' => 'bootstrap',
+								'EventoTab' => 'toba',
 								'InputsForm' => 'toba',
-								'FiltroColumnas' => 'bootstrap',
-								'Menu' => 'bootstrap',
-								'Filtro' => 'bootstrap'
+								'FiltroColumnas' => 'toba',
+								'Menu' => 'toba',
+								'Filtro' => 'toba'
 	];
 	
 	/**
@@ -39,12 +39,22 @@ class toba_factory_service {
 		return new self::$_services[$provider][$component];
 	}
 	
+	function setComponentProvider($componet, $provider){
+		self::$_config[$componet] = $provider;
+	}
+	
+	function setProvider($provider){
+		foreach (self::$_config as $key => $value){
+			self::$_config[$key] = $provider;
+		}
+	}
+	
 	function registrarServicio(IFactory $fabrica){
 		
 		if(!( $fabrica instanceof IFactory))
-			throw new toba_error("El servicio a registrar debe ser una implementación de IFactory");
+			throw new toba_error("El servicio a registrar debe ser una implementaciï¿½n de IFactory");
 		
-		/* @todo Agregar validación de nombre */
+		/* @todo Agregar validaciï¿½n de nombre */
 		$nombre_fabrica = $fabrica->getProvider();
 		
 		foreach (get_class_methods($fabrica) as $method){
