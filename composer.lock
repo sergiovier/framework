@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b257e4d46ec5fc771d8772bdeba26a3d",
+    "content-hash": "09834fb8ed41f214164c5a3035040968",
     "packages": [
         {
             "name": "dapphp/securimage",
@@ -2301,6 +2301,29 @@
             "time": "2016-07-01T20:20:38+00:00"
         },
         {
+            "name": "siu/interfaces-manejador-salida-toba",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.siu.edu.ar/siu/interfaces-manejador-salida-toba.git",
+                "reference": "42234dc1b21869c90522d02f3ec3834463d9e3f4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Paulo Toledo",
+                    "email": "ptoledo@siu.edu.ar"
+                }
+            ],
+            "description": "Implementación de las interfaces del patrón Abstract Factory para la salida de Toba",
+            "time": "2017-07-26 03:51:56"
+        },
+        {
             "name": "siu/jasper",
             "version": "dev-master",
             "source": {
@@ -2345,6 +2368,32 @@
             ],
             "description": "Utilidades para el parseo y chequeo de schemas de archivos Json",
             "time": "2016-04-19T14:36:23+00:00"
+        },
+        {
+            "name": "siu/manejador-salida-toba",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.siu.edu.ar/siu/manejador-salida-toba.git",
+                "reference": "ce7a59d8ca997bbbcf374a2afd901942343d7ab0"
+            },
+            "require": {
+                "siu/interfaces-manejador-salida-toba": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Paulo Toledo",
+                    "email": "ptoledo@siu.edu.ar"
+                }
+            ],
+            "description": "Implementación del patrón 'Abstract Factory' para la salida de Toba",
+            "time": "2017-07-26 18:28:34"
         },
         {
             "name": "siu/rdi",
@@ -3089,6 +3138,7 @@
         "siu-toba/ssl-cert-utils": 20,
         "guiguiboy/php-cli-progress-bar": 20,
         "siu/jasper": 20,
+        "siu/manejador-salida-toba": 20,
         "greenlion/php-sql-parser": 20
     },
     "prefer-stable": true,
