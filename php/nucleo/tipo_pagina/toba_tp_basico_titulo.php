@@ -2,7 +2,7 @@
 /**
 * 
 * Incluye una barra con nombre y ayuda contextual de la operaciï¿½n, 
-* y centraliza el contenido de la salida de la operaciï¿½n
+* y centraliza el contenido de la salida de la operación
 * 
 * @package SalidaGrafica
 */
@@ -28,7 +28,6 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	
 	function barra_superior()
 	{
-				
 		toba::output()->get('PaginaTitulo')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
 	}
 	
@@ -47,7 +46,7 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	}
 	
 	/**
-	 * Retorna el tÃ­tulo de la opreaciÃ³n actual, utilizado en la barra superior
+	 * Retorna el título de la opreación actual, utilizado en la barra superior
 	 */
 	protected function titulo_item()
 	{
