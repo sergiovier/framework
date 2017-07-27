@@ -746,12 +746,13 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			//-- Eventos sobre fila
 			$this->html_cuadro_cabecera_columna_evento($rowspan, false);
 			
-			toba::output()->get('SalidaHtml')->getFinHeadCuadro();
+			
 			
 			//-- Columnas Agrupadas
 			if ($html_columnas_agrupadas != '') {
 				toba::output()->get('SalidaHtml')->getParseGrupoColumnas($html_columnas_agrupadas);
 			}
+			toba::output()->get('SalidaHtml')->getFinHeadCuadro();
 
 		}
 	}
