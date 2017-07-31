@@ -93,7 +93,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		
 		// Si el layout es cortes/tabular se genera una sola tabla, que empieza aca
 		if( $this->_cuadro->tabla_datos_es_general() ){
-			$this->html_cuadro_inicio();
+			$this->html_cuadro_inicio(null);
 		}
 		//-- Se puede por api cambiar a que los titulos de las columnas se muestren antes que los cortes
 		if ($muestra_titulo_cc) {
@@ -135,7 +135,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		}
 		$this->html_acumulador_usuario();
 		if( $this->_cuadro->tabla_datos_es_general() ){
-			$this->html_cuadro_fin();
+			$this->html_cuadro_fin(null);
 		}
 
 		toba::output()->get('SalidaHtml')->getFinContenido();//--- FIN CONTENIDO  ---------
@@ -310,6 +310,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 
 	function html_inicio_zona_colapsable($id_unico, $estilo)
 	{
+		
 		toba::output()->get('SalidaHtml')->getInicioZonaColapsableCC($id_unico, $estilo);
 	}
 
@@ -496,11 +497,12 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	/**
 	 * Genera el html correspondiente a las filas del cuadro
 	 */
-	function html_cuadro(&$filas)
+	function html_cuadro(&$filas,$totales, $nodo)
 	{
+		toba::output()->get('SalidaHtml')->getPreInicioCuadro($this->_cuadro->tabla_datos_es_general(),$this->get_nivel_css($nodo['profundidad']));
 		//Si existen cortes de control y el layout es tabular, el encabezado de la tabla ya se genero
 		if( ! $this->_cuadro->tabla_datos_es_general() ){
-			$this->html_cuadro_inicio();
+			$this->html_cuadro_inicio($nodo);
 		}
 		//-- Se puede por api cambiar a que los titulos de las columnas se muestren antes que los cortes, en ese caso se evita hacerlo aqui
 		if (! $this->_cuadro->debe_mostrar_titulos_columnas_cc()) {
@@ -542,8 +544,9 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		}
 		if( ! $this->_cuadro->tabla_datos_es_general() ){
 			$this->html_acumulador_usuario();
-			$this->html_cuadro_fin();
+			$this->html_cuadro_fin($nodo);
 		}
+		toba::output()->get('SalidaHtml')->getPostFinCuadro($this->_cuadro->tabla_datos_es_general());
 	}
 
 	function get_estilo_seleccion($clave_fila)
@@ -662,17 +665,17 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	/**
 	 *@ignore
 	 */
-	protected function html_cuadro_inicio()
+	protected function html_cuadro_inicio($nodo)
 	{
-		toba::output()->get('SalidaHtml')->getInicioCuadro(null);
+		toba::output()->get('SalidaHtml')->getInicioCuadro(null,$this->get_nivel_css($nodo['profundidad']));
 	}
 
 	/**
 	 *@ignore
 	 */
-	protected function html_cuadro_fin()
+	protected function html_cuadro_fin($nodo)
 	{
-		toba::output()->get('SalidaHtml')->getFinCuadro(null);
+		toba::output()->get('SalidaHtml')->getFinCuadro(null,$this->get_nivel_css($nodo['profundidad']));
 	}
 
 		/**
