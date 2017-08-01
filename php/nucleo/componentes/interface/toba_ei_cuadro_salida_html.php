@@ -450,7 +450,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$metodo = 'html_pie_cc_contenido__' . $nodo['corte'];
 		
 		if(method_exists($this, $metodo)){
-			var_dump($metodo);
 			echo "<tr><td  class='$css_pie' colspan='$total_columnas'>\n";
 			$this->$metodo($nodo, $es_ultimo);
 			echo "</td></tr>\n";
@@ -499,7 +498,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	function html_cuadro(&$filas,$totales, $nodo)
 	{
-		toba::output()->get('SalidaHtml')->getPreInicioCuadro($this->_cuadro->tabla_datos_es_general(),$this->get_nivel_css($nodo['profundidad']));
 		//Si existen cortes de control y el layout es tabular, el encabezado de la tabla ya se genero
 		if( ! $this->_cuadro->tabla_datos_es_general() ){
 			$this->html_cuadro_inicio($nodo);
@@ -546,7 +544,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$this->html_acumulador_usuario();
 			$this->html_cuadro_fin($nodo);
 		}
-		toba::output()->get('SalidaHtml')->getPostFinCuadro($this->_cuadro->tabla_datos_es_general());
 	}
 
 	function get_estilo_seleccion($clave_fila)
@@ -667,7 +664,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	protected function html_cuadro_inicio($nodo)
 	{
-		toba::output()->get('SalidaHtml')->getInicioCuadro(null,$this->get_nivel_css($nodo['profundidad']));
+		$cortes = $this->_cuadro->existen_cortes_control();
+		toba::output()->get('SalidaHtml')->getInicioCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
 	}
 
 	/**
@@ -675,7 +673,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	protected function html_cuadro_fin($nodo)
 	{
-		toba::output()->get('SalidaHtml')->getFinCuadro(null,$this->get_nivel_css($nodo['profundidad']));
+		$cortes = $this->_cuadro->existen_cortes_control();
+		toba::output()->get('SalidaHtml')->getFinCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
 	}
 
 		/**
@@ -712,7 +711,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$html_columnas_agrupadas = '';
 			$grupo_actual = null;
 			
-			toba::output()->get('SalidaHtml')->getInicioHeadCuadro();
+			toba::output()->get('SalidaHtml')->getInicioHeadCuadro($this->_cuadro->debe_mostrar_titulos_columnas_cc());
 			
 			$this->html_cuadro_cabecera_columna_evento($rowspan, true);
 			
@@ -755,7 +754,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			if ($html_columnas_agrupadas != '') {
 				toba::output()->get('SalidaHtml')->getParseGrupoColumnas($html_columnas_agrupadas);
 			}
-			toba::output()->get('SalidaHtml')->getFinHeadCuadro();
+			toba::output()->get('SalidaHtml')->getFinHeadCuadro($this->_cuadro->debe_mostrar_titulos_columnas_cc());
 
 		}
 	}
