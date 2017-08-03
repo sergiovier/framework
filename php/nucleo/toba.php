@@ -1,6 +1,5 @@
 <?php
 use SIU\ManejadorSalidaToba\toba_factory;
-//use SIU\ManejadorSalidaBootstrap\bootstrap_factory;
 
 /**
  * Clase estática que contiene shortcuts a las clases centrales del nucleo
@@ -461,8 +460,7 @@ class toba
 		
 		if (!isset(self::$output_handler)){
 			self::$output_handler = new toba_factory_service();
-			self::$output_handler->registrarServicio(new toba_factory());
-			//self::$output_handler->registrarServicio(new bootstrap_factory());
+			self::$output_handler->registrarServicio(new toba_factory());			
 		}
 		return self::$output_handler;
 	}
