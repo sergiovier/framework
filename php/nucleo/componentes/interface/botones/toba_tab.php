@@ -27,24 +27,29 @@ class toba_tab extends toba_boton
 		$evento = $this->datos['identificador'];
 		$contenido = '';
 		$tab_order = toba_manejador_tabs::instancia()->siguiente();		
-		$img = $componente->getImagen($this->datos['imagen'],$this->datos['imagen_recurso_origen'],$tipo);
-		$contenido .= $img . ' ';
+		
+		$image_resource = isset($this->datos['imagen_recurso_origen']) ? $this->datos['imagen_recurso_origen'] : null;
+		$image_file = isset($this->datos['imagen']) ? $this->datos['imagen'] : null;
+		$contenido .= $componente->getImagen($image_file, $image_resource, $tipo) . ' ';
+		
 		$tip = $this->datos['ayuda'];
 		$acceso = tecla_acceso( $this->datos['etiqueta'] );
 		$contenido .= $acceso[0];
 		$tecla = $acceso[1];
-		if (!isset($tecla)&&($id_tab<10)) $tecla = $id_tab;
+		if (!isset($tecla)&&($id_tab<10)) {
+			$tecla = $id_tab;
+		}
 		$tip = str_replace("'", "\\'",$tip);			
 		$acceso = toba_recurso::ayuda($tecla, $tip);
-		$id = $id_submit.'_cambiar_tab_'.$evento;
-		$js = "onclick=\"{$id_componente}.ir_a_pantalla('$evento');return false;\"";
-		$js_extra = '';		
+		$id = $id_submit .'_cambiar_tab_'. $evento;
+		//$js = "onclick=\"{$id_componente}.ir_a_pantalla('$evento');return false;\"";
+		$js = $componente->getJs('','', $id_componente, $evento);
+		$js_extra = '';				
 		$oculto = $this->oculto ? '; display: none' : '';
 		
 		if( $tipo == 'H' ) {//********************* TABs HORIZONTALES **********************
 			$html = $componente->getTabHorizontal($id, $acceso, $contenido, $js, $js_extra, $editor, $this->activado, $oculto, $seleccionado);
-		} 
-		else {				// ********************* TABs VERTICALES ************************
+		} else {		// ********************* TABs VERTICALES ************************
 			$html = $componente->getTabVertical($id, $acceso, $contenido, $js, $js_extra, $editor, $this->activado, $oculto, $seleccionado);
 		}
 		$id_tab++;

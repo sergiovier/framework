@@ -277,34 +277,32 @@ class toba_evento_usuario extends toba_boton
 		if (isset($this->datos['ayuda'])) {
 			$tip = $this->datos['ayuda'];
 		}
-		$acceso = tecla_acceso( $this->datos['etiqueta'] );
-		$image_resource = isset($this->datos['imagen_recurso_origen'])?$this->datos['imagen_recurso_origen']:null;
-		$imagen = $componente->getImagen($this->datos['imagen'],$image_resource, $this->esta_sobre_fila(),$this->datos['estilo']); 
+		$acceso = tecla_acceso( $this->datos['etiqueta'] );		
+		$image_resource = isset($this->datos['imagen_recurso_origen']) ? $this->datos['imagen_recurso_origen'] : null;
+		$image_file = isset($this->datos['imagen']) ? $this->datos['imagen'] : null;
+		$style = isset($this->datos['estilo']) ? $this->datos['estilo']: null;
+		$imagen = $componente->getImagen($image_file, $image_resource, $this->esta_sobre_fila(), $style); 		
 		if (! $this->es_seleccion_multiple()) {
-			$defecto = isset($this->datos['defecto']) ? $this->datos['defecto']: null;
-			$clase = $componente->getCSS($this->esta_sobre_fila(), $this->datos['estilo'],$defecto,$this->activado);
-			$tipo_boton = $componente->getTipoBoton($this->esta_sobre_fila(), $this->datos['estilo'],$defecto);
-			$estilo_inline = $this->oculto ? 'display: none' : null;
-			$html = '' . $acceso[0];;
+			$defecto = isset($this->datos['defecto']) ? $this->datos['defecto']: null;			
+			$clase = $componente->getCSS($this->esta_sobre_fila(), $style, $defecto, $this->activado);			
+			$tipo_boton = $componente->getTipoBoton($this->esta_sobre_fila(), $style, $defecto);			
+			$estilo_inline = $this->oculto ? 'display: none' : null;			
+			$html = isset($acceso[0]) ? $acceso[0]: '';
 			$tecla = $acceso[1];			
 			$js = $this->get_invocacion_js($objeto_js, $id_componente);
 			if (isset($js)) {
-				$js = 'onclick="'.$js.'"';
-				
-			return $componente->getInputButton( $id_submit."_".$this->get_id(), $html, $imagen , $js, $tab_order, $tecla,
-												$tip, $tipo_boton, '', $clase, true, $estilo_inline, $this->activado, $this->esta_sobre_fila());
+				$js = 'onclick="'.$js.'"';				
+				return $componente->getInputButton( $id_submit. '_'. $this->get_id(), $html, $imagen , $js, $tab_order, $tecla, $tip, $tipo_boton, '', $clase, true, $estilo_inline, $this->activado, $this->esta_sobre_fila());
 			}
 		} else {
-			$js = $this->get_invocacion_js($objeto_js, $id_componente);
-			$imagen = $this->get_imagen();
+			$js = $this->get_invocacion_js($objeto_js, $id_componente);			
+			$valor_actual = ($this->es_check_activo) ? $this->parametros : null;			
 			if (isset($js)) {
 				$extra = 'onclick="'.$js.'"';
 				$extra .= " title='$tip'";
-				$extra .= $this->activado ? '' : ' disabled';
-				$valor_actual = ($this->es_check_activo) ? $this->parametros : null;
-				$html = $componente->getInputCheckbox($id_submit."_".$this->get_id(), $valor_actual, $this->parametros, '', $extra, $imagen );
+				$extra .= $this->activado ? '' : ' disabled';								
 			}
-			return $html;
+			return $componente->getInputCheckbox($id_submit . '_' .$this->get_id(), $valor_actual, $this->parametros, '', $extra, $imagen );
 		}
 	}
 
