@@ -72,8 +72,7 @@ class toba
 	static function menu()
 	{
 		if (! isset(self::$menu)) {
-			$archivo_menu = toba::proyecto()->get_parametro('menu_archivo');
-			$clase = basename($archivo_menu, ".php");
+			$clase = self::output()->get('Menu');
 			self::$menu = new $clase();
 		}
 		return self::$menu;
