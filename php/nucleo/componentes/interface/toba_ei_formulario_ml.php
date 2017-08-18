@@ -713,9 +713,9 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		//Campo de comunicacion con JS
 		echo toba_form::hidden("{$this->objeto_js}_listafilas",'');
 		echo toba_form::hidden("{$this->objeto_js}__parametros", '');		
-		toba::output()->get("FormularioMl")->getPreLayout("cuerpo_{$this->objeto_js}", $ancho,$alto_maximo,$this->_info_formulario["scroll"], $colapsado);
+		echo toba::output()->get("FormularioMl")->getPreLayout("cuerpo_{$this->objeto_js}", $ancho,$alto_maximo,$this->_info_formulario["scroll"], $colapsado);
 		$this->generar_layout($ancho);
-		toba::output()->get("FormularioMl")->getFinPreLayout();		
+		echo toba::output()->get("FormularioMl")->getFinPreLayout();		
 	}
 	
 	/**
@@ -727,11 +727,11 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		$this->generar_botonera_exportacion();
 		//Botonera de agregar y ordenar
 		$this->generar_botonera_manejo_filas();
-		toba::output()->get("FormularioMl")->getInicioLayout($ancho);
+		echo toba::output()->get("FormularioMl")->getInicioLayout($ancho);
 		$this->generar_formulario_encabezado();//Listo
 		$this->generar_formulario_cuerpo();// TODO: Originalmente cuerpo y pie estaban intercambiados. (?
 		$this->generar_formulario_pie();//Listo
-		toba::output()->get("FormularioMl")->getFinLayout();
+		echo toba::output()->get("FormularioMl")->getFinLayout();
 		if ($this->botonera_abajo()) {
 			$this->generar_botones();
 		}
@@ -751,7 +751,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			$this->_info_formulario['exportar_xls'] = 0;
 		}
 		//-- TODO: no esta testeado!!
-		toba::output()->get('FormularioMl')->getBotoneraExportacion($this->_info_formulario['exportar_pdf'],$this->_info_formulario['exportar_xls'],"{$this->objeto_js}.exportar_pdf()","{$this->objeto_js}.exportar_excel()");
+		echo toba::output()->get('FormularioMl')->getBotoneraExportacion($this->_info_formulario['exportar_pdf'],$this->_info_formulario['exportar_xls'],"{$this->objeto_js}.exportar_pdf()","{$this->objeto_js}.exportar_excel()");
 	}
 	
 	/**
@@ -763,7 +763,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		$ordenar = $this->_info_formulario['filas_ordenar'];
 		if ($agregar || ($ordenar && !$this->_ordenar_en_linea)) {
 			
-			toba::output()->get('FormularioMl')->getBotoneraManejoFila(	$this->objeto_js,$this->_rango_tabs[0]++, $agregar, $this->_mostrar_agregar, 
+			echo toba::output()->get('FormularioMl')->getBotoneraManejoFila(	$this->objeto_js,$this->_rango_tabs[0]++, $agregar, $this->_mostrar_agregar, 
 					$this->_modo_agregar,"{$this->objeto_js}.crear_fila();", $this->_borrar_en_linea, "{$this->objeto_js}.eliminar_seleccionada();", 
 					$this->_info_formulario['filas_agregar'], "{$this->objeto_js}.deshacer();", $ordenar, $this->_ordenar_en_linea, "{$this->objeto_js}.subir_seleccionada();", "{$this->objeto_js}.bajar_seleccionada();");
 		}
@@ -783,7 +783,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			}
 		}
 		if ($alguno_tiene_etiqueta) {
-			toba::output()->get('FormularioMl')->getInicioCabecera("cabecera_{$this->objeto_js}", $this->_info_formulario['filas_numerar']);
+			echo toba::output()->get('FormularioMl')->getInicioCabecera("cabecera_{$this->objeto_js}", $this->_info_formulario['filas_numerar']);
 			$primera = true;
 			foreach ($this->_lista_ef_post	as	$ef){
 				$id_form = $this->_elemento_formulario[$ef]->get_id_form_orig();	
@@ -791,35 +791,35 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 				if ($primera) {
 					$extra = 'colspan="'.($this->_colspan + 1).'"';
 				}
-				toba::output()->get('FormularioMl')->getInicioColumnaCabecera("nodo_$id_form", 'ei-ml-columna', $extra, false,'');
+				echo toba::output()->get('FormularioMl')->getInicioColumnaCabecera("nodo_$id_form", 'ei-ml-columna', $extra, false,'');
 				if ($this->_elemento_formulario[$ef]->get_toggle()) {
 					$this->_hay_toggle = true;
 					$id_form_toggle = 'toggle_'.$id_form;
-					toba::output()->get('FormularioMl')->getInputToggle($id_form_toggle,"{$this->objeto_js}.toggle_checkbox(\'$ef\')");
+					echo toba::output()->get('FormularioMl')->getInputToggle($id_form_toggle,"{$this->objeto_js}.toggle_checkbox(\'$ef\')");
 				}
 				$this->generar_etiqueta_columna($ef);
-				toba::output()->get('FormularioMl')->getFinColumnaCabecera();
+				echo toba::output()->get('FormularioMl')->getFinColumnaCabecera();
 				$primera = false;
 			}
 			if ($this->_info_formulario['filas_ordenar'] && $this->_ordenar_en_linea) {
-				toba::output()->get('FormularioMl')->getInicioColumnaCabecera('', 'ei-ml-columna', '', false,'&nbsp;');
-				toba::output()->get('FormularioMl')->getFinColumnaCabecera();
+				echo toba::output()->get('FormularioMl')->getInicioColumnaCabecera('', 'ei-ml-columna', '', false,'&nbsp;');
+				echo toba::output()->get('FormularioMl')->getFinColumnaCabecera();
 			}		
 	        //-- Eventos sobre fila
 			if($this->cant_eventos_sobre_fila() > 0){
 				foreach ($this->get_eventos_sobre_fila() as $evento) {
-					toba::output()->get('FormularioMl')->getInicioColumnaCabecera('', 'ei-ml-columna ei-ml-columna-extra', '', true,'&nbsp;');
+					echo toba::output()->get('FormularioMl')->getInicioColumnaCabecera('', 'ei-ml-columna ei-ml-columna-extra', '', true,'&nbsp;');
 					if (toba_editor::modo_prueba()) {
 						echo toba_editor::get_vinculo_evento($this->_id, $this->_info['clase_editor_item'], $evento->get_id())."";
 					}
-		            toba::output()->get('FormularioMl')->getFinColumnaCabecera();
+		            echo toba::output()->get('FormularioMl')->getFinColumnaCabecera();
 				}
 			}		
 			if ($this->_info_formulario['filas_agregar'] && $this->_borrar_en_linea) {
-				toba::output()->get('FormularioMl')->getInicioColumnaCabecera('', 'ei-ml-columna', '', false,'&nbsp;');
-				toba::output()->get('FormularioMl')->getFinColumnaCabecera();
+				echo toba::output()->get('FormularioMl')->getInicioColumnaCabecera('', 'ei-ml-columna', '', false,'&nbsp;');
+				echo toba::output()->get('FormularioMl')->getFinColumnaCabecera();
 			}
-			toba::output()->get('FormularioMl')->getFinCabecera();
+			echo toba::output()->get('FormularioMl')->getFinCabecera();
 		}
 	}
 	
@@ -833,7 +833,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		$desc = $this->_elemento_formulario[$ef]->get_descripcion();		
 		$editor = $this->generar_vinculo_editor($ef);
 		$etiqueta = $this->_elemento_formulario[$ef]->get_etiqueta();
-		toba::output()->get('FormularioMl')->getEtiquetaColumna($estilo, $this->_elemento_formulario[$ef]->es_obligatorio(), $editor,$etiqueta, $desc);
+		echo toba::output()->get('FormularioMl')->getEtiquetaColumna($estilo, $this->_elemento_formulario[$ef]->es_obligatorio(), $editor,$etiqueta, $desc);
 	}	
 	
 	/**
@@ -852,7 +852,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			$ids[] = $id_form_total;
 		}
 		
-		toba::output()->get('FormularioMl')->getPieFormulario("pie_{$this->objeto_js}",$ids, count($this->_lista_ef_totales), $this->_info_formulario['filas_numerar'], $this->cant_eventos_sobre_fila(), $this->_colspan);
+		echo toba::output()->get('FormularioMl')->getPieFormulario("pie_{$this->objeto_js}",$ids, count($this->_lista_ef_totales), $this->_info_formulario['filas_numerar'], $this->cant_eventos_sobre_fila(), $this->_colspan);
 	}
 	
 	/**
@@ -863,14 +863,14 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	{
 		$agregar_abajo = ($this->_info_formulario['filas_agregar'] && $this->_modo_agregar[0]);
 		if ($this->hay_botones() || $agregar_abajo) {
-			toba::output()->get('FormularioMl')->getInicioBotoneraMl($clase);
+			echo toba::output()->get('FormularioMl')->getInicioBotoneraMl($clase);
 			$agregar = $this->_info_formulario['filas_agregar'];
 			$ordenar = $this->_info_formulario['filas_ordenar'];
 			if ($agregar_abajo && $this->_mostrar_agregar ) {
-				toba::output()->get('FormularioMl')->getBotonAgregarInferior("{$this->objeto_js}_agregar", "{$this->objeto_js}.crear_fila()", $this->_rango_tabs[0]++, $this->_modo_agregar);
+				echo toba::output()->get('FormularioMl')->getBotonAgregarInferior("{$this->objeto_js}_agregar", "{$this->objeto_js}.crear_fila()", $this->_rango_tabs[0]++, $this->_modo_agregar);
 			}		
 			$this->generar_botones_eventos();
-			toba::output()->get('FormularioMl')->getFinBotoneraMl();
+			echo toba::output()->get('FormularioMl')->getFinBotoneraMl();
 		}
 	}		
 	
@@ -879,7 +879,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	 */
 	protected function generar_formulario_cuerpo()
 	{
-		toba::output()->get('FormularioMl')->getInicioBody();
+		echo toba::output()->get('FormularioMl')->getInicioBody();
 		if ($this->_registro_nuevo !== false) {
 			$template = (is_array($this->_registro_nuevo)) ? $this->_registro_nuevo : array();
 			$this->agregar_registro($template);
@@ -924,12 +924,12 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			}			
 			//-- Inicio html de la fila
 			
-			toba::output()->get('FormularioMl')->getInicioFila("{$this->objeto_js}_fila$fila", "{$this->objeto_js}.seleccionar($fila)",$this->estilo_celda_actual, $estilo_fila,$this->_info_formulario['filas_numerar'], ($a+1), "{$this->objeto_js}_numerofila$fila" );
+			echo toba::output()->get('FormularioMl')->getInicioFila("{$this->objeto_js}_fila$fila", "{$this->objeto_js}.seleccionar($fila)",$this->estilo_celda_actual, $estilo_fila,$this->_info_formulario['filas_numerar'], ($a+1), "{$this->objeto_js}_numerofila$fila" );
 			//--Layout de las filas
 			$this->generar_layout_fila($fila);//Listo
 			//--Numeración de las filas
 			if ($this->_info_formulario['filas_ordenar'] && $this->_ordenar_en_linea) {
-				toba::output()->get('FormularioMl')->getBotoneraOrdenarLinea($this->objeto_js, $this->estilo_celda_actual, "{$this->objeto_js}.subir_seleccionada();", "{$this->objeto_js}.bajar_seleccionada();", $fila);
+				echo toba::output()->get('FormularioMl')->getBotoneraOrdenarLinea($this->objeto_js, $this->estilo_celda_actual, "{$this->objeto_js}.subir_seleccionada();", "{$this->objeto_js}.bajar_seleccionada();", $fila);
 			}			
 			//--Creo los EVENTOS de la FILA
 			$this->generar_eventos_fila($fila);			
@@ -939,15 +939,15 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 				$content =  toba_form::button_html("{$this->objeto_js}_eliminar$fila", toba_recurso::imagen_toba('borrar.gif', true), 
 										"onclick='{$this->objeto_js}.seleccionar($fila);{$this->objeto_js}.eliminar_seleccionada();'", 
 										$this->_rango_tabs[0]++, null, 'Elimina la fila');
-				toba::output()->get('FormularioMl')->getFormateoCelda("{$this->estilo_celda_actual} ei-ml-fila-borrar", true, $content);
+				echo toba::output()->get('FormularioMl')->getFormateoCelda("{$this->estilo_celda_actual} ei-ml-fila-borrar", true, $content);
 												
 			}
 			
 			
-			toba::output()->get('FormularioMl')->getFinFila();
+			echo toba::output()->get('FormularioMl')->getFinFila();
 			$a++;
 		}
-		toba::output()->get('FormularioMl')->getFinBody();		
+		echo toba::output()->get('FormularioMl')->getFinBody();		
 	}
 
 	/**
@@ -962,9 +962,9 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			//--- Multiplexacion de filas
 			$this->_elemento_formulario[$ef]->ir_a_fila($clave_fila);
 			$id_form = $this->_elemento_formulario[$ef]->get_id_form();					
-			toba::output()->get('FormularioMl')->getInicioLayoutEf($id_form, $this->estilo_celda_actual);
+			echo toba::output()->get('FormularioMl')->getInicioLayoutEf($id_form, $this->estilo_celda_actual);
 			$this->generar_input_ef($ef);
-			toba::output()->get('FormularioMl')->getFinLayoutEf();
+			echo toba::output()->get('FormularioMl')->getFinLayoutEf();
 		}
 	}
 	
@@ -979,7 +979,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 		foreach ($this->get_eventos_sobre_fila() as $id => $evento) {
 			$html_eventos[] =  $this->get_invocacion_evento_fila($evento, $fila, $fila, false);		
 		}
-		toba::output()->get('FormularioMl')->getFormateoEventos($this->estilo_celda_actual,$html_eventos);
+		echo toba::output()->get('FormularioMl')->getFormateoEventos($this->estilo_celda_actual,$html_eventos);
 	}
 	
 	//-------------------------------------------------------------------------------

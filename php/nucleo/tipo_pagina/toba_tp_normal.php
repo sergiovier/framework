@@ -16,61 +16,62 @@ class toba_tp_normal extends toba_tp_basico_titulo
 
 	function __construct()
 	{
-		$this->menu = toba::output()->get('Menu');
+		$this->menu = toba::menu();
+	}
+		
+	function inicio_encabezado_html()
+	{
+		echo toba::output()->get('PaginaNormal')->getPreEncabezadoHtml();
 	}
 	
-	
-	function inicio_encabezado_html(){
-		toba::output()->get('PaginaNormal')->getPreEncabezadoHtml();
+	function inicio_barra_superior()
+	{
+		echo toba::output()->get('PaginaNormal')->getInicioBarraSuperior();
 	}
 	
-	function inicio_barra_superior(){
-		toba::output()->get('PaginaNormal')->getInicioBarraSuperior();
+	function fin_encabezado_html()
+	{
+		echo toba::output()->get('PaginaNormal')->getPostEncabezadoHtml();
 	}
 	
-	function fin_encabezado_html(){
-		toba::output()->get('PaginaNormal')->getPostEncabezadoHtml();
-	}
-	
-	function fin_barra_superior(){
-		toba::output()->get('PaginaNormal')->getFinBarraSuperior();
+	function fin_barra_superior()
+	{
+		echo toba::output()->get('PaginaNormal')->getFinBarraSuperior();
 	}
 	
 	function barra_superior()
 	{
-		toba::output()->get('PaginaNormal')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
+		echo toba::output()->get('PaginaNormal')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
 	}
 	
 	protected function comienzo_cuerpo_basico()
 	{
-		toba::output()->get('PaginaNormal')->getInicioCuerpo();
+		echo toba::output()->get('PaginaNormal')->getInicioCuerpo();
 	}
 	
 	protected function estilos_css()
 	{
 		parent::estilos_css();
-		toba::output()->get('PaginaTitulo')->getEstiloCss();
+		echo toba::output()->get('PaginaTitulo')->getEstiloCss();
 	}
 	
 	protected function comienzo_cuerpo()
 	{
 		parent::comienzo_cuerpo();
-		$this->cabecera_aplicacion();
-		
-		$this->menu();	
-		
+		$this->cabecera_aplicacion();		
+		$this->menu();			
 	}
 	
 	public function pre_contenido(){
-		toba::output()->get('PaginaNormal')->getPreContenido();
+		echo toba::output()->get('PaginaNormal')->getPreContenido();
 	}
 	
 	public function post_contenido(){
-		toba::output()->get('PaginaNormal')->getPostContenido();
+		echo toba::output()->get('PaginaNormal')->getPostContenido();
 	}
 	
 	public function footer(){
-		toba::output()->get('PaginaNormal')->getFooterHtml();
+		echo toba::output()->get('PaginaNormal')->getFooterHtml();
 	}
 
 	protected function menu()
@@ -98,7 +99,7 @@ class toba_tp_normal extends toba_tp_basico_titulo
 			if (!$mostrar_app_launcher) {
 				//--- Salir
 				$js = toba_editor::modo_prueba() ? 'window.close()' : 'salir()';
-				toba::output()->get('PaginaNormal')->getSalir($js);
+				echo toba::output()->get('PaginaNormal')->getSalir($js);
 
 				//--- Usuario
 				$this->info_usuario();
@@ -121,11 +122,8 @@ class toba_tp_normal extends toba_tp_basico_titulo
 			$this->cambio_perfil();
 		}
 		
-		//--- Logo
-		
+		//--- Logo		
 		$this->mostrar_logo();
-		
-		
 	}
 
 	/**
@@ -136,31 +134,28 @@ class toba_tp_normal extends toba_tp_basico_titulo
 	{
 		$proyectos = toba::instancia()->get_proyectos_accesibles();
 		$actual = toba::proyecto()->get_id();
-		toba::output()->get('PaginaNormal')->getCambioProyecto($proyectos, $actual);
+		echo toba::output()->get('PaginaNormal')->getCambioProyecto($proyectos, $actual);
 	}
 	
 	function cambio_perfil()
 	{
 		$perfiles = toba::instancia()->get_datos_perfiles_funcionales_usuario_proyecto( toba::usuario()->get_id(), toba::proyecto()->get_id());		
-		toba::output()->get('PaginaNormal')->getCambioPerfil($perfiles);		
+		echo toba::output()->get('PaginaNormal')->getCambioPerfil($perfiles);		
 	}	
 	
 	protected function mostrar_logo()
 	{
-		toba::output()->get('PaginaNormal')->getLogo($this->alto_cabecera);
+		echo toba::output()->get('PaginaNormal')->getLogo($this->alto_cabecera);
 	}
 	
 	protected function info_usuario()
 	{
-		toba::output()->get('PaginaNormal')->getInfoUsuario();
+		echo toba::output()->get('PaginaNormal')->getInfoUsuario();
 	}
 
 	protected function info_usuario_aplicaciones()
 	{
 		toba::app_launcher()->mostrar_html_app_launcher();
 	}
-	
-	
-	
 }
 ?>

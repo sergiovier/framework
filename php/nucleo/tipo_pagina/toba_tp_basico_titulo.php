@@ -1,7 +1,7 @@
 <?php
 /**
 * 
-* Incluye una barra con nombre y ayuda contextual de la operaciï¿½n, 
+* Incluye una barra con nombre y ayuda contextual de la operación, 
 * y centraliza el contenido de la salida de la operación
 * 
 * @package SalidaGrafica
@@ -10,31 +10,35 @@ class toba_tp_basico_titulo extends toba_tp_basico
 {
 	protected $clase_encabezado = 'encabezado';	
 
-	function inicio_encabezado_html(){
-		toba::output()->get('PaginaTitulo')->getPreEncabezadoHtml();
+	function inicio_encabezado_html()
+	{
+		echo toba::output()->get('PaginaTitulo')->getPreEncabezadoHtml();
 	}
 	
-	function inicio_barra_superior(){
-		toba::output()->get('PaginaTitulo')->getInicioBarraSuperior();
+	function inicio_barra_superior()
+	{
+		echo toba::output()->get('PaginaTitulo')->getInicioBarraSuperior();
 	}
 	
-	function fin_encabezado_html(){
-		toba::output()->get('PaginaTitulo')->getPostEncabezadoHtml();
+	function fin_encabezado_html()
+	{
+		echo toba::output()->get('PaginaTitulo')->getPostEncabezadoHtml();
 	}
 	
-	function fin_barra_superior(){
-		toba::output()->get('PaginaTitulo')->getFinBarraSuperior();
+	function fin_barra_superior()
+	{
+		echo toba::output()->get('PaginaTitulo')->getFinBarraSuperior();
 	}
 	
 	function barra_superior()
 	{
-		toba::output()->get('PaginaTitulo')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
+		echo toba::output()->get('PaginaTitulo')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
 	}
 	
 	protected function estilos_css()
 	{
 		parent::estilos_css();
-		toba::output()->get('PaginaTitulo')->getEstiloCss();
+		echo toba::output()->get('PaginaTitulo')->getEstiloCss();
 	}	
 	
 	protected function generar_ayuda()
@@ -66,16 +70,17 @@ class toba_tp_basico_titulo extends toba_tp_basico
 		
 	function pre_contenido()
 	{
-		toba::output()->get('PaginaTitulo')->getPreContenido();
+		echo toba::output()->get('PaginaTitulo')->getPreContenido();
 	}
 	
 	function post_contenido()
 	{
-		toba::output()->get('PaginaTitulo')->getPostContenido();
+		echo toba::output()->get('PaginaTitulo')->getPostContenido();
 	}
 	
-	protected function footer(){
-		toba::output()->get('PaginaTitulo')->getFooterHtml();
+	protected function footer()
+	{
+		echo toba::output()->get('PaginaTitulo')->getFooterHtml();
 	}
 			
 }

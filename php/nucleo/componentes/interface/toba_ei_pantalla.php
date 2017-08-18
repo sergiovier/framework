@@ -433,7 +433,7 @@ class toba_ei_pantalla extends toba_ei
 		
 		$ancho = isset($this->_info_ci["ancho"]) ? "style='width:{$this->_info_ci["ancho"]};'" : '';
 		
-		toba::output()->get('Pantalla')->getInicioHtml("{$this->objeto_js}_cont", $ancho);
+		echo toba::output()->get('Pantalla')->getInicioHtml("{$this->objeto_js}_cont", $ancho);
 		
 		echo $this->controlador->get_html_barra_editor();
 		$class_extra = '';
@@ -443,7 +443,7 @@ class toba_ei_pantalla extends toba_ei
 		$this->generar_html_barra_sup(null,true,"ci-barra-sup $class_extra");
 		$colapsado = (isset($this->_colapsado) && $this->_colapsado) ? "style='display:none'" : "";
 		
-		toba::output()->get('Pantalla')->getInicioColapsado("cuerpo_{$this->objeto_js}", $colapsado);
+		echo toba::output()->get('Pantalla')->getInicioColapsado("cuerpo_{$this->objeto_js}", $colapsado);
 		
 		//-->Listener de eventos
 		if ( (count($this->_eventos) > 0) || (count($this->_eventos_usuario_utilizados) > 0) ) {
@@ -452,9 +452,9 @@ class toba_ei_pantalla extends toba_ei
 		}
 		
 		//--> Cuerpo del CI		
-		toba::output()->get('Pantalla')->getInicioWrapperCuerpo($this->_info_ci);
+		echo toba::output()->get('Pantalla')->getInicioWrapperCuerpo($this->_info_ci);
 		$this->generar_html_cuerpo();
-		toba::output()->get('Pantalla')->getFinWrapperCuerpo();
+		echo toba::output()->get('Pantalla')->getFinWrapperCuerpo();
 		
 		//--> Botonera
 		$clase_abajo = toba::output()->get('Pantalla')->getClaseBotonera(false);
@@ -466,10 +466,10 @@ class toba_ei_pantalla extends toba_ei
 		}		
 		
 
-		toba::output()->get('Pantalla')->getFinColapsado();
+		echo toba::output()->get('Pantalla')->getFinColapsado();
 		
 
-		toba::output()->get('Pantalla')->getFinHtml();
+		echo toba::output()->get('Pantalla')->getFinHtml();
 		echo "\n<!-- ###################################  Fin CI  ( ".$this->_id[1]." ) ######################## -->\n\n";
 	}
 
@@ -480,44 +480,44 @@ class toba_ei_pantalla extends toba_ei
 	 */
 	protected function generar_html_cuerpo()
 	{
-		toba::output()->get('Pantalla')->getInicioCuerpo($this->_info_ci['tipo_navegacion']);
+		echo toba::output()->get('Pantalla')->getInicioCuerpo($this->_info_ci['tipo_navegacion']);
 		switch($this->_info_ci['tipo_navegacion'])
 		{
 			case self::NAVEGACION_TAB_HORIZONTAL:									//*** TABs horizontales
 				//Tabs
-				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
 
 				$this->generar_tabs_horizontales();
-				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
 				//Interface de la etapa correspondiente
-				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
-				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
 				break;
 			case self::NAVEGACION_TAB_VERTICAL:								//*** TABs verticales
-				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
 				$this->generar_tabs_verticales();
-				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
-				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
-				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
 				break;
 			case self::NAVEGACION_WIZARD: 									//*** Wizard (secuencia estricta hacia adelante)
-				toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPreTabs($this->_info_ci['tipo_navegacion']);
 
 				if ($this->_info_ci['con_toc']) {
 					$this->generar_toc_wizard();
 				}
-				toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
-				toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPostTabs($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPreContenido($this->_info_ci['tipo_navegacion']);
 				$this->generar_html_contenido();
-				toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
+				echo toba::output()->get('Pantalla')->getPostContenido($this->_info_ci['tipo_navegacion']);
 
 				break;
 			default:										//*** Sin mecanismo de navegacion
 				$this->generar_html_contenido();
 		}
-		toba::output()->get('Pantalla')->getFinCuerpo($this->_info_ci['tipo_navegacion']);
+		echo toba::output()->get('Pantalla')->getFinCuerpo($this->_info_ci['tipo_navegacion']);
 	}
 
 	/**
@@ -531,15 +531,15 @@ class toba_ei_pantalla extends toba_ei
 		if ($this->_info_pantalla['descripcion'] !="" || $es_wizard) {
 			$tipo = isset($this->_info_pantalla['descripcion_tipo']) ? $this->_info_pantalla['descripcion_tipo'] : null;			
 			if ($es_wizard) {
-				toba::output()->get('Pantalla')->getInicioDescWizard();
-				toba::output()->get('Pantalla')->getTituloWizard($this->get_etiqueta());
+				echo toba::output()->get('Pantalla')->getInicioDescWizard();
+				echo toba::output()->get('Pantalla')->getTituloWizard($this->get_etiqueta());
 				if ($this->_info_pantalla['descripcion'] != "") {
 					$this->generar_html_descripcion($this->_info_pantalla['descripcion'], $tipo);	
 				}				
 				foreach ($this->_notificaciones as $notificacion){
 					$this->generar_html_descripcion($notificacion['mensaje'], $notificacion['tipo']);
 				}
-				toba::output()->get('Pantalla')->getFinDescWizard();
+				echo toba::output()->get('Pantalla')->getFinDescWizard();
 				
 			} else {
 				$this->generar_html_descripcion($this->_info_pantalla['descripcion'], $tipo);
@@ -547,7 +547,7 @@ class toba_ei_pantalla extends toba_ei
 					$this->generar_html_descripcion($notificacion['mensaje'], $notificacion['tipo']);
 				}
 			}
-			toba::output()->get('Pantalla')->getSeparadorDependencias();
+			echo toba::output()->get('Pantalla')->getSeparadorDependencias();
 		}
 		$this->generar_layout();
 		echo "<div id='{$this->objeto_js}_pie'></div>";
@@ -563,7 +563,7 @@ class toba_ei_pantalla extends toba_ei
 			$existe_previo = 0;
 			foreach($this->_dependencias as $dep) {
 				if($existe_previo){ //Separador
-					toba::output()->get('Pantalla')->getSeparadorDependencias();
+					echo toba::output()->get('Pantalla')->getSeparadorDependencias();
 				}
 				$dep->generar_html();	
 				$existe_previo = 1;
@@ -619,7 +619,7 @@ class toba_ei_pantalla extends toba_ei
 	 */
 	protected function generar_toc_wizard()
 	{
-		toba::output()->get('Pantalla')->getTocWizard($this->_lista_tabs,$this->_id_en_controlador);
+		echo toba::output()->get('Pantalla')->getTocWizard($this->_lista_tabs,$this->_id_en_controlador);
 	}
 	
 	/**
@@ -628,7 +628,7 @@ class toba_ei_pantalla extends toba_ei
 	protected function generar_tabs_horizontales()
 	{
 		
-		toba::output()->get('Pantalla')->getInicioTabs($this->_info_ci['tipo_navegacion']);
+		echo toba::output()->get('Pantalla')->getInicioTabs($this->_info_ci['tipo_navegacion']);
 		foreach( $this->_lista_tabs as $id => $tab ) {
 			$editor = '';
 			if (toba_editor::modo_prueba()) {
@@ -636,7 +636,7 @@ class toba_ei_pantalla extends toba_ei
 			}			
 			echo $tab->get_html('H', $this->_submit, $this->objeto_js, ($this->_id_en_controlador == $id), $editor );
 		}
-		toba::output()->get('Pantalla')->getFinTabs($this->_info_ci['tipo_navegacion']);
+		echo toba::output()->get('Pantalla')->getFinTabs($this->_info_ci['tipo_navegacion']);
 		
 	}
 
@@ -646,7 +646,7 @@ class toba_ei_pantalla extends toba_ei
 	protected function generar_tabs_verticales()
 	{
 		
-		toba::output()->get('Pantalla')->getInicioTabs($this->_info_ci['tipo_navegacion']);
+		echo toba::output()->get('Pantalla')->getInicioTabs($this->_info_ci['tipo_navegacion']);
 		foreach( $this->_lista_tabs as $id => $tab ) {
 			$editor = '';
 			if (toba_editor::modo_prueba()) {
@@ -654,7 +654,7 @@ class toba_ei_pantalla extends toba_ei
 			}
 			echo $tab->get_html('V', $this->_submit, $this->objeto_js, ($this->_id_en_controlador == $id), $editor);
 		}
-		toba::output()->get('Pantalla')->getFinTabs($this->_info_ci['tipo_navegacion']);
+		echo toba::output()->get('Pantalla')->getFinTabs($this->_info_ci['tipo_navegacion']);
 		
 	}
 	

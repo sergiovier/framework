@@ -1,13 +1,13 @@
 <?php
 
 /**
-* El tipo de pï¿½gina bï¿½sico estï¿½ pensado como clase base para las personalizaciones fuertes de la salida.
-* Presenta la estructura bï¿½sica que de la salida html del framework:
+* El tipo de página básico está pensado como clase base para las personalizaciones fuertes de la salida.
+* Presenta la estructura básica que de la salida html del framework:
 *  - Doctype
 *  - Titulo de la pagina
 *  - Codificacion
 *  - Plantillas css
-*  - Includes js bï¿½sico
+*  - Includes js básico
 * 
 * @package SalidaGrafica
 */
@@ -24,34 +24,40 @@ class toba_tp_basico extends toba_tipo_pagina
 		$this->barra_superior();//--- No se cierra el div de encabezado para dar lugar a la zona...
 	}
 	
-	function inicio_encabezado_html(){
-		toba::output()->get('PaginaBasica')->getPreEncabezadoHtml();
+	function inicio_encabezado_html()
+	{
+		echo toba::output()->get('PaginaBasica')->getPreEncabezadoHtml();
 	}
 	
-	function inicio_barra_superior(){
-		toba::output()->get('PaginaBasica')->getInicioBarraSuperior();
+	function inicio_barra_superior()
+	{
+		echo toba::output()->get('PaginaBasica')->getInicioBarraSuperior();
 	}
 	
-	function post_encabezado() {
+	function post_encabezado() 
+	{
 		$this->fin_barra_superior();
-		$this->fin_encabezado_html();
-		
+		$this->fin_encabezado_html();		
 	}
 	
-	function fin_barra_superior(){
-		toba::output()->get('PaginaBasica')->getFinBarraSuperior();
+	function fin_barra_superior()
+	{
+		echo toba::output()->get('PaginaBasica')->getFinBarraSuperior();
 	}
 	
-	function fin_encabezado_html(){
-		toba::output()->get('PaginaBasica')->getPostEncabezadoHtml();
+	function fin_encabezado_html()
+	{
+		echo toba::output()->get('PaginaBasica')->getPostEncabezadoHtml();
 	}
 	
-	function pre_contenido(){
-		toba::output()->get('PaginaBasica')->getPreContenido();
+	function pre_contenido()
+	{
+		echo toba::output()->get('PaginaBasica')->getPreContenido();
 	}
 	
-	function post_contenido(){
-		toba::output()->get('PaginaBasica')->getPostContenido();
+	function post_contenido()
+	{
+		echo toba::output()->get('PaginaBasica')->getPostContenido();
 	}
 
 	function pie()
@@ -63,23 +69,34 @@ class toba_tp_basico extends toba_tipo_pagina
 			toba_editor::generar_zona_vinculos_item($item, $accion);
 		}
 		$this->footer();
-		toba::output()->get('PaginaBasica')->getFinCuerpo();
-		toba::output()->get('PaginaBasica')->getFinHtml();
+		echo toba::output()->get('PaginaBasica')->getFinCuerpo();
+		echo toba::output()->get('PaginaBasica')->getFinHtml();
 	}
 	
-	protected function footer(){
-		toba::output()->get('PaginaBasica')->getFooterHtml();
+	function barra_superior()
+	{
+		echo toba::output()->get('PaginaBasica')->getContenidoBarraSuperior();
+	}
+	
+	function mostrar_resize_fuente()
+	{
+		echo toba::output()->get('PaginaBasica')->getResizeFuente("ampliar_fuente();","reducir_fuente();");
+	}
+	
+	protected function footer()
+	{
+		echo toba::output()->get('PaginaBasica')->getFooterHtml();
 	}
 	
 	protected function cabecera_html()
 	{
-		toba::output()->get('PaginaBasica')->getInicioHtml();
-		toba::output()->get('PaginaBasica')->getInicioHead($this->titulo_pagina());
+		echo toba::output()->get('PaginaBasica')->getInicioHtml();
+		echo toba::output()->get('PaginaBasica')->getInicioHead($this->titulo_pagina());
 		$this->encoding();
 		$this->plantillas_css();
 		$this->estilos_css();
 		toba_js::cargar_consumos_basicos();
-		toba::output()->get('PaginaBasica')->getFinHead();
+		echo toba::output()->get('PaginaBasica')->getFinHead();
 	}
 	
 	protected function titulo_pagina()
@@ -90,17 +107,17 @@ class toba_tp_basico extends toba_tipo_pagina
 	
 	protected function encoding()
 	{
-		toba::output()->get('PaginaBasica')->getEncoding();
+		echo toba::output()->get('PaginaBasica')->getEncoding();
 	}
 
 	protected function plantillas_css()
 	{
-		toba::output()->get('PaginaBasica')->getPlantillasCss();
+		echo toba::output()->get('PaginaBasica')->getPlantillasCss();
 	}
 	
 	protected function estilos_css()
 	{
-		toba::output()->get('PaginaBasica')->getEstilosCss();
+		echo toba::output()->get('PaginaBasica')->getEstilosCss();
 	}
 
 	/**
@@ -114,25 +131,15 @@ class toba_tp_basico extends toba_tipo_pagina
 		
 		
 	}
+	
 	protected function capa_espera(){
-		toba::output()->get('PaginaBasica')->getOverlay();
-		toba::output()->get('PaginaBasica')->getCapaEspera();
+		echo toba::output()->get('PaginaBasica')->getOverlay();
+		echo toba::output()->get('PaginaBasica')->getCapaEspera();
 	}
 	
 	protected function comienzo_cuerpo_basico()
 	{
-		toba::output()->get('PaginaBasica')->getInicioCuerpo();		
-	}
-
-	function barra_superior()
-	{
-		toba::output()->get('PaginaBasica')->getContenidoBarraSuperior();
-	}
-	
-	function mostrar_resize_fuente()
-	{
-		toba::output()->get('PaginaBasica')->getResizeFuente("ampliar_fuente();","reducir_fuente();");
-	}
-	
+		echo toba::output()->get('PaginaBasica')->getInicioCuerpo();		
+	}	
 }
 ?>

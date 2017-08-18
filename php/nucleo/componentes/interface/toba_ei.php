@@ -467,9 +467,9 @@ abstract class toba_ei extends toba_componente
 	{
 		//----------- Generacion
 		if ($this->hay_botones()) {
-			toba::output()->get('ElementoInterfaz')->getInicioBotonera($clase, $extra);
+			echo toba::output()->get('ElementoInterfaz')->getInicioBotonera($clase, $extra);
 			$this->generar_botones_eventos();
-			toba::output()->get('ElementoInterfaz')->getFinBotonera();
+			echo toba::output()->get('ElementoInterfaz')->getFinBotonera();
 		} elseif ($extra != '') {
 			echo $extra;
 		}
@@ -670,16 +670,16 @@ abstract class toba_ei extends toba_componente
 					$colapsado = "style='cursor: pointer; cursor: hand;' onclick=\"{$this->objeto_js}.cambiar_colapsado();\" title='Mostrar / Ocultar'";
 				}
 				
-				toba::output()->get('ElementoInterfaz')->getInicioBarraSuperior($tiene_titulo, $botonera_sup, $estilo, $colapsado);
+				echo toba::output()->get('ElementoInterfaz')->getInicioBarraSuperior($tiene_titulo, $botonera_sup, $estilo, $colapsado);
 				
 				//--> Botonera
 				if ($botonera_sup) {
 					$this->generar_botones();
 				}						
 			
-				toba::output()->get('ElementoInterfaz')->getContenidoBarraSuperior($titulo, $this->_info["descripcion"], $this->_modo_descripcion_tooltip, $this->_info['colapsable'], $colapsado_coherente, $this->objeto_js,$colapsado);
+				echo toba::output()->get('ElementoInterfaz')->getContenidoBarraSuperior($titulo, $this->_info["descripcion"], $this->_modo_descripcion_tooltip, $this->_info['colapsable'], $colapsado_coherente, $this->objeto_js,$colapsado);
 				//---Titulo			
-				toba::output()->get('ElementoInterfaz')->getFinBarraSuperior();
+				echo toba::output()->get('ElementoInterfaz')->getFinBarraSuperior();
 				
 				//echo ei_barra_fin();
 			}
@@ -715,7 +715,7 @@ abstract class toba_ei extends toba_componente
 	 */
 	protected function generar_html_descripcion($mensaje, $tipo=null)
 	{
-		toba::output()->get("ElementoInterfaz")->getHtmlDescripcion($mensaje, $tipo);
+		echo toba::output()->get("ElementoInterfaz")->getHtmlDescripcion($mensaje, $tipo);
 	}
 	
 	/**

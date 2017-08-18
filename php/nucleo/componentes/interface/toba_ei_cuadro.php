@@ -2379,9 +2379,9 @@ class toba_ei_cuadro extends toba_ei
 			//Disparo la construccion del ultimo nivel
 			$temp = null;
 			//echo "<xmp>";
-			toba::output()->get('Cuadro')->getInicioCorte($id_unico,$this->tabla_datos_es_general(),$nodo['profundidad']);
+			echo toba::output()->get('Cuadro')->getInicioCorte($id_unico,$this->tabla_datos_es_general(),$nodo['profundidad']);
 			$this->generar_cuadro( $nodo['filas'], $temp, $nodo); //Se pasa el nodo para las salidas no-html
-			toba::output()->get('Cuadro')->getFinCorte($this->tabla_datos_es_general());
+			echo toba::output()->get('Cuadro')->getFinCorte($this->tabla_datos_es_general());
 			//echo "</xmp>";
 		}
 		$this->generar_fin_zona_colapsable();

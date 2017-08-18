@@ -83,13 +83,13 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		//-- INICIO zona COLAPSABLE del cuadro completo
 		$colapsado = ($cuadro_colapsa) ? "style='display:none'" : "";
 		
-		toba::output()->get('SalidaHtml')->getIncioZonaColapsable("cuerpo_$id_js","ei-cuadro-cuerpo", $colapsado );
+		echo toba::output()->get('CuadroSalidaHtml')->getIncioZonaColapsable("cuerpo_$id_js","ei-cuadro-cuerpo", $colapsado );
 		
 		//------- Cabecera -----------------
 		$this->html_cabecera();
 		
 		//--- INICIO CONTENIDO  -----
-		toba::output()->get('SalidaHtml')->getInicioContenido("colspan='$total_col'");
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioContenido("colspan='$total_col'");
 		
 		// Si el layout es cortes/tabular se genera una sola tabla, que empieza aca
 		if( $this->_cuadro->tabla_datos_es_general() ){
@@ -105,7 +105,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	{
 		$info_cuadro = $this->_cuadro->get_informacion_basica_cuadro();
 		
-		toba::output()->get('SalidaHtml')->getInicioHtml($info_cuadro);
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioHtml($info_cuadro);
 	}
 		
 	/**
@@ -119,7 +119,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$filas_disponibles_selector = $this->_cuadro->get_filas_disponibles_selector();
 		$total_col = $this->_cuadro->get_cantidad_columnas_total();
 
-		toba::output()->get('SalidaHtml')->getCabeceraHtml($info_cuadro,$objeto_js, $exportacion_excel_plano,$filas_disponibles_selector,$total_col);
+		echo toba::output()->get('CuadroSalidaHtml')->getCabeceraHtml($info_cuadro,$objeto_js, $exportacion_excel_plano,$filas_disponibles_selector,$total_col);
 	}
 	
 
@@ -138,10 +138,10 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$this->html_cuadro_fin(null);
 		}
 
-		toba::output()->get('SalidaHtml')->getFinContenido();//--- FIN CONTENIDO  ---------
+		echo toba::output()->get('CuadroSalidaHtml')->getFinContenido();//--- FIN CONTENIDO  ---------
 		
 		// Pie
-		toba::output()->get('SalidaHtml')->getPie($info_cuadro);
+		echo toba::output()->get('CuadroSalidaHtml')->getPie($info_cuadro);
 		
 		//Paginacion
 		if ($info_cuadro["paginar"]) {
@@ -153,16 +153,16 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 
 		//Botonera
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
-			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
-			$clase = toba::output()->get('SalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),!$this->_cuadro->botonera_abajo());
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
+			$clase = toba::output()->get('CuadroSalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),!$this->_cuadro->botonera_abajo());
 			$this->generar_botones($clase);
-			toba::output()->get('SalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
+			echo toba::output()->get('CuadroSalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
 		
 		//-- FIN zona COLAPSABLE
-		toba::output()->get('SalidaHtml')->getFinZonaColapsable();
+		echo toba::output()->get('CuadroSalidaHtml')->getFinZonaColapsable();
 		
-		toba::output()->get('SalidaHtml')->getFinHtml($info_cuadro);
+		echo toba::output()->get('CuadroSalidaHtml')->getFinHtml($info_cuadro);
 
 		//Aca tengo que meter el javascript y el html del cosote para ordenar
 		if ($info_cuadro["ordenar"]) {
@@ -197,23 +197,23 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		
 		$editor =  $this->get_html_barra_editor();
 		
-		toba::output()->get('SalidaHtml')->getInicioCuadroVacio($ancho, $editor);
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioCuadroVacio($ancho, $editor);
 		
 		$this->generar_html_barra_sup(null, true,"ei-cuadro-barra-sup");
 		$ancho = isset($info_cuadro["ancho"]) ? $info_cuadro["ancho"] : "";
 		$colapsado = (isset($colapsado) && $colapsado) ? "display:none;" : '';
 	
-		toba::output()->get('SalidaHtml')->getMensajeCuadroVacio("cuerpo_$objeto_js",$ancho, $colapsado, $texto);
+		echo toba::output()->get('CuadroSalidaHtml')->getMensajeCuadroVacio("cuerpo_$objeto_js",$ancho, $colapsado, $texto);
 		
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
-			toba::output()->get('SalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
 
-			$clase = toba::output()->get('SalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());
+			$clase = toba::output()->get('CuadroSalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());
 			
 			$this->generar_botones($clase);
-			toba::output()->get('SalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
+			echo toba::output()->get('CuadroSalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
-		toba::output()->get('SalidaHtml')->getFinCuadroVacio();;
+		echo toba::output()->get('CuadroSalidaHtml')->getFinCuadroVacio();;
 	}
 
 	/**
@@ -225,7 +225,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$objeto_js = $this->_cuadro->get_id_objeto_js();
 		$columnas = $this->_cuadro->get_columnas();
 
-		toba::output()->get('SalidaHtml')->getSelectorOrdenamiento($id, $objeto_js, $columnas);
+		echo toba::output()->get('CuadroSalidaHtml')->getSelectorOrdenamiento($id, $objeto_js, $columnas);
 	}
 
 	/**
@@ -297,7 +297,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	function html_cc_inicio_nivel()
 	{
-		toba::output()->get('SalidaHtml')->getInicioNivel($this->_cuadro->get_cortes_modo());
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioNivel($this->_cuadro->get_cortes_modo());
 	}
 	
 	/**
@@ -305,18 +305,18 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	function html_cc_fin_nivel()
 	{
-		toba::output()->get('SalidaHtml')->getFinNivel($this->_cuadro->get_cortes_modo());
+		echo toba::output()->get('CuadroSalidaHtml')->getFinNivel($this->_cuadro->get_cortes_modo());
 	}
 
 	function html_inicio_zona_colapsable($id_unico, $estilo)
 	{
 		
-		toba::output()->get('SalidaHtml')->getInicioZonaColapsableCC($id_unico, $estilo);
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioZonaColapsableCC($id_unico, $estilo);
 	}
 
 	function html_fin_zona_colapsable()
 	{
-		toba::output()->get('SalidaHtml')->getFinZonaColapsableCC();
+		echo toba::output()->get('CuadroSalidaHtml')->getFinZonaColapsableCC();
 		
 	}
 
@@ -347,9 +347,9 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				$total_columnas = $this->_cuadro->get_cantidad_columnas_total();
 				$js = "onclick=\"$objeto_js.colapsar_corte('$id_unico');\"";
 
-				toba::output()->get('SalidaHtml')->getInicioCabeceraCC($this->_cuadro->debe_colapsar_cortes(), $nivel_css,$total_columnas, $js);
+				echo toba::output()->get('CuadroSalidaHtml')->getInicioCabeceraCC($this->_cuadro->debe_colapsar_cortes(), $nivel_css,$total_columnas, $js);
 				$this->$metodo($nodo);
-				toba::output()->get('SalidaHtml')->getFinCabeceraCC($this->_cuadro->debe_colapsar_cortes(), $nivel_css,$total_columnas, $js);
+				echo toba::output()->get('CuadroSalidaHtml')->getFinCabeceraCC($this->_cuadro->debe_colapsar_cortes(), $nivel_css,$total_columnas, $js);
 		}else{
 			
 				echo "<li class='$class'>\n";
@@ -364,7 +364,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	protected function html_cabecera_cc_contenido(&$nodo)
 	{
 		
-		toba::output()->get('SalidaHtml')->getContenidoCabeceraCC($this->_cuadro->get_indice_cortes(),$nodo);
+		echo toba::output()->get('CuadroSalidaHtml')->getContenidoCabeceraCC($this->_cuadro->get_indice_cortes(),$nodo);
 	}
 
 	/**
@@ -381,7 +381,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$total_columnas = $this->_cuadro->get_cantidad_columnas_total();
 			
 			
-			toba::output()->get('SalidaHtml')->getInicioPieCC($this->_cuadro->tabla_datos_es_general());
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioPieCC($this->_cuadro->tabla_datos_es_general());
 
 
 			$this->html_cabecera_pie($indice, $nodo, $total_columnas);	//-----  Cabecera del PIE --------
@@ -403,13 +403,13 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			//----- Contar Filas
 			if($indice[$nodo['corte']]['pie_contar_filas']) {
 				$etiqueta = $this->etiqueta_cantidad_filas($nodo['profundidad']) . count($nodo['filas']);
-				toba::output()->get('SalidaHtml')->getContadorFilaCC($nivel_css, $total_columnas, $etiqueta);
+				echo toba::output()->get('CuadroSalidaHtml')->getContadorFilaCC($nivel_css, $total_columnas, $etiqueta);
 				
 			}
 			//----- Contenido del usuario al final del PIE
 			$this->html_pie_pie($nodo, $total_columnas, $es_ultimo);
 			
-			toba::output()->get('SalidaHtml')->getFinPieCC($this->_cuadro->tabla_datos_es_general());
+			echo toba::output()->get('CuadroSalidaHtml')->getFinPieCC($this->_cuadro->tabla_datos_es_general());
 			
 		}else{																//MODO ANIDADO
 			echo "</li>\n";
@@ -432,7 +432,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				}else{
 				 	$descripcion = $this->html_cabecera_pie_cc_contenido($nodo);
 				}
-				toba::output()->get('SalidaHtml')->getCabeceraPieCC($descripcion,$nivel_css,$total_columnas);
+				echo toba::output()->get('CuadroSalidaHtml')->getCabeceraPieCC($descripcion,$nivel_css,$total_columnas);
 		}
 		
 	}
@@ -472,7 +472,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				$desc = $acumulador_usuario[$id]['descripcion'];
 				$datos[$desc] = $valor;
 			}
-			toba::output()->get('SalidaHtml')->getSumarizacion($datos,null,300,$css,$nivel_css,  "<tr><td  class='$css_pie' colspan='$total_columnas'>\n","</td></tr>\n");
+			echo toba::output()->get('CuadroSalidaHtml')->getSumarizacion($datos,null,300,$css,$nivel_css,  "<tr><td  class='$css_pie' colspan='$total_columnas'>\n","</td></tr>\n");
 		}
 	}
 	
@@ -484,9 +484,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	 */
 	protected function html_cabecera_pie_cc_contenido(&$nodo)
 	{
-		$indice = $this->_cuadro->get_indice_cortes();
-		
-		toba::output()->get('SalidaHtml')->getContenidoCabeceraPieCC($indice, $nodo);
+		$indice = $this->_cuadro->get_indice_cortes();		
+		return toba::output()->get('CuadroSalidaHtml')->getContenidoCabeceraPieCC($indice, $nodo);
 	}
 
 	//-------------------------------------------------------------------------------
@@ -511,7 +510,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$layout_cant_columnas = $this->_cuadro->get_layout_cant_columnas();
 		$i = 0;
 		if (!is_null($layout_cant_columnas)) {
-			toba::output()->get('SalidaHtml')->getInicioFila(null);
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioFila(null);
 		}
 
 		$columnas = $this->_cuadro->get_columnas();
@@ -538,7 +537,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		}
 		
 		if (isset($layout_cant_columnas)) {
-			toba::output()->get('SalidaHtml')->getFinFila();
+			echo toba::output()->get('CuadroSalidaHtml')->getFinFila();
 		}
 		if( ! $this->_cuadro->tabla_datos_es_general() ){
 			$this->html_acumulador_usuario();
@@ -548,9 +547,8 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 
 	function get_estilo_seleccion($clave_fila)
 	{
-		$esta_seleccionada = $this->_cuadro->es_clave_fila_seleccionada($clave_fila);
-		
-		return toba::output()->get('SalidaHtml')->getEstiloFila($esta_seleccionada);
+		$esta_seleccionada = $this->_cuadro->es_clave_fila_seleccionada($clave_fila);		
+		return toba::output()->get('CuadroSalidaHtml')->getEstiloFila($esta_seleccionada);
 	}
 
 	function generar_layout_fila($columnas, $datos, $id_fila,  $clave_fila, $evt_multiples, $objeto_js, $estilo_fila, $formateo)
@@ -561,7 +559,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$js = $this->get_invocacion_js_eventos_multiples($evt_multiples, $id_fila, $objeto_js);
 
 		 //---> Creo las CELDAS de una FILA <----
-		toba::output()->get('SalidaHtml')->getInicioFila($estilo_fila);
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioFila($estilo_fila);
 
 		//---> Creo los EVENTOS de la FILA  previos a las columnas<---
 		$this->html_cuadro_celda_evento($id_fila, $clave_fila, true);
@@ -600,12 +598,12 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				$ancho = " width='". $columnas[$a]["ancho"] . "'";
 			}
 			$estilo_columna = $columnas[$a]["estilo"];
-			toba::output()->get('SalidaHtml')->getCeldaCuadro($valor," $estilo_seleccion $estilo_columna", $ancho, $js);			
+			echo toba::output()->get('CuadroSalidaHtml')->getCeldaCuadro($valor," $estilo_seleccion $estilo_columna", $ancho, $js);			
 			//Termino la CELDA
 		}
 		//---> Creo los EVENTOS de la FILA <---
 		$this->html_cuadro_celda_evento($id_fila, $clave_fila, false);
-		toba::output()->get('SalidaHtml')->getFinFila();
+		echo toba::output()->get('CuadroSalidaHtml')->getFinFila();
 	}
 
 	protected function get_invocacion_js_eventos_multiples($evt_multiples, $id_fila, $objeto_js)
@@ -636,17 +634,17 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$id_form = $this->_cuadro->get_id_form();
 		$descripcion_resp_popup = $this->_cuadro->get_descripcion_resp_popup($id_fila);
 		
-		toba::output()->get('SalidaHtml')->getPreCeldaEvento($pre_columnas,$this->_cuadro->get_eventos_sobre_fila());
+		echo toba::output()->get('CuadroSalidaHtml')->getPreCeldaEvento($pre_columnas,$this->_cuadro->get_eventos_sobre_fila());
 		foreach ($this->_cuadro->get_eventos_sobre_fila() as $id => $evento) {
 			$parametros = $this->get_parametros_interaccion($id_fila, $clave_fila);
 			$invocacion_evento_fila = $this->get_invocacion_evento_fila($evento, $id_fila, $clave_fila, false, $parametros);
 			
-			toba::output()->get('SalidaHtml')->getCeldaEvento($id_fila, $clave_fila, $pre_columnas,$evento,$parametros,$id_form,$descripcion_resp_popup,$invocacion_evento_fila);
+			echo toba::output()->get('CuadroSalidaHtml')->getCeldaEvento($id_fila, $clave_fila, $pre_columnas,$evento,$parametros,$id_form,$descripcion_resp_popup,$invocacion_evento_fila);
 		}
 		
 		//Se agrega la clave a la lista de enviadas
 		$this->_cuadro->agregar_clave_enviada($clave_fila);
-		toba::output()->get('SalidaHtml')->getPostCeldaEvento($pre_columnas,$this->_cuadro->get_eventos_sobre_fila());
+		echo toba::output()->get('CuadroSalidaHtml')->getPostCeldaEvento($pre_columnas,$this->_cuadro->get_eventos_sobre_fila());
 	}
 
 	protected function get_parametros_interaccion($id_fila, $clave_fila)
@@ -665,7 +663,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	protected function html_cuadro_inicio($nodo)
 	{
 		$cortes = $this->_cuadro->existen_cortes_control();
-		toba::output()->get('SalidaHtml')->getInicioCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
+		echo toba::output()->get('CuadroSalidaHtml')->getInicioCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
 	}
 
 	/**
@@ -674,7 +672,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	protected function html_cuadro_fin($nodo)
 	{
 		$cortes = $this->_cuadro->existen_cortes_control();
-		toba::output()->get('SalidaHtml')->getFinCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
+		echo toba::output()->get('CuadroSalidaHtml')->getFinCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
 	}
 
 		/**
@@ -711,7 +709,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$html_columnas_agrupadas = '';
 			$grupo_actual = null;
 			
-			toba::output()->get('SalidaHtml')->getInicioHeadCuadro($this->_cuadro->debe_mostrar_titulos_columnas_cc());
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioHeadCuadro($this->_cuadro->debe_mostrar_titulos_columnas_cc());
 			
 			$this->html_cuadro_cabecera_columna_evento($rowspan, true);
 			
@@ -726,7 +724,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 				$ordenamiento_editor = $this->html_cuadro_cabecera_columna(    $columnas[$a]["titulo"], $columnas[$a]["clave"], $a );
 				
 				
-				$html_columna = toba::output()->get('SalidaHtml')->getCuadroCabeceraColumna($columnas[$a], $rowspan_col, $ordenamiento_editor);
+				$html_columna = toba::output()->get('CuadroSalidaHtml')->getCuadroCabeceraColumna($columnas[$a], $rowspan_col, $ordenamiento_editor);
 
 				if (! isset($columnas[$a]['grupo']) || $columnas[$a]['grupo'] == '') {
 					//Si no es una columna agrupada,saca directamente su html
@@ -740,7 +738,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 						$grupo_actual = $columnas[$a]['grupo'];
 						$cant_col = count(array_unique($columnas_agrupadas[$grupo_actual]));		//Cuando se fija manualmente el grupo y se re procesa la definicion trae la misma columna + de una vez
 						
-						toba::output()->get('SalidaHtml')->getCabeceraColumnasAgrupadas($grupo_actual, $cant_col);
+						echo toba::output()->get('CuadroSalidaHtml')->getCabeceraColumnasAgrupadas($grupo_actual, $cant_col);
 						
 					}
 				}
@@ -752,9 +750,9 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			
 			//-- Columnas Agrupadas
 			if ($html_columnas_agrupadas != '') {
-				toba::output()->get('SalidaHtml')->getParseGrupoColumnas($html_columnas_agrupadas);
+				echo toba::output()->get('CuadroSalidaHtml')->getParseGrupoColumnas($html_columnas_agrupadas);
 			}
-			toba::output()->get('SalidaHtml')->getFinHeadCuadro($this->_cuadro->debe_mostrar_titulos_columnas_cc());
+			echo toba::output()->get('CuadroSalidaHtml')->getFinHeadCuadro($this->_cuadro->debe_mostrar_titulos_columnas_cc());
 
 		}
 	}
@@ -815,7 +813,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 			$editor_item = $info_comp['clase_editor_item'];
 		}
 		
-		toba::output()->get('SalidaHtml')->getCuadroCabeceraColumnaEvento($rowspan, $pre_columnas,$eventos_sobre_fila, $this->_cuadro->get_id(), $editor_item);
+		echo toba::output()->get('CuadroSalidaHtml')->getCuadroCabeceraColumnaEvento($rowspan, $pre_columnas,$eventos_sobre_fila, $this->_cuadro->get_id(), $editor_item);
 	}
 	
 	 /**
@@ -826,13 +824,13 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$sumarizacion = $this->_cuadro->calcular_totales_sumarizacion_usuario();
 		$total_columnas = $this->_cuadro->get_cantidad_columnas_total();
 		if (! empty($sumarizacion)) {
-			toba::output()->get('SalidaHtml')->getSumarizacion($sumarizacion,null,300,$css, "<tr><td colspan='$total_columnas'>\n","</td></tr>\n");
+			echo toba::output()->get('CuadroSalidaHtml')->getSumarizacion($sumarizacion,null,300,$css, "<tr><td colspan='$total_columnas'>\n","</td></tr>\n");
 		}
 	}
 
 	protected function html_cuadro_columnas_relleno($cantidad_columnas)
 	{
-		toba::output()->get('SalidaHtml')->getColumnasRelleno($cantidad_columnas);
+		echo toba::output()->get('CuadroSalidaHtml')->getColumnasRelleno($cantidad_columnas);
 	}
 		
 	  /**
@@ -858,22 +856,22 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		//Agrego las cabeceras si es necesario
 		$clase_linea = isset($estilo_linea) ? "class='$estilo_linea'" : "";
 		if($agregar_titulos || (! $this->_cuadro->tabla_datos_es_general())) { 
-			toba::output()->get('SalidaHtml')->getInicioFila('');
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioFila('');
 			$this->html_cuadro_columnas_relleno($cant_evt_pre_columnas);
 			foreach (array_keys($columnas) as $clave) {
 			    if(isset($totales[$clave])){
 					$valor = $columnas[$clave]["titulo"];
-					toba::output()->get('SalidaHtml')->getCeldaAcumulador($valor,$columnas[$clave]["estilo_titulo"],null);
+					echo toba::output()->get('CuadroSalidaHtml')->getCeldaAcumulador($valor,$columnas[$clave]["estilo_titulo"],null);
 				}else{
-					toba::output()->get('SalidaHtml')->getCeldaAcumulador("&nbsp;",null,$clase_linea);
+					echo toba::output()->get('CuadroSalidaHtml')->getCeldaAcumulador("&nbsp;",null,$clase_linea);
 				}
 			}
 			//-- Eventos sobre fila
 			$this->html_cuadro_columnas_relleno($cant_evt_restantes);
-			toba::output()->get('SalidaHtml')->getFinFila();
+			echo toba::output()->get('CuadroSalidaHtml')->getFinFila();
 		}
 		if ($totales !== null){
-			toba::output()->get('SalidaHtml')->getInicioFila('ei-cuadro-totales');
+			echo toba::output()->get('CuadroSalidaHtml')->getInicioFila('ei-cuadro-totales');
 			$this->html_cuadro_columnas_relleno($cant_evt_pre_columnas);
 			foreach (array_keys($columnas) as $clave) {
 				//Defino el valor de la columna
@@ -887,14 +885,14 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 						$metodo = "formato_" . $columnas[$clave]["formateo"];
 						$valor = $formateo->$metodo($valor);
 					}
-					toba::output()->get('SalidaHtml')->getCeldaAcumulador($valor,"ei-cuadro-total $estilo",null);
+					echo toba::output()->get('CuadroSalidaHtml')->getCeldaAcumulador($valor,"ei-cuadro-total $estilo",null);
 				}else{
-					toba::output()->get('SalidaHtml')->getCeldaAcumulador("&nbsp;",null,$clase_linea);
+					echo toba::output()->get('CuadroSalidaHtml')->getCeldaAcumulador("&nbsp;",null,$clase_linea);
 				}
 			}
 			//-- Eventos sobre fila
 			$this->html_cuadro_columnas_relleno($cant_evt_restantes);
-			toba::output()->get('SalidaHtml')->getFinFila();
+			echo toba::output()->get('CuadroSalidaHtml')->getFinFila();
 		}//if totales
 	}
 
@@ -938,7 +936,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$parametros = $this->_cuadro->get_nombres_parametros();
 		$eventos = $this->_cuadro->get_eventos();
         
-		toba::output()->get('SalidaHtml')->getCuadroPaginacion($objeto_js,$total_registros,$tamanio_pagina,$pagina_actual,$cantidad_paginas,$parametros,$eventos);
+		echo toba::output()->get('CuadroSalidaHtml')->getCuadroPaginacion($objeto_js,$total_registros,$tamanio_pagina,$pagina_actual,$cantidad_paginas,$parametros,$eventos);
 	}
 
 	/**
@@ -949,9 +947,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$total_registros = $this->_cuadro->get_total_registros();
 		$mostrar = $this->_cuadro->debe_mostrar_total_registros();
 		
-		toba::output()->get('SalidaHtml')->getBarraTotalRegistros($total_registros, $mostrar);
+		echo toba::output()->get('CuadroSalidaHtml')->getBarraTotalRegistros($total_registros, $mostrar);
 	}
-
-	
 }
 ?>
