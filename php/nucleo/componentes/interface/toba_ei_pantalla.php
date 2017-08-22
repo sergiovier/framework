@@ -1,6 +1,6 @@
 <?php
 /**
- * Una pantalla es la parte grï¿½fica de una etapa del controlador de interface (ci).
+ * Una pantalla es la parte gráfica de una etapa del controlador de interface (ci).
  * Es posible acceder a la pantalla desde el ci usando el metodo $this->pantalla()->..
  * 
  * La pantalla se encarga de graficar:
@@ -70,7 +70,7 @@ class toba_ei_pantalla extends toba_ei
 	{
 		parent::aplicar_restricciones_funcionales();
 		
-		//-- Restricciï¿½n funcional pantalla no-visible ------		
+		//-- Restricción funcional pantalla no-visible ------		
 		$no_visibles = toba::perfil_funcional()->get_rf_pantallas_no_visibles($this->_id[1]);
 		for ($a = 0; $a<count($this->_info_ci_me_pantalla);$a++)	{		
 			if (in_array($this->_info_ci_me_pantalla[$a]['pantalla'], $no_visibles)) {
@@ -82,7 +82,7 @@ class toba_ei_pantalla extends toba_ei
 			}
 		}
 		
-		//-- Restricciï¿½n funcional eis no-visible ------
+		//-- Restricción funcional eis no-visible ------
 		$no_visibles = toba::perfil_funcional()->get_rf_eis_no_visibles();
 		$this->_dependencias = array();
 		$lista = $this->_lista_dependencias;
@@ -127,7 +127,7 @@ class toba_ei_pantalla extends toba_ei
 	
 	
 	/**
-	 * Retorna la descripciï¿½n de esta pantalla
+	 * Retorna la descripción de esta pantalla
 	 * @return string
 	 */
 	function get_descripcion()
@@ -136,7 +136,7 @@ class toba_ei_pantalla extends toba_ei
 	}
 
 	/**
-	 * Cambia la descripciï¿½n de esta pantalla
+	 * Cambia la descripción de esta pantalla
 	 * @param string $descr
 	 * @param string $tipo Puede ser 'info', 'warning', 'error'
 	 */
@@ -147,7 +147,7 @@ class toba_ei_pantalla extends toba_ei
 	}
 	
 	/**
-	 * Cambia el tipo de navegaciï¿½n de la pantalla
+	 * Cambia el tipo de navegación de la pantalla
 	 *
 	 * @param mixed $tipo Por ejemplo toba_ei_pantalla::NAVEGACION_TAB_VERTICAL
 	 */
@@ -167,8 +167,8 @@ class toba_ei_pantalla extends toba_ei
 
 	/**
 	 * Agrega una dependencia a esta pantalla.
-	 * La dependencia tiene que estar asignada al ci actual, este mï¿½todo sï¿½lo indica que esta dependencia
-	 * se graficarï¿½ en esta pantalla
+	 * La dependencia tiene que estar asignada al ci actual, este método sólo indica que esta dependencia
+	 * se graficará en esta pantalla
 	 * @param string $id_obj ID. de la dependencia en el ci
 	 */
 	function agregar_dep($id_obj)
@@ -178,7 +178,7 @@ class toba_ei_pantalla extends toba_ei
 			$this->_lista_dependencias[] = $id_obj;
 		} else {
 			toba::logger()->error($this->get_txt(). 
-					" Se quiere agregar la dependencia '$id_obj', pero esta no estï¿½ definida en el CI");
+					" Se quiere agregar la dependencia '$id_obj', pero esta no está definida en el CI");
 		}
 		//--- Por si ya estamos en la etapa de servicios
 		if (is_array($this->_dependencias)) {
@@ -187,7 +187,7 @@ class toba_ei_pantalla extends toba_ei
 	}
 
 	/**
-	 * Determina que una dependencia no serï¿½ mostrada en la pantalla actual
+	 * Determina que una dependencia no será mostrada en la pantalla actual
 	 * @param string $id ID. de la dependencia en el ci
 	 */
 	function eliminar_dep($id)
@@ -196,7 +196,7 @@ class toba_ei_pantalla extends toba_ei
 			array_borrar_valor($this->_lista_dependencias, $id);
 		} else {
 			throw new toba_error_def($this->get_txt(). 
-					" Se quiere eliminar la dependencia '$id', pero esta no estï¿½ en la pantalla actual");
+					" Se quiere eliminar la dependencia '$id', pero esta no está en la pantalla actual");
 		}
 		//--- Por si ya estamos en la etapa de servicios
 		if (isset($this->_dependencias[$id])) {
@@ -243,7 +243,7 @@ class toba_ei_pantalla extends toba_ei
 	//----------------------------------------------
 	
 	/**
-	 * Acceso a un tab o solapa especï¿½fico
+	 * Acceso a un tab o solapa específico
 	 * Un tab representa el posible acceso a una pantalla distinta a la actual
 	 * @param string $id Identificador de la pantalla
 	 * @return toba_tab Objeto toba_tab que representa al tab o solapa
@@ -259,8 +259,8 @@ class toba_ei_pantalla extends toba_ei
 	
 	/**
 	 * Elimina un tab especifico
-	 * La consecuencia es que ya no es posible accederlo mï¿½s durante el pedido de pï¿½gina actual, 
-	 * y al momento de graficar la barra de tabs, no serï¿½ incluido
+	 * La consecuencia es que ya no es posible accederlo más durante el pedido de página actual, 
+	 * y al momento de graficar la barra de tabs, no será incluido
 	 * Si lo que se quiere hacer es desactivar el tab (que se vea pero no se puede acceder), usar el metodo toba_tab::desactivar()
 	 * @param string $id Identificador de la pantalla
 	 * @see toba_tab::desactivar()
@@ -275,7 +275,7 @@ class toba_ei_pantalla extends toba_ei
 			unset($this->_lista_tabs[$id]);
 		} else {
 			throw new toba_error_def($this->get_txt(). 
-					" Se quiere eliminar el tab '$id', pero esta no estï¿½ en la pantalla actual");
+					" Se quiere eliminar el tab '$id', pero esta no está en la pantalla actual");
 		}
 	}
 	
@@ -285,7 +285,7 @@ class toba_ei_pantalla extends toba_ei
 	 */
 	function get_lista_tabs()
 	{
-		//-- Restricciï¿½n funcional pantalla no-visible ------
+		//-- Restricción funcional pantalla no-visible ------
 		//Se modifica el metodo para que el ci almacene la lista de tabs modificados por las restricciones (caso wizard)		
 		$lista = array();
 		$no_visibles = toba::perfil_funcional()->get_rf_pantallas_no_visibles($this->_id[1]);
@@ -301,7 +301,7 @@ class toba_ei_pantalla extends toba_ei
 	}
 
 	/**
-	 * Carga la lista de botones que representan a las pestaï¿½as o tabs que se muestran en la pantalla actual
+	 * Carga la lista de botones que representan a las pestañas o tabs que se muestran en la pantalla actual
 	 * @ignore 
 	 */
 	protected function cargar_lista_tabs()
@@ -381,7 +381,7 @@ class toba_ei_pantalla extends toba_ei
 
 	/**
 	 * Deja registrado en el componente que en el cliente (javascript) se va a consumir el api de cambio de tabs
-	 * Esto es necesario explitarlo cuando la forma de navegaciï¿½n no es a travï¿½s de tabs
+	 * Esto es necesario explitarlo cuando la forma de navegación no es a través de tabs
 	 * @param string $id Id. de la pantalla a la que se va permitir cambiar en el cliente
 	 */
 	function registrar_evento_cambio_tab($id)
@@ -430,7 +430,6 @@ class toba_ei_pantalla extends toba_ei
 	function generar_html()
 	{
 		echo "\n<!-- ################################## Inicio CI ( ".$this->_id[1]." ) ######################## -->\n\n";		
-		
 		$ancho = isset($this->_info_ci["ancho"]) ? "style='width:{$this->_info_ci["ancho"]};'" : '';
 		
 		echo toba::output()->get('Pantalla')->getInicioHtml("{$this->objeto_js}_cont", $ancho);
@@ -521,7 +520,7 @@ class toba_ei_pantalla extends toba_ei
 	}
 
 	/**
-	 * Grafica el contenido de la pantalla actual, por defecto incluye una secciï¿½n de descripciï¿½n
+	 * Grafica el contenido de la pantalla actual, por defecto incluye una sección de descripción
 	 * @ignore 
 	 */
 	protected function generar_html_contenido()
@@ -554,7 +553,7 @@ class toba_ei_pantalla extends toba_ei
 	}
 	
 	/**
-	 * Dispara la generaciï¿½n de html de los objetos contenidos en esta pantalla
+	 * Dispara la generación de html de los objetos contenidos en esta pantalla
 	 * Extender en caso de querer modificar la totalidad del contenido de la pantalla
 	 */	
 	protected function generar_layout()

@@ -16,7 +16,7 @@ class toba_evento_usuario extends toba_boton
 	/**
 	* Devuelve el vinculo asociado al evento
 	* @param boolean $forzar_instancia Por defecto solo se crea una instancia de un vinculo asociada al evento,
-	* 		con este parï¿½metro fuerza a crear un nuevo objeto vinculo
+	* 		con este parámetro fuerza a crear un nuevo objeto vinculo
 	* @return toba_vinculo
 	*/
 	function vinculo($forzar_instancia=false)
@@ -342,7 +342,7 @@ class toba_evento_usuario extends toba_boton
 	}
 	
 	/**
-	 * Genera la invocaciï¿½n JS necesaria para incluir en un onclick por ejemplo
+	 * Genera la invocación JS necesaria para incluir en un onclick por ejemplo
 	 */
 	function get_invocacion_js($objeto_js=null, $id_componente = null)
 	{

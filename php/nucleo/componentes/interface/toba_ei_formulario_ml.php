@@ -742,8 +742,6 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	 */	
 	protected function generar_botonera_exportacion(){
 		//-- TODO: cambiar cuando esta informacion pase a formar parte de los metadatos
-		
-		
 		if (! isset($this->_info_formulario['exportar_pdf'])) {
 			$this->_info_formulario['exportar_pdf'] = 0;
 		}
@@ -840,8 +838,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	 * @ignore 
 	 */
 	protected function generar_formulario_pie()
-	{
-		
+	{		
 		$ids = [];
 		/**
 		 * Si bien despues se debe recorrer los $ids para imprimir, algoritmicamente es lo mismo, ya que sigue siendo de O(n)
@@ -850,8 +847,7 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 			$this->_elemento_formulario[$ef]->ir_a_fila("s");
 			$id_form_total = $this->_elemento_formulario[$ef]->get_id_form();
 			$ids[] = $id_form_total;
-		}
-		
+		}		
 		echo toba::output()->get('FormularioMl')->getPieFormulario("pie_{$this->objeto_js}",$ids, count($this->_lista_ef_totales), $this->_info_formulario['filas_numerar'], $this->cant_eventos_sobre_fila(), $this->_colspan);
 	}
 	

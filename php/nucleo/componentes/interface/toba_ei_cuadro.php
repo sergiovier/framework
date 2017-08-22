@@ -2360,8 +2360,6 @@ class toba_ei_cuadro extends toba_ei
 		}
 		$this->generar_cabecera_corte_control($nodo, $id_unico);
 		//Genero el corte
-		
-		
 		$estilo = $this->get_estilo_inicio_colapsado($nodo);
 		$this->generar_inicio_zona_colapsable($id_unico, $estilo);
 
