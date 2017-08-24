@@ -32,7 +32,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		return $this->_cuadro->get_invocacion_evento_fila($evento, $fila, $clave_fila, $salida_como_vinculo, $param_extra);
 	}
 
-	function generar_botones($clase)
+	function generar_botones($clase='')
 	{
 		$this->_cuadro->generar_botones($clase);
 	}
@@ -81,8 +81,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$this->generar_html_barra_sup(null, true,"ei-cuadro-barra-sup");
 
 		//-- INICIO zona COLAPSABLE del cuadro completo
-		$colapsado = ($cuadro_colapsa) ? "style='display:none'" : "";
-		
+		$colapsado = ($cuadro_colapsa) ? "style='display:none'" : "";		
 		echo toba::output()->get('CuadroSalidaHtml')->getIncioZonaColapsable("cuerpo_$id_js","ei-cuadro-cuerpo", $colapsado );
 		
 		//------- Cabecera -----------------
@@ -192,23 +191,17 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$this->html_generar_campos_hidden();
 		$ancho = isset($info_cuadro["ancho"]) ? $info_cuadro["ancho"] : "";
 		//-- Tabla BASE
-		$ancho = convertir_a_medida_tabla($ancho);
-		
-		$editor =  $this->get_html_barra_editor();
-		
+		$ancho = convertir_a_medida_tabla($ancho);		
+		$editor =  $this->get_html_barra_editor();		
 		echo toba::output()->get('CuadroSalidaHtml')->getInicioCuadroVacio($ancho, $editor);
 		
 		$this->generar_html_barra_sup(null, true,"ei-cuadro-barra-sup");
 		$ancho = isset($info_cuadro["ancho"]) ? $info_cuadro["ancho"] : "";
-		$colapsado = (isset($colapsado) && $colapsado) ? "display:none;" : '';
-	
-		echo toba::output()->get('CuadroSalidaHtml')->getMensajeCuadroVacio("cuerpo_$objeto_js",$ancho, $colapsado, $texto);
-		
+		$colapsado = (isset($colapsado) && $colapsado) ? "display:none;" : '';	
+		echo toba::output()->get('CuadroSalidaHtml')->getMensajeCuadroVacio("cuerpo_$objeto_js",$ancho, $colapsado, $texto);		
 		if ($this->_cuadro->hay_botones() && $this->_cuadro->botonera_abajo()) {
 			echo toba::output()->get('CuadroSalidaHtml')->getInicioBotonera($this->_cuadro->datos_cargados());
-
-			$clase = toba::output()->get('CuadroSalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());
-			
+			$clase = toba::output()->get('CuadroSalidaHtml')->getClaseBotonera($this->_cuadro->datos_cargados(),$this->_cuadro->botonera_abajo());			
 			$this->generar_botones($clase);
 			echo toba::output()->get('CuadroSalidaHtml')->getFinBotonera($this->_cuadro->datos_cargados());
 		}
@@ -223,7 +216,6 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 		$id = $this->_cuadro->get_id_form();
 		$objeto_js = $this->_cuadro->get_id_objeto_js();
 		$columnas = $this->_cuadro->get_columnas();
-
 		echo toba::output()->get('CuadroSalidaHtml')->getSelectorOrdenamiento($id, $objeto_js, $columnas);
 	}
 
@@ -492,7 +484,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	/**
 	 * Genera el html correspondiente a las filas del cuadro
 	 */
-	function html_cuadro(&$filas,$totales, $nodo)
+	function html_cuadro(&$filas,$totales=0, $nodo=null)
 	{
 		//Si existen cortes de control y el layout es tabular, el encabezado de la tabla ya se genero
 		if( ! $this->_cuadro->tabla_datos_es_general() ){
@@ -657,7 +649,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	/**
 	 *@ignore
 	 */
-	protected function html_cuadro_inicio($nodo)
+	protected function html_cuadro_inicio($nodo=null)
 	{
 		$cortes = $this->_cuadro->existen_cortes_control();
 		echo toba::output()->get('CuadroSalidaHtml')->getInicioCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
@@ -666,7 +658,7 @@ class toba_ei_cuadro_salida_html extends toba_ei_cuadro_salida
 	/**
 	 *@ignore
 	 */
-	protected function html_cuadro_fin($nodo)
+	protected function html_cuadro_fin($nodo=null)
 	{
 		$cortes = $this->_cuadro->existen_cortes_control();
 		echo toba::output()->get('CuadroSalidaHtml')->getFinCuadro($cortes,$this->get_nivel_css($nodo['profundidad']));
