@@ -1072,14 +1072,15 @@ class toba_ei_formulario_ml extends toba_ei_formulario
 	{
 		$consumos = parent::get_consumo_javascript();
 		$consumos[] = 'componentes/ei_formulario_ml';
-		$custom_consumo= toba::output()->get('FormularioMl')->getConsumosJs();
-		if(isset($custom_consumo)){
-			if (!is_array($custom_consumo) && trim($custom_consumo) != '')
-				$consumos[] = $custom_consumo;
-			if (is_array($custom_consumo))
-				$consumos = array_merge($consumos,$custom_consumo);
+		$custom_consumo = toba::output()->get('FormularioMl')->getConsumosJs();
+		if(isset($custom_consumo)) {
+			if (!is_array($custom_consumo)) {
+				$custom_consumo = array($custom_consumo);
+			}
+			$consumos = array_merge($consumos,$custom_consumo);
 		}
-		$consumos = array_reverse (array_unique(array_reverse ($consumos)));//Elimino los	duplicados
+		//$consumos = array_reverse (array_unique(array_reverse ($consumos)));//Elimino los	duplicados
+		$consumos = array_unique($consumos);
 		return $consumos;
 	}
 

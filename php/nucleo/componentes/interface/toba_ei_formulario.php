@@ -1323,19 +1323,22 @@ class toba_ei_formulario extends toba_ei
 	{
 		$consumo = parent::get_consumo_javascript();
 		$consumo[] = 'componentes/ei_formulario';
-		$custom_consumo = toba::output()->get('Formulario')->getConsumoJs();
-		if(isset($custom_consumo)){
-			if (!is_array($custom_consumo) && trim($custom_consumo) != '')
-				$consumo[] = $custom_consumo;
-			if (is_array($custom_consumo))
-				$consumo = array_merge($consumo,$custom_consumo);
-		}
 		//Busco las	dependencias
-		foreach ($this->_lista_ef_post	as	$ef){
-			$temp	= $this->_elemento_formulario[$ef]->get_consumo_javascript();
-			if(isset($temp)) $consumo = array_merge($consumo, $temp);
+		foreach ($this->_lista_ef_post	as	$ef) {
+			$temp = $this->_elemento_formulario[$ef]->get_consumo_javascript();
+			if(isset($temp) && is_array($temp)) {
+				$consumo = array_merge($consumo, $temp);
+			}
 		}
-		$consumo = array_unique($consumo);//Elimino los	duplicados
+		
+		$custom_consumo = toba::output()->get('Formulario')->getConsumosJs();
+		if(isset($custom_consumo)) {
+			if (!is_array($custom_consumo)) {
+				$custom_consumo = array($custom_consumo);
+			}
+			$consumo = array_merge($consumo,$custom_consumo);
+		}
+		$consumo = array_unique($consumo);//Elimino los duplicados
 		return $consumo;
 	}
 
