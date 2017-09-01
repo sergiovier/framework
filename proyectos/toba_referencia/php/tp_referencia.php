@@ -5,9 +5,9 @@ class tp_referencia extends toba_tp_normal
 {
 	protected $titulo;
 
-	function barra_superior()
+	/*function barra_superior()
 	{
-	}
+	}*/
 	
 	function titulo_item()
 	{
@@ -24,17 +24,17 @@ class tp_referencia extends toba_tp_normal
 					$camino[0] = $item->get_nombre() . ' > ' . $camino[0];
 				}
 			}
-			$this->titulo = $camino;
+			$this->titulo = implode('',$camino);
 		}
 		return $this->titulo;
 	}
 
-/*	function pie()
+	/*function pie()
 	{
 		php_referencia::instancia()->mostrar();
 		parent::pie();	
-	}
-*/
+	}*/
+
 }
 
 ?>
