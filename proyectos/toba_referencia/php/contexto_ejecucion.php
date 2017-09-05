@@ -19,7 +19,7 @@ class contexto_ejecucion extends toba_contexto_ejecucion
 		toba::output()->registrarServicio($bootstrap_config);
 		toba::output()->setProvider('bootstrap');
 		
-		bootstrap_config::setMainColor( '#C9E215');
+		bootstrap_config::setMainColor( '#8B0C73');
 		bootstrap_config::setLogoNombre(toba_recurso::imagen_proyecto('logo.gif', false));
 	}
 	
