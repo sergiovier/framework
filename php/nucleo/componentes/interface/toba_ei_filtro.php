@@ -321,8 +321,8 @@ class toba_ei_filtro extends toba_ei
 		if (isset($this->_info_filtro["ancho"])) {
 			$ancho = convertir_a_medida_tabla($this->_info_filtro["ancho"]);
 		}
-		echo toba::output()->get('Filtro')->getInicioHtml($this->_estilos, $ancho);
 		
+		echo toba::output()->get('Filtro')->getInicioHtml($this->_estilos, $ancho);		
 		echo $this->get_html_barra_editor();
 		$this->generar_html_barra_sup(null, true,"ei-filtro-barra-sup");
 		$this->generar_formulario();
@@ -342,14 +342,13 @@ class toba_ei_filtro extends toba_ei
 		//Ancho y Scroll
 		$estilo = '';
 		$ancho = isset($this->_info_filtro["ancho"]) ? $this->_info_filtro["ancho"] : "auto";
-		$alto_maximo = "auto";
 		if (isset($this->_colapsado) && $this->_colapsado) {
 			$estilo .= "display:none;";
 		}
 		//Campo de comunicacion con JS
 		echo toba_form::hidden("{$this->objeto_js}_listafilas",'');
 		echo toba_form::hidden("{$this->objeto_js}__parametros", '');		
-		echo toba::output()->get('Filtro')->getPreLayout("cuerpo_{$this->objeto_js}", $estilo, $ancho);
+		echo toba::output()->get('Filtro')->getPreLayout("cuerpo_{$this->objeto_js}", $estilo);
 		$this->generar_layout($ancho);
 		echo toba::output()->get('Filtro')->getPostLayout();
 		
