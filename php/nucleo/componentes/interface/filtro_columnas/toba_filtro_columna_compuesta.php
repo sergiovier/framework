@@ -67,7 +67,7 @@ abstract class toba_filtro_columna_compuesta extends toba_filtro_columna
 		//Se retorna al id original
 		$salida .= $this->_ef->ir_a_fila();
 		$salida .= "</div>";
-		return $salida;
+		echo $salida;
 	}		
 	
 	function get_html_condicion()
