@@ -405,7 +405,10 @@ class toba_ei_filtro extends toba_ei
 			echo toba::output()->get('Filtro')->getParseCondicion($columna->get_html_condicion(), $estilo_celda);
 		
 			//-- Valor
-			echo toba::output()->get('Filtro')->getParseValor($columna->get_html_valor(), $estilo_celda);
+			ob_start();
+			$columna->get_html_valor();				//Esto se hace para mantener el contrato del metodo get_html_valor
+			$html_columna_valor = ob_get_clean();
+			echo toba::output()->get('Filtro')->getParseValor($html_columna_valor, $estilo_celda);
 			
 			//-- Borrar a nivel de fila
 			echo toba::output()->get('Filtro')->getEliminarFiltro("{$this->objeto_js}_eliminar$nombre_col", "{$this->objeto_js}.seleccionar(\"$nombre_col\");{$this->objeto_js}.eliminar_seleccionada();", $this->_rango_tabs[0]++, $columna->es_solo_lectura(), $columna->es_obligatorio(), $estilo_celda);
