@@ -27,7 +27,8 @@ class toba_tp_logon extends toba_tp_basico
 		echo toba::output()->get('PaginaLogon')->getPostContenido();
 	}
 	
-	function footer(){
+	function footer()
+	{
 		echo toba::output()->get('PaginaLogon')->getFooterHtml();
 	}
 }

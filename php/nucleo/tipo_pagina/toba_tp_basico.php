@@ -14,7 +14,10 @@
 class toba_tp_basico extends toba_tipo_pagina
 {
 	protected $clase_encabezado = '';
-	
+
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	//					INTERFACES ORIGINALES
+	//---------------------------------------------------------------------------------------------------------------------------------//
 	function encabezado()
 	{
 		$this->cabecera_html();
@@ -23,33 +26,7 @@ class toba_tp_basico extends toba_tipo_pagina
 		$this->inicio_barra_superior();
 		$this->barra_superior();//--- No se cierra el div de encabezado para dar lugar a la zona...
 	}
-	
-	function inicio_encabezado_html()
-	{
-		echo toba::output()->get('PaginaBasica')->getPreEncabezadoHtml();
-	}
-	
-	function inicio_barra_superior()
-	{
-		echo toba::output()->get('PaginaBasica')->getInicioBarraSuperior();
-	}
-	
-	function post_encabezado() 
-	{
-		$this->fin_barra_superior();
-		$this->fin_encabezado_html();		
-	}
-	
-	function fin_barra_superior()
-	{
-		echo toba::output()->get('PaginaBasica')->getFinBarraSuperior();
-	}
-	
-	function fin_encabezado_html()
-	{
-		echo toba::output()->get('PaginaBasica')->getPostEncabezadoHtml();
-	}
-	
+
 	function pre_contenido()
 	{
 		echo toba::output()->get('PaginaBasica')->getPreContenido();
@@ -67,27 +44,12 @@ class toba_tp_basico extends toba_tipo_pagina
 			$item = toba::solicitud()->get_datos_item('item');
 			$accion = toba::solicitud()->get_datos_item('item_act_accion_script');
 			toba_editor::generar_zona_vinculos_item($item, $accion);
-		}
-		$this->footer();
+		}		
 		echo toba::output()->get('PaginaBasica')->getFinCuerpo();
+		$this->footer();
 		echo toba::output()->get('PaginaBasica')->getFinHtml();
 	}
-	
-	function barra_superior()
-	{
-		echo toba::output()->get('PaginaBasica')->getContenidoBarraSuperior();
-	}
-	
-	function mostrar_resize_fuente()
-	{
-		echo toba::output()->get('PaginaBasica')->getResizeFuente("ampliar_fuente();","reducir_fuente();");
-	}
-	
-	protected function footer()
-	{
-		echo toba::output()->get('PaginaBasica')->getFooterHtml();
-	}
-	
+
 	protected function cabecera_html()
 	{
 		echo toba::output()->get('PaginaBasica')->getInicioHtml();
@@ -98,7 +60,7 @@ class toba_tp_basico extends toba_tipo_pagina
 		toba_js::cargar_consumos_basicos();
 		echo toba::output()->get('PaginaBasica')->getFinHead();
 	}
-	
+
 	protected function titulo_pagina()
 	{
 		$item = toba::solicitud()->get_datos_item('item_nombre');
@@ -128,18 +90,62 @@ class toba_tp_basico extends toba_tipo_pagina
 	{
 		$this->capa_espera();
 		$this->comienzo_cuerpo_basico();
-		
-		
-	}
-	
-	protected function capa_espera(){
-		echo toba::output()->get('PaginaBasica')->getOverlay();
-		echo toba::output()->get('PaginaBasica')->getCapaEspera();
 	}
 	
 	protected function comienzo_cuerpo_basico()
 	{
 		echo toba::output()->get('PaginaBasica')->getInicioCuerpo();		
 	}	
+			
+	function barra_superior()
+	{
+		echo toba::output()->get('PaginaBasica')->getContenidoBarraSuperior();
+	}
+	
+	function mostrar_resize_fuente()
+	{
+		echo toba::output()->get('PaginaBasica')->getResizeFuente("ampliar_fuente();","reducir_fuente();");
+	}
+	
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	//					INTERFACES AGREGADAS
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	
+	function inicio_encabezado_html()
+	{
+		echo toba::output()->get('PaginaBasica')->getPreEncabezadoHtml();
+	}
+
+	function fin_encabezado_html()
+	{
+		echo toba::output()->get('PaginaBasica')->getPostEncabezadoHtml();
+	}
+	
+	function inicio_barra_superior()
+	{
+		echo toba::output()->get('PaginaBasica')->getInicioBarraSuperior();
+	}
+	
+	function fin_barra_superior()
+	{
+		echo toba::output()->get('PaginaBasica')->getFinBarraSuperior();
+	}
+		
+	function post_encabezado() 
+	{
+		$this->fin_barra_superior();
+		$this->fin_encabezado_html();		
+	}
+	
+	protected function footer()
+	{
+		echo toba::output()->get('PaginaBasica')->getFooterHtml();
+	}
+	
+	protected function capa_espera()
+	{
+		echo toba::output()->get('PaginaBasica')->getOverlay();
+		echo toba::output()->get('PaginaBasica')->getCapaEspera();
+	}
 }
 ?>

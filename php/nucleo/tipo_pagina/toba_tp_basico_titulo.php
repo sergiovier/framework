@@ -10,26 +10,9 @@ class toba_tp_basico_titulo extends toba_tp_basico
 {
 	protected $clase_encabezado = 'encabezado';	
 
-	function inicio_encabezado_html()
-	{
-		echo toba::output()->get('PaginaTitulo')->getPreEncabezadoHtml();
-	}
-	
-	function inicio_barra_superior()
-	{
-		echo toba::output()->get('PaginaTitulo')->getInicioBarraSuperior();
-	}
-	
-	function fin_encabezado_html()
-	{
-		echo toba::output()->get('PaginaTitulo')->getPostEncabezadoHtml();
-	}
-	
-	function fin_barra_superior()
-	{
-		echo toba::output()->get('PaginaTitulo')->getFinBarraSuperior();
-	}
-	
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	//					INTERFACES ORIGINALES
+	//---------------------------------------------------------------------------------------------------------------------------------//
 	function barra_superior()
 	{
 		echo toba::output()->get('PaginaTitulo')->getContenidoBarraSuperior($this->titulo_item(), $this->info_version(), $this->generar_ayuda());
@@ -77,11 +60,33 @@ class toba_tp_basico_titulo extends toba_tp_basico
 	{
 		echo toba::output()->get('PaginaTitulo')->getPostContenido();
 	}
+
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	//					INTERFACES AGREGADAS
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	function inicio_encabezado_html()
+	{
+		echo toba::output()->get('PaginaTitulo')->getPreEncabezadoHtml();
+	}
+	
+	function fin_encabezado_html()
+	{
+		echo toba::output()->get('PaginaTitulo')->getPostEncabezadoHtml();
+	}
+	
+	function inicio_barra_superior()
+	{
+		echo toba::output()->get('PaginaTitulo')->getInicioBarraSuperior();
+	}
+		
+	function fin_barra_superior()
+	{
+		echo toba::output()->get('PaginaTitulo')->getFinBarraSuperior();
+	}
 	
 	protected function footer()
 	{
 		echo toba::output()->get('PaginaTitulo')->getFooterHtml();
-	}
-			
+	}			
 }
 ?>
